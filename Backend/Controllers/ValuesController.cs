@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using FreelanceLand.Models;
 
 namespace Backend.Controllers
 {
@@ -10,18 +11,22 @@ namespace Backend.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        EFGenericRepository<User> userRepo = new EFGenericRepository<User>(new ApplicationContext());
+
         // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            return new string[] { "value1", "value2" };
+            return new string[] { "Some testing data." };
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
         public ActionResult<string> Get(int id)
         {
-            return "value";
+            User user = userRepo.FindById(4006);
+            string userStr = user.Name.ToString();
+            return userStr.ToString();
         }
 
         // POST api/values
