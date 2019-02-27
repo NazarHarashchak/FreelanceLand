@@ -1,4 +1,8 @@
-﻿using FreelanceLand.Models;
+﻿using AutoMapper;
+using Backend.Interfaces.ServiceInterfaces;
+using Backend.MappingProfiles;
+using Backend.Services;
+using FreelanceLand.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -21,7 +25,10 @@ namespace Backend
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationContext>();
             services.AddCors();
+            services.AddTransient<IUsersService, UsersService>();
             services.AddMvc();
+
+            InitializeAutomapper(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,6 +45,16 @@ namespace Backend
             app.UseCors(builder => builder.AllowAnyOrigin());
             app.UseHttpsRedirection();
             app.UseMvc();
+        }
+
+        public virtual IServiceCollection InitializeAutomapper(IServiceCollection services)
+        {
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile<UserProfile>();
+            });
+
+            return services;
         }
     }
 }
