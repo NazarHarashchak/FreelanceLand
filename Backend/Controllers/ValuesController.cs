@@ -8,25 +8,53 @@ using FreelanceLand.Models;
 namespace Backend.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+   
     public class ValuesController : ControllerBase
     {
         EFGenericRepository<User> userRepo = new EFGenericRepository<User>(new ApplicationContext());
 
-        // GET api/values
+        //GET api/values
+       //[HttpGet]
+       // public ActionResult<IEnumerable<string>> Get()
+       // {
+
+       //     ApplicationContext context = new ApplicationContext();
+       //     List<FreelanceLand.Models.User> arr1 = context.Users.ToList();
+       //     string[] arr = new string[arr1.Count];
+       //     int i = 0;
+       //     foreach (var val in arr1)
+       //     {
+       //         arr[i] = val.Name;
+       //         i++;
+       //     }
+
+       //     return arr;
+       // }
+
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public ActionResult<IEnumerable<string>> GetAllUsers()
         {
-            return new string[] { "Some testing data." };
+            ApplicationContext context = new ApplicationContext();
+            List<FreelanceLand.Models.User> arr1 = context.Users.ToList();
+            string [] arr = new String[arr1.Count];
+            int i = 0;
+            foreach (var val in arr1)
+            {
+                arr[i] = val.Name;
+                i++;
+            }
+
+            return arr;
+
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        public ActionResult<User> Get(int id)
         {
-            User user = userRepo.FindById(4006);
-            string userStr = user.Name.ToString();
-            return userStr.ToString();
+            User user = userRepo.FindById(id);
+
+            return user;
         }
 
         // POST api/values
