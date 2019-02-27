@@ -17,14 +17,14 @@ namespace Backend.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            return new string[] { "Some testing data." };
+            return new string[] { "" };
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
         public ActionResult<string> Get(int id)
         {
-            User user = userRepo.FindById(4006);
+            User user = userRepo.FindById(id);
             string userStr = user.Name.ToString();
             return userStr.ToString();
         }
