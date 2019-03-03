@@ -1,38 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using FreelanceLand.Models;
-using Microsoft.AspNetCore.Authorization;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.Extensions.Options;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using Backend.Interfaces.ServiceInterfaces;
+using Backend.DTOs;
 
 namespace Backend.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     public class LoginController : Controller
     {
-        EFGenericRepository<User> userRepository = new EFGenericRepository<User>(new ApplicationContext());
+        public IUsersService _userService;
 
-        [AllowAnonymous]
-        [HttpPost("authenticate")]
-        public IActionResult ValidateUser(string login, string password)
+        public LoginController(IUsersService userService)
         {
-            if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
+            _userService = userService;
+        }
+
+        [HttpGet]
+        public ActionResult<UserDTO> ValidateUser(string username, string password)
+        {
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
-                return BadRequest(new { message = "Login or password is incorrect" });
-            }
-            IEnumerable<User> users = userRepository.Get(u => u.Login == login);
-            if (users.Count(u => u.Password == password) > 0)
-            {
-                return Ok();
+                return null;
             }
 
-            return BadRequest(new { message = "Login or password is incorect" });
+            var dto = _userService.Authenticate(username, password);
+            return dto;
         }
     }
 }
