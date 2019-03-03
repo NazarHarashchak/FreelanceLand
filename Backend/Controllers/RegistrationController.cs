@@ -16,7 +16,7 @@ namespace Backend.Controllers
             _userService = userService;
         }
 
-        [HttpGet]
+        [HttpPost]
         public ActionResult RegisterUser(string username, string password)
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
