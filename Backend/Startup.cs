@@ -1,6 +1,11 @@
-﻿using FreelanceLand.Models;
+﻿using AutoMapper;
+using Backend.Interfaces.ServiceInterfaces;
+using Backend.MappingProfiles;
+using Backend.Services;
+using FreelanceLand.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +17,7 @@ namespace Backend
         {
             Configuration = configuration;
         }
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
         public IConfiguration Configuration { get; }
 
@@ -21,7 +27,24 @@ namespace Backend
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationContext>();
             services.AddCors();
+            services.AddTransient<IUsersService, UsersService>();
+            services.AddTransient<ITasksService, TasksService>();
+            services.AddTransient<ITaskCategoriesService, TaskCategoriesService>();
             services.AddMvc();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(MyAllowSpecificOrigins,
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:3000",
+                            "https://localhost:44331").AllowAnyHeader()
+                            .AllowAnyMethod(); 
+                    });
+            });
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_0);
+
+            InitializeAutomapper(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,9 +58,21 @@ namespace Backend
             {
                 app.UseHsts();
             }
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseCors(builder => builder.AllowAnyOrigin());
             app.UseHttpsRedirection();
             app.UseMvc();
+        }
+
+        public virtual IServiceCollection InitializeAutomapper(IServiceCollection services)
+        {
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile<UserProfile>();
+                cfg.AddProfile<TaskProfile>();
+            });
+
+            return services;
         }
     }
 }
