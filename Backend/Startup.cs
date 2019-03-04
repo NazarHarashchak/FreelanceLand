@@ -30,6 +30,7 @@ namespace Backend
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<ITasksService, TasksService>();
             services.AddTransient<ITaskCategoriesService, TaskCategoriesService>();
+            services.AddTransient<ITaskInfoService, TaskInfoService>();
             services.AddMvc();
             services.AddCors(options =>
             {

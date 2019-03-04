@@ -31,7 +31,14 @@ namespace Backend.Controllers
             return Ok(dtos);
         }
 
+        [HttpGet]
+        public ActionResult<User> Get()
+        {
+            var dtos = _usersService.GetAllEntities();
 
+            return Ok(dtos);
+        }
+        
         [HttpGet("{id}")]
         public ActionResult<User> Get(int id)
         {

@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using Backend.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
-using FreelanceLand;
 
 namespace Backend.Controllers
 {
@@ -13,34 +10,28 @@ namespace Backend.Controllers
     [ApiController]
     public class TaskInfoController : ControllerBase
     {
-        EFGenericRepository<User> userRepo = new EFGenericRepository<User>(new ApplicationContext());
-        EFGenericRepository<FreelanceLand.Models.Task> taskRepo = new EFGenericRepository<FreelanceLand.Models.Task>
-                                                                                    (new ApplicationContext());
+        private ITaskInfoService tasksService;
+        private IUsersService usersService;
+
+        public TaskInfoController(ITaskInfoService tasksService, IUsersService usersService)
+        {
+            this.tasksService = tasksService;
+            this.usersService = usersService;
+        }
 
         [HttpGet("{id}")]
-        public ActionResult<FreelanceLand.Models.Task> Get(int id)
+        public ActionResult<TaskDescription> Get(int id)
         {
-            ApplicationContext context = new ApplicationContext();
-            FreelanceLand.Models.Task task = taskRepo.FindById(id);
-            return task;
+            var dtos = tasksService.GetTaskDescription(id);
+            return Ok(dtos);
         }
 
         [HttpGet("{number},{id}")]
         public ActionResult<User> Get(int number, int id)
         {
-            ApplicationContext context = new ApplicationContext();
-            FreelanceLand.Models.Task task = taskRepo.FindById(id);
-            User user = new User();
-            foreach (TaskHistory history in context.TaskHistories)
-            {
-                if (history.TaskId == id)
-                {
-                    int userId = Convert.ToInt32(history.TaskCustomerId);
-                    user = userRepo.FindById(userId);
-                    break;
-                }
-            }
-            return user;
+            var dtos = tasksService.GetTaskCustomer(id);
+
+            return Ok(dtos);
         }
     }
 }
