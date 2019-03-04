@@ -38,7 +38,8 @@ namespace Backend
                     {
                         builder.WithOrigins("http://localhost:3000",
                             "https://localhost:44331").AllowAnyHeader()
-                            .AllowAnyMethod(); 
+                            .AllowAnyMethod();
+
                     });
             });
 
