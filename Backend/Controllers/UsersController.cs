@@ -24,14 +24,15 @@ namespace Backend.Controllers
             _usersService = usersService;
         }
 
-        // GET api/values
-        [HttpGet]
-        public ActionResult<IEnumerable<UserDTO>> Get()
+        
+        [HttpGet("{id}")]
+        public ActionResult<User> Get(int id)
         {
-            var dtos = _usersService.GetAllEntities();
+            var dtos = _usersService.GetUserInformation(id);
 
             return Ok(dtos);
         }
+        
 
 
         [HttpPut("{id}")]

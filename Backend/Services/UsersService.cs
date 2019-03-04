@@ -32,13 +32,6 @@ namespace Backend.Services
             return dtos;
         }
 
-        public UserInformation PutUserInformation(int id, [FromBody] UserInformation value)
-        {
-            var entities = userRepo.FindById(id);
-            var dtos = _mapper.Map<User, UserInformation>(entities);
-            return dtos;
-        }
-
         public User UpdateUser(int id, [FromBody] UserInformation value)
         {
             using (var db = new ApplicationContext())
