@@ -2,6 +2,7 @@
 using Backend.DTOs;
 using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
+using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,47 @@ namespace Backend.Services
             return dtos;
         }
 
+        public UserLoginDTO GetUserByLogin(string login)
+        {
+            var user = userRepo.Get(u => u.Login == login).FirstOrDefault();
+
+            if (user == null)
+                return null;
+
+            var dto = _mapper.Map<User, UserLoginDTO >(user);
+            return dto;
+        }
+
+        public UserLoginDTO Authenticate(string login, string password)
+        {
+            var dto = GetUserByLogin(login);
+
+            if (dto == null)
+                return null;
+
+            if (dto.Password == password)
+                return dto;
+
+            return null;
+        }
+
+        public void CreateUser(string login, string password)
+        {
+            if (GetUserByLogin(login) == null)
+            {
+                UserDTO dto = new UserDTO();
+                dto.Name = " ";
+                dto.Sur_Name = " ";
+                dto.Birth_Date = new DateTime();
+                dto.Phone_Number = null;
+                dto.Email = " ";
+                dto.Login = login;
+                dto.Password = password;
+                dto.UserRoleId = 1;
+                var user = _mapper.Map<UserDTO, User>(dto);
+                userRepo.Create(user);
+            }
+            
         public UserInformation GetUserInformation(int id)
         {
             var entities = userRepo.FindById(id);

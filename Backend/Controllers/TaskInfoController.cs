@@ -29,7 +29,6 @@ namespace Backend.Controllers
         [HttpGet("{number},{id}")]
         public ActionResult<User> Get(int number, int id)
         {
-
             var dtos = tasksService.GetTaskCustomer(id);
 
             return Ok(dtos);
