@@ -24,5 +24,6 @@ namespace FreelanceLand.Models
         public TaskCategory TaskCategory { get; set; }
 
         public List<TaskHistory> TaskHistories { get; set; }
+        public List<Comment> Comments { get; set; }
     }
 }

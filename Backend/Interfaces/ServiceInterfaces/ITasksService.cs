@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace Backend.Interfaces.ServiceInterfaces
 {
-    public interface IUsersService
+    public interface ITasksService
     {
-        IEnumerable<UserDTO> GetAllEntities();
+        IEnumerable<TaskDTO> GetToDoEntities();
     }
 }

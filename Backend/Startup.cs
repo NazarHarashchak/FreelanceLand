@@ -26,6 +26,8 @@ namespace Backend
             services.AddDbContext<ApplicationContext>();
             services.AddCors();
             services.AddTransient<IUsersService, UsersService>();
+            services.AddTransient<ITasksService, TasksService>();
+            services.AddTransient<ITaskCategoriesService, TaskCategoriesService>();
             services.AddMvc();
 
             InitializeAutomapper(services);
@@ -52,6 +54,7 @@ namespace Backend
             services.AddAutoMapper(cfg =>
             {
                 cfg.AddProfile<UserProfile>();
+                cfg.AddProfile<TaskProfile>();
             });
 
             return services;

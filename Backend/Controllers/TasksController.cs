@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Http;
+﻿using Backend.DTOs;
+using Backend.Interfaces.ServiceInterfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using FreelanceLand.Models;
+using System.Collections.Generic;
 
 namespace Backend.Controllers
 {
@@ -12,38 +9,20 @@ namespace Backend.Controllers
     [ApiController]
     public class TasksController : ControllerBase
     {
-        EFGenericRepository<Task> userRepo = new EFGenericRepository<Task>(new ApplicationContext());
-        //private readonly ApplicationContext _context;
+        private ITasksService tasksService;
 
-        //public TasksController(ApplicationContext context)
-        //{
-        //    _context = context;
-        //}
-
-        // GET: api/tasks
-        [HttpGet]
-        public IEnumerable<Task> GetTasks()
+        public TasksController(ITasksService tasksService)
         {
-            return  userRepo.Get();
+            this.tasksService = tasksService;
         }
 
-        // GET: api/Tasks/5
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> GetTask([FromRoute] int id)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+        // GET api/values
+        [HttpGet]
+        public ActionResult<IEnumerable<TaskDTO>> Get()
+        {
+            var dtos = tasksService.GetToDoEntities();
 
-        //    var task = await _context.Tasks.FindAsync(id);
-
-        //    if (task == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return Ok(task);
-        //}
+            return Ok(dtos);
+        }
     }
 }
