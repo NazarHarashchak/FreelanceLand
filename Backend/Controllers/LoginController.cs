@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using FreelanceLand.Models;
 using Backend.Interfaces.ServiceInterfaces;
 using Backend.DTOs;
 
@@ -17,14 +16,14 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        public ActionResult<UserDTO> ValidateUser(string username, string password)
+        public ActionResult<UserLoginDTO> ValidateUser([FromBody] UserLoginDTO user)
         {
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(user.Login) || string.IsNullOrEmpty(user.Password))
             {
                 return null;
             }
 
-            var dto = _userService.Authenticate(username, password);
+            var dto = _userService.Authenticate(user.Login, user.Password);
             return dto;
         }
     }

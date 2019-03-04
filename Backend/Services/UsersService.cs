@@ -25,18 +25,18 @@ namespace Backend.Services
             return dtos;
         }
 
-        public UserDTO GetUserByLogin(string login)
+        public UserLoginDTO GetUserByLogin(string login)
         {
             var user = userRepo.Get(u => u.Login == login).FirstOrDefault();
 
             if (user == null)
                 return null;
 
-            var dto = _mapper.Map<User, UserDTO >(user);
+            var dto = _mapper.Map<User, UserLoginDTO >(user);
             return dto;
         }
 
-        public UserDTO Authenticate(string login, string password)
+        public UserLoginDTO Authenticate(string login, string password)
         {
             var dto = GetUserByLogin(login);
 
