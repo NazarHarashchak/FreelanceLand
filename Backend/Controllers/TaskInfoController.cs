@@ -14,23 +14,33 @@ namespace Backend.Controllers
     public class TaskInfoController : ControllerBase
     {
         EFGenericRepository<User> userRepo = new EFGenericRepository<User>(new ApplicationContext());
-        EFGenericRepository<FreelanceLand.Models.Task> taskRepo = new EFGenericRepository<FreelanceLand.Models.Task>(new ApplicationContext());
+        EFGenericRepository<FreelanceLand.Models.Task> taskRepo = new EFGenericRepository<FreelanceLand.Models.Task>
+                                                                                    (new ApplicationContext());
 
-        [HttpGet]
-        public ActionResult<FreelanceLand.Models.Task> Get()
-        {
-            FreelanceLand.Models.Task task = taskRepo.FindById(1);
-            User user = userRepo.FindById(1);
-            task.Date.ToShortDateString();
-            task.Deadline.ToShortDateString();
-           return (task);
-        }
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<string>> Get(int id)
+        public ActionResult<FreelanceLand.Models.Task> Get(int id)
         {
-            User user = userRepo.FindById(id);
-            string userStr = user.Name.ToString();
-            return new string[] { userStr };
+            ApplicationContext context = new ApplicationContext();
+            FreelanceLand.Models.Task task = taskRepo.FindById(id);
+            return task;
+        }
+
+        [HttpGet("{number},{id}")]
+        public ActionResult<User> Get(int number, int id)
+        {
+            ApplicationContext context = new ApplicationContext();
+            FreelanceLand.Models.Task task = taskRepo.FindById(id);
+            User user = new User();
+            foreach (TaskHistory history in context.TaskHistories)
+            {
+                if (history.TaskId == id)
+                {
+                    int userId = Convert.ToInt32(history.TaskCustomerId);
+                    user = userRepo.FindById(userId);
+                    break;
+                }
+            }
+            return user;
         }
     }
 }
