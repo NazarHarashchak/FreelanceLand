@@ -5,6 +5,7 @@ using Backend.Services;
 using FreelanceLand.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,6 +17,7 @@ namespace Backend
         {
             Configuration = configuration;
         }
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
         public IConfiguration Configuration { get; }
 
@@ -27,6 +29,18 @@ namespace Backend
             services.AddCors();
             services.AddTransient<IUsersService, UsersService>();
             services.AddMvc();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(MyAllowSpecificOrigins,
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:3000",
+                            "https://localhost:44331").AllowAnyHeader()
+                            .AllowAnyMethod(); 
+                    });
+            });
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_0);
 
             InitializeAutomapper(services);
         }
@@ -42,6 +56,7 @@ namespace Backend
             {
                 app.UseHsts();
             }
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseCors(builder => builder.AllowAnyOrigin());
             app.UseHttpsRedirection();
             app.UseMvc();
