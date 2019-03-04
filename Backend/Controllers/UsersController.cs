@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using FreelanceLand.Models;
-using Backend.Services;
 using Backend.Interfaces.ServiceInterfaces;
 using Backend.DTOs;
+using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using System.Linq;
 
 namespace Backend.Controllers
 {
@@ -15,6 +15,7 @@ namespace Backend.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
+        EFGenericRepository<User> userRepo = new EFGenericRepository<User>(new ApplicationContext());
 
         private IUsersService _usersService;
 
@@ -22,14 +23,31 @@ namespace Backend.Controllers
         {
             _usersService = usersService;
         }
-
-        // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<UserDTO>> Get()
+        public ActionResult<User> Get()
         {
             var dtos = _usersService.GetAllEntities();
 
             return Ok(dtos);
         }
+
+
+        [HttpGet("{id}")]
+        public ActionResult<User> Get(int id)
+        {
+            var dtos = _usersService.GetUserInformation(id);
+
+            return Ok(dtos);
+        }
+        
+
+
+        [HttpPut("{id}")]
+        public User PutUser(int id, [FromBody] UserInformation value)
+        {
+            var dtos = _usersService.UpdateUser(id, value);
+            return dtos;
+        }
+       
     }
 }

@@ -1,9 +1,9 @@
-﻿using System;
+using Backend.DTOs;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Backend.DTOs;
 using FreelanceLand.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Interfaces.ServiceInterfaces
 {
@@ -13,5 +13,7 @@ namespace Backend.Interfaces.ServiceInterfaces
         UserLoginDTO GetUserByLogin(string login);
         UserLoginDTO Authenticate(string login, string password);
         void CreateUser(string login, string password);
+        UserInformation GetUserInformation(int id);
+        User UpdateUser(int id, [FromBody] UserInformation value);
     }
 }

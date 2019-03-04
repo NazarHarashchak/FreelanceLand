@@ -28,6 +28,8 @@ namespace Backend
             services.AddDbContext<ApplicationContext>();
             services.AddCors();
             services.AddTransient<IUsersService, UsersService>();
+            services.AddTransient<ITasksService, TasksService>();
+            services.AddTransient<ITaskCategoriesService, TaskCategoriesService>();
             services.AddMvc();
             services.AddCors(options =>
             {
@@ -37,6 +39,7 @@ namespace Backend
                         builder.WithOrigins("http://localhost:3000",
                             "https://localhost:44331").AllowAnyHeader()
                             .AllowAnyMethod();
+
                     });
             });
 
@@ -67,6 +70,7 @@ namespace Backend
             services.AddAutoMapper(cfg =>
             {
                 cfg.AddProfile<UserProfile>();
+                cfg.AddProfile<TaskProfile>();
             });
 
             return services;
