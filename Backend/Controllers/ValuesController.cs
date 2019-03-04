@@ -13,24 +13,6 @@ namespace Backend.Controllers
     {
         EFGenericRepository<User> userRepo = new EFGenericRepository<User>(new ApplicationContext());
 
-        //GET api/values
-       //[HttpGet]
-       // public ActionResult<IEnumerable<string>> Get()
-       // {
-
-       //     ApplicationContext context = new ApplicationContext();
-       //     List<FreelanceLand.Models.User> arr1 = context.Users.ToList();
-       //     string[] arr = new string[arr1.Count];
-       //     int i = 0;
-       //     foreach (var val in arr1)
-       //     {
-       //         arr[i] = val.Name;
-       //         i++;
-       //     }
-
-       //     return arr;
-       // }
-
         [HttpGet]
         public ActionResult<IEnumerable<string>> GetAllUsers()
         {
@@ -45,7 +27,6 @@ namespace Backend.Controllers
             }
 
             return arr;
-
         }
 
         // GET api/values/5
