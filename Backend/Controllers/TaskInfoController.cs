@@ -3,6 +3,7 @@ using Backend.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
+using System.Collections.Generic;
 
 namespace Backend.Controllers
 {
@@ -31,6 +32,13 @@ namespace Backend.Controllers
         {
             var dtos = tasksService.GetTaskCustomer(id);
 
+            return Ok(dtos);
+        }
+
+        [HttpGet("{comments},{user},{id}")]
+        public ActionResult<IEnumerable<CommentDTO>> Get (int comments, int user, int id)
+        {
+            var dtos = tasksService.GetComments(id);
             return Ok(dtos);
         }
     }
