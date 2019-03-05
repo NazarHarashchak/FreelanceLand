@@ -34,4 +34,14 @@ namespace Backend.MappingProfiles
             CreateMap<UserInformationUpdate, User>();
         }
     }
+
+    public class UserLoginDTO : Profile
+    {
+        public UserLoginDTO()
+        {
+            CreateMap<User, UserLoginDTO>();
+            CreateMap<User, User>();
+            CreateMap<UserLoginDTO, User>();
+        }
+    }
 }
