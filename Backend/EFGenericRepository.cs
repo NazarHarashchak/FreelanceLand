@@ -27,6 +27,11 @@ namespace FreelanceLand.Models
             return _dbSet.AsNoTracking().Where(predicate).ToList();
         }
 
+        public IEnumerable<TEntity> Get(Func<TEntity, bool> predicate, int take, int skip = 0)
+        {
+            return _dbSet.AsNoTracking().Where(predicate).Skip(skip).Take(take).ToList();
+        }
+
         public TEntity FindById(int id)
         {
             return _dbSet.Find(id);
