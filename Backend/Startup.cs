@@ -29,6 +29,7 @@ namespace Backend
             services.AddCors();
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<ITasksService, TasksService>();
+            services.AddTransient<ITopUsersService, TopUsersService>();
             services.AddTransient<ITaskCategoriesService, TaskCategoriesService>();
             services.AddMvc();
             services.AddCors(options =>
