@@ -18,5 +18,7 @@ namespace Backend.DTOs
         public string DateAdded { get; set; }
 
         public string Deadline { get; set; }
+
+        public int TaskStatus { get; set; }
     }
 }
