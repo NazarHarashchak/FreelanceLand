@@ -31,6 +31,7 @@ namespace Backend
             services.AddTransient<ITasksService, TasksService>();
             services.AddTransient<ITopUsersService, TopUsersService>();
             services.AddTransient<ITaskCategoriesService, TaskCategoriesService>();
+            services.AddTransient<ITaskInfoService, TaskInfoService>();
             services.AddMvc();
             services.AddCors(options =>
             {
@@ -39,7 +40,8 @@ namespace Backend
                     {
                         builder.WithOrigins("http://localhost:3000",
                             "https://localhost:44331").AllowAnyHeader()
-                            .AllowAnyMethod(); 
+                            .AllowAnyMethod();
+
                     });
             });
 
