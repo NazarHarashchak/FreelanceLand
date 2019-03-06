@@ -17,7 +17,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        public ActionResult RegisterUser([FromBody] UserLoginDTO user)
+        public ActionResult<UserRegistrationDTO> RegisterUser([FromBody] UserRegistrationDTO user)
         {
             if (string.IsNullOrEmpty(user.Login) || string.IsNullOrEmpty(user.Password))
             {
@@ -29,8 +29,8 @@ namespace Backend.Controllers
                 return BadRequest("User with the same login already exists!");
             }
 
-            _userService.CreateUser(user.Login, user.Password);
-            return Ok();
+            var dto = _userService.CreateUser(user.Email, user.Login, user.Password);
+            return dto;
         }
     }
 }
