@@ -40,7 +40,6 @@ namespace Backend.MappingProfiles
         public UserRegistrationDTO()
         {
             CreateMap<User, UserRegistrationDTO>();
-            CreateMap<User, User>();
             CreateMap<UserRegistrationDTO, User>();
         }
     }
