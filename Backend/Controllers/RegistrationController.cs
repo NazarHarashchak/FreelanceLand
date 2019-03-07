@@ -17,20 +17,22 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        public ActionResult RegisterUser(string username, string password)
+        public ActionResult<UserRegistrationDTO> RegisterUser([FromBody] UserRegistrationDTO user)
         {
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(user.Login) || string.IsNullOrEmpty(user.Password))
+
             {
                 return BadRequest("Fields cann't be empty!");
             }
 
-            if (_userService.GetUserByLogin(username) != null)
+            if (_userService.GetUserByLogin(user.Login) != null)
+
             {
                 return BadRequest("User with the same login already exists!");
             }
 
-            _userService.CreateUser(username, password);
-            return Ok();
+            var dto = _userService.CreateUser(user.Email, user.Login, user.Password);
+            return dto;
         }
     }
 }
