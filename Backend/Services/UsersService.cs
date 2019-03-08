@@ -2,8 +2,8 @@
 using Backend.DTOs;
 using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
-using System;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -64,8 +64,10 @@ namespace Backend.Services
                 user.Password = password;
                 userRepo.Create(user);
                 var dto = _mapper.Map<User, UserRegistrationDTO>(user);
+
+                return dto;
             }
-              return null;
+            return null;
         }
         public UserInformation GetUserInformation(int id)
         {
