@@ -3,11 +3,14 @@ using Backend.Interfaces.ServiceInterfaces;
 using Backend.MappingProfiles;
 using Backend.Services;
 using FreelanceLand.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Backend
 {
@@ -31,13 +34,38 @@ namespace Backend
             services.AddTransient<ITasksService, TasksService>();
             services.AddTransient<ITaskCategoriesService, TaskCategoriesService>();
             services.AddMvc();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.RequireHttpsMetadata = false;
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            // укзывает, будет ли валидироваться издатель при валидации токена
+                            ValidateIssuer = true,
+                            // строка, представляющая издателя
+                            ValidIssuer = AuthOptions.ISSUER,
+
+                            // будет ли валидироваться потребитель токена
+                            ValidateAudience = true,
+                            // установка потребителя токена
+                            ValidAudience = AuthOptions.AUDIENCE,
+                            // будет ли валидироваться время существования
+                            ValidateLifetime = true,
+
+                            // установка ключа безопасности
+                            IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+                            // валидация ключа безопасности
+                            ValidateIssuerSigningKey = true,
+                        };
+                    });
+
             services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins,
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:3000",
-                            "https://localhost:44331").AllowAnyHeader()
+                        builder.AllowAnyOrigin().AllowAnyHeader()
                             .AllowAnyMethod();
 
                     });
@@ -59,9 +87,12 @@ namespace Backend
             {
                 app.UseHsts();
             }
+            
             app.UseCors(MyAllowSpecificOrigins);
             app.UseCors(builder => builder.AllowAnyOrigin());
             app.UseHttpsRedirection();
+            app.UseAuthentication();
+
             app.UseMvc();
         }
 

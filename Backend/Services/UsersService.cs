@@ -62,7 +62,7 @@ namespace Backend.Services
                 dto.Email = " ";
                 dto.Login = login;
                 dto.Password = password;
-                dto.UserRoleId = 1;
+                dto.UserRoleId = 7;
                 var user = _mapper.Map<UserDTO, User>(dto);
                 userRepo.Create(user);
             }

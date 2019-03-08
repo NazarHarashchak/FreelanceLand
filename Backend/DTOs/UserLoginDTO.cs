@@ -10,4 +10,11 @@ namespace Backend.DTOs
         public string Login { get; set; }
         public string Password { get; set; }
     }
+    public class UserRegisterDTO
+    {
+        public string Id { get; set; }
+        public string Login { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
 }
