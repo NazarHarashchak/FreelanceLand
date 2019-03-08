@@ -40,7 +40,6 @@ namespace Backend.MappingProfiles
         public UserLoginDTO()
         {
             CreateMap<User, UserLoginDTO>();
-            CreateMap<User, User>();
             CreateMap<UserLoginDTO, User>();
         }
     }
@@ -51,7 +50,6 @@ namespace Backend.MappingProfiles
         {
             CreateMap<User, UserRegistrationDTO>();
             CreateMap<UserRegistrationDTO, User>();
-            CreateMap<User, User>();
         }
     }
 }

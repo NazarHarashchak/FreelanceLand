@@ -50,22 +50,22 @@ namespace Backend.Services
             return null;
         }
 
-        public void CreateUser(string login, string password)
+        public UserRegistrationDTO CreateUser(string email, string login, string password)
         {
             if (GetUserByLogin(login) == null)
             {
-                UserDTO dto = new UserDTO();
-                dto.Name = " ";
-                dto.Sur_Name = " ";
-                dto.Birth_Date = new DateTime();
-                dto.Phone_Number = null;
-                dto.Email = " ";
-                dto.Login = login;
-                dto.Password = password;
-                dto.UserRoleId = 7;
-                var user = _mapper.Map<UserDTO, User>(dto);
+                User user = new User();
+                user.Name = "";
+                user.Sur_Name = "";
+                user.Birth_Date = new DateTime();
+                user.Phone_Number = "+380-*";
+                user.Email = email;
+                user.Login = login;
+                user.Password = password;
                 userRepo.Create(user);
+                var dto = _mapper.Map<User, UserRegistrationDTO>(user);
             }
+              return null;
         }
         public UserInformation GetUserInformation(int id)
         {
