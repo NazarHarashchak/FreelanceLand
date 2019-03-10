@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using Backend.Services;
+using Backend.Interfaces.ServiceInterfaces;
 
 namespace Backend.Controllers
 {
@@ -18,39 +20,25 @@ namespace Backend.Controllers
     {
         EFGenericRepository<User> userRepo = new EFGenericRepository<User>(new ApplicationContext());
 
+        private IUserTokensService _userTokensService;
+
+        public AccountController(IUserTokensService userTokensService)
+        {
+            _userTokensService = userTokensService;
+        }
+
         [HttpPost("token")]
         public async System.Threading.Tasks.Task Token([FromBody] UserLoginDTO user)
         {
             var username = user.Login;
             var password = user.Password;
 
-            var identity = GetIdentity(username, password);
-            
-            if (identity == null)
-            {
-                BadRequest("User doesn`t exist!");
-                return;
-            }
+            UserLoginDTO _user = user;
 
-            var now = DateTime.UtcNow;
+            int id = userRepo.Get(u => u.Login == user.Login).FirstOrDefault().Id;
             
-            var jwt = new JwtSecurityToken(
-                    issuer: AuthOptions.ISSUER,
-                    audience: AuthOptions.AUDIENCE,
-                    notBefore: now,
-                    claims: identity.Claims,
-                    expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
-                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+            await Response.WriteAsync(_userTokensService.CreateToken(_user, id));
 
-            var response = new
-            {
-                access_token = encodedJwt,
-                username = identity.Name
-            };
-            
-            Response.ContentType = "application/json";
-            await Response.WriteAsync(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented }));
         }
 
         private ClaimsIdentity GetIdentity(string username, string password)
