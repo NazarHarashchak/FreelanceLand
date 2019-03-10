@@ -25,6 +25,7 @@ namespace Backend.Controllers
             _usersService = usersService;
         }
         [HttpGet]
+        [Authorize(Roles = "User")]
         public ActionResult<User> Get()
         {
             var dtos = _usersService.GetAllEntities();

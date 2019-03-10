@@ -1,4 +1,5 @@
-﻿using FreelanceLand.Models;
+﻿using Backend.DTOs;
+using FreelanceLand.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -11,28 +12,28 @@ using System.Security.Claims;
 
 namespace Backend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
     {
         EFGenericRepository<User> userRepo = new EFGenericRepository<User>(new ApplicationContext());
 
         [HttpPost("token")]
-        public async System.Threading.Tasks.Task Token()
+        public async System.Threading.Tasks.Task Token([FromBody] UserLoginDTO user)
         {
-            var username = Request.Form["username"];
-            var password = Request.Form["password"];
+            var username = user.Login;
+            var password = user.Password;
 
             var identity = GetIdentity(username, password);
+            
             if (identity == null)
             {
-                Response.StatusCode = 400;
-                await Response.WriteAsync("Invalid username or password.");
+                BadRequest("User doesn`t exist!");
                 return;
             }
 
             var now = DateTime.UtcNow;
-            // создаем JWT-токен
+            
             var jwt = new JwtSecurityToken(
                     issuer: AuthOptions.ISSUER,
                     audience: AuthOptions.AUDIENCE,
@@ -47,8 +48,7 @@ namespace Backend.Controllers
                 access_token = encodedJwt,
                 username = identity.Name
             };
-
-            // сериализация ответа
+            
             Response.ContentType = "application/json";
             await Response.WriteAsync(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented }));
         }
@@ -56,6 +56,7 @@ namespace Backend.Controllers
         private ClaimsIdentity GetIdentity(string username, string password)
         {
             User person = userRepo.Get(u => u.Login == username).FirstOrDefault();
+            
             string role = "User";
             if (person != null)
             {
