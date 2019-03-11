@@ -25,7 +25,7 @@ namespace Backend.Services
             _mapper = mapper;
         }
 
-        public string CreateToken(UserLoginDTO user, int id)
+        public string CreateToken(UserAccountDTO user)
         {
             var username = user.Login;
             var password = user.Password;
@@ -51,9 +51,11 @@ namespace Backend.Services
             var response = new
             {
                 access_token = encodedJwt,
-                username = identity.Name,
-                id = id
-            };
+                login = identity.Name,
+                id = user.Id,
+                email = user.Email
+
+        };
 
             string token = JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented });
             return token;

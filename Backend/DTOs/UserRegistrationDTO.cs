@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Backend.DTOs
 {
-    public class UserRegistrationDTO
+    public class UserAccountDTO
     {
         public int Id { get; set; }
 

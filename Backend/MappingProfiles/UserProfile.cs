@@ -26,21 +26,12 @@ namespace Backend.MappingProfiles
         }
     }
 
-    public class UserLoginDTO : Profile
+    public class UserAccountDTO : Profile
     {
-        public UserLoginDTO()
+        public UserAccountDTO()
         {
-            CreateMap<User, UserLoginDTO>();
-            CreateMap<UserLoginDTO, User>();
-        }
-    }
-
-    public class UserRegistrationDTO : Profile
-    {
-        public UserRegistrationDTO()
-        {
-            CreateMap<User, UserRegistrationDTO>();
-            CreateMap<UserRegistrationDTO, User>();
+            CreateMap<User, UserAccountDTO>();
+            CreateMap<UserAccountDTO, User>();
         }
     }
 }

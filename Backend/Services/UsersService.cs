@@ -26,18 +26,18 @@ namespace Backend.Services
             return dtos;
         }
 
-        public UserLoginDTO GetUserByLogin(string login)
+        public UserAccountDTO GetUserByLogin(string login)
         {
             var user = userRepo.Get(u => u.Login == login).FirstOrDefault();
 
             if (user == null)
                 return null;
 
-            var dto = _mapper.Map<User, UserLoginDTO >(user);
+            var dto = _mapper.Map<User, UserAccountDTO >(user);
             return dto;
         }
 
-        public UserLoginDTO Authenticate(string login, string password)
+        public UserAccountDTO Authenticate(string login, string password)
         {
             var dto = GetUserByLogin(login);
 
@@ -50,7 +50,7 @@ namespace Backend.Services
             return null;
         }
 
-        public UserRegistrationDTO CreateUser(string email, string login, string password)
+        public UserAccountDTO CreateUser(string email, string login, string password)
         {
             if (GetUserByLogin(login) == null)
             {
@@ -63,7 +63,7 @@ namespace Backend.Services
                 user.Login = login;
                 user.Password = password;
                 userRepo.Create(user);
-                var dto = _mapper.Map<User, UserRegistrationDTO>(user);
+                var dto = _mapper.Map<User, UserAccountDTO>(user);
 
                 return dto;
             }
