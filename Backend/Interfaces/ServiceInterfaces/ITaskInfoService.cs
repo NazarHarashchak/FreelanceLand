@@ -7,6 +7,5 @@ namespace Backend.Interfaces.ServiceInterfaces
     {
         TaskDescription GetTaskDescription(int id);
         Customer GetTaskCustomer(int taskId);
-        IEnumerable<CommentDTO> GetComments(int taskId);
     }
 }
