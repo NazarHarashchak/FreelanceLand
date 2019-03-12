@@ -44,7 +44,7 @@ namespace Backend.Services
             if (dto == null)
                 return null;
 
-            if (dto.Password == password)
+            if (BCrypt.Net.BCrypt.Verify(password, dto.Password))
                 return dto;
 
             return null;
@@ -54,6 +54,7 @@ namespace Backend.Services
         {
             if (GetUserByLogin(login) == null)
             {
+                string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
                 User user = new User();
                 user.Name = "";
                 user.Sur_Name = "";
@@ -61,7 +62,7 @@ namespace Backend.Services
                 user.Phone_Number = "+380-*";
                 user.Email = email;
                 user.Login = login;
-                user.Password = password;
+                user.Password = passwordHash;
                 userRepo.Create(user);
                 var dto = _mapper.Map<User, UserAccountDTO>(user);
 
