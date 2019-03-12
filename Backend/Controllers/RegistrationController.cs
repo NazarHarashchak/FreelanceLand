@@ -33,6 +33,7 @@ namespace Backend.Controllers
 
             var dto = _userService.CreateUser(user.Email, user.Login, user.Password);
             return dto;
+
         }
     }
 }

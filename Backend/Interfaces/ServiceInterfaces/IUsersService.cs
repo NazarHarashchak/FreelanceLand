@@ -12,7 +12,6 @@ namespace Backend.Interfaces.ServiceInterfaces
         IEnumerable<UserDTO> GetAllEntities();
         UserLoginDTO GetUserByLogin(string login);
         UserLoginDTO Authenticate(string login, string password);
-
         UserRegistrationDTO CreateUser(string email, string login, string password);
         UserInformation GetUserInformation(int id);
         User UpdateUser(int id, [FromBody] UserInformation value);
