@@ -26,10 +26,10 @@ namespace Backend.Controllers
         }
 
         [HttpPost("register")]
-        public async System.Threading.Tasks.Task Register([FromBody] UserAccountDTO user)
+        public UserAccountDTO Register([FromBody] UserAccountDTO user)
         {
             var dto = _userService.CreateUser(user.Email, user.Login, user.Password);
-            await Response.WriteAsync(_userTokensService.CreateToken(dto));
+            return dto;
         }
     }
 }
