@@ -2,6 +2,7 @@
 using Backend.DTOs;
 using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
+using System;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -26,12 +27,14 @@ namespace Backend.Services
             return dtos;
         }
 
+
         public UserAccountDTO GetUserByLogin(string login)
         {
             var user = userRepo.Get(u => u.Login == login).FirstOrDefault();
 
             if (user == null)
                 return null;
+
 
             var dto = _mapper.Map<User, UserAccountDTO >(user);
             return dto;
@@ -43,6 +46,7 @@ namespace Backend.Services
 
             if (dto == null)
                 return null;
+
 
             if (BCrypt.Net.BCrypt.Verify(password, dto.Password))
                 return dto;

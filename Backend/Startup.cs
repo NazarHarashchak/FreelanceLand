@@ -34,7 +34,9 @@ namespace Backend
             services.AddTransient<IUserTokensService, UserTokensService>();
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<ITasksService, TasksService>();
+            services.AddTransient<ITopUsersService, TopUsersService>();
             services.AddTransient<ITaskCategoriesService, TaskCategoriesService>();
+            services.AddTransient<ITaskInfoService, TaskInfoService>();
             services.AddMvc();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

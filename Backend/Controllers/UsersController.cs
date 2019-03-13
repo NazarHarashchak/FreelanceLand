@@ -32,8 +32,7 @@ namespace Backend.Controllers
 
             return Ok(dtos);
         }
-
-
+        
         [HttpGet("{id}")]
         public ActionResult<User> Get(int id)
         {
