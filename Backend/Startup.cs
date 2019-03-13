@@ -3,12 +3,15 @@ using Backend.Interfaces.ServiceInterfaces;
 using Backend.MappingProfiles;
 using Backend.Services;
 using FreelanceLand.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Backend
 {
@@ -18,7 +21,6 @@ namespace Backend
         {
             Configuration = configuration;
         }
-        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
         public IConfiguration Configuration { get; }
 
@@ -28,6 +30,8 @@ namespace Backend
             services.AddDbContext<ApplicationContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddCors();
+
+            services.AddTransient<IUserTokensService, UserTokensService>();
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<ITasksService, TasksService>();
             services.AddTransient<ITopUsersService, TopUsersService>();
@@ -35,6 +39,22 @@ namespace Backend
             services.AddTransient<ITaskInfoService, TaskInfoService>();
             services.AddTransient<ApplicationContext, ApplicationContext>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.RequireHttpsMetadata = false;
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidIssuer = AuthOptions.ISSUER,
+                            ValidateAudience = true,
+                            ValidAudience = AuthOptions.AUDIENCE,
+                            ValidateLifetime = true,
+                            IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+                            ValidateIssuerSigningKey = true,
+                        };
+                    });
 
             InitializeAutomapper(services);
         }
@@ -50,9 +70,11 @@ namespace Backend
             {
                 app.UseHsts();
             }
-            app.UseCors(MyAllowSpecificOrigins);
+            
             app.UseCors(builder => builder.AllowAnyOrigin());
             app.UseHttpsRedirection();
+            app.UseAuthentication();
+
             app.UseMvc();
         }
 
