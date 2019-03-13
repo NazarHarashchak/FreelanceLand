@@ -54,17 +54,7 @@ namespace Backend.Services
             return null;
         }
 
-<<<<<<< HEAD
-        public UserRegistrationDTO CreateUser(string email, string login, string password)
-        {
-            if (GetUserByLogin(login) == null)
-            {
-                UserRegistrationDTO dto = new UserRegistrationDTO();
-                dto.Email = email;
-                dto.Login = login;
-                dto.Password = password;
-                var user = _mapper.Map<UserRegistrationDTO, User>(dto);
-=======
+
         public UserAccountDTO CreateUser(string email, string login, string password)
         {
             if (GetUserByLogin(login) == null)
@@ -78,7 +68,6 @@ namespace Backend.Services
                 user.Email = email;
                 user.Login = login;
                 user.Password = passwordHash;
->>>>>>> 4473fed5c46f4ebea5691932450d0c6acb236151
                 userRepo.Create(user);
                 var dto = _mapper.Map<User, UserAccountDTO>(user);
 

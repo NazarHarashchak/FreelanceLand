@@ -37,13 +37,10 @@ namespace Backend
             services.AddTransient<ITopUsersService, TopUsersService>();
             services.AddTransient<ITaskCategoriesService, TaskCategoriesService>();
             services.AddTransient<ITaskInfoService, TaskInfoService>();
-<<<<<<< HEAD
             services.AddTransient<IRolesUserService, RolesService>();
-=======
 
             services.AddTransient<IRolesUserService, RolesService>();
 
->>>>>>> 4473fed5c46f4ebea5691932450d0c6acb236151
             services.AddMvc();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
