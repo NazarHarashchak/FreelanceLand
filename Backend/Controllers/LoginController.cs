@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Backend.Interfaces.ServiceInterfaces;
 using Backend.DTOs;
+using FreelanceLand.Models;
 
 namespace Backend.Controllers
 {

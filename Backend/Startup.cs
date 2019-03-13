@@ -6,6 +6,7 @@ using FreelanceLand.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,28 +25,16 @@ namespace Backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<ApplicationContext>();
+            services.AddDbContext<ApplicationContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddCors();
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<ITasksService, TasksService>();
             services.AddTransient<ITopUsersService, TopUsersService>();
             services.AddTransient<ITaskCategoriesService, TaskCategoriesService>();
             services.AddTransient<ITaskInfoService, TaskInfoService>();
-            services.AddMvc();
-            services.AddCors(options =>
-            {
-                options.AddPolicy(MyAllowSpecificOrigins,
-                    builder =>
-                    {
-                        builder.WithOrigins("http://localhost:3000",
-                            "https://localhost:44331").AllowAnyHeader()
-                            .AllowAnyMethod();
-
-                    });
-            });
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_0);
+            services.AddTransient<ApplicationContext, ApplicationContext>();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             InitializeAutomapper(services);
         }

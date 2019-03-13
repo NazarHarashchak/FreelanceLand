@@ -10,11 +10,12 @@ namespace Backend.Services
     public class TasksService : ITasksService
     {
         private readonly IMapper mapper;
-        EFGenericRepository<Task> taskRepo = new EFGenericRepository<Task>(new ApplicationContext());
+        EFGenericRepository<Task> taskRepo;
 
-        public TasksService(IMapper mapper)
+        public TasksService(IMapper mapper, ApplicationContext context)
         {
             this.mapper = mapper;
+            taskRepo = new EFGenericRepository<Task>(context);
         }
 
         public IEnumerable<TaskDTO> GetToDoEntities()

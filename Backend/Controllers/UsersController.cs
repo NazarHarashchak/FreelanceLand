@@ -15,8 +15,6 @@ namespace Backend.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        EFGenericRepository<User> userRepo = new EFGenericRepository<User>(new ApplicationContext());
-
         private IUsersService _usersService;
 
         public UsersController(IUsersService usersService)
@@ -30,7 +28,7 @@ namespace Backend.Controllers
 
             return Ok(dtos);
         }
-        
+
         [HttpGet("{id}")]
         public ActionResult<User> Get(int id)
         {
@@ -38,7 +36,7 @@ namespace Backend.Controllers
 
             return Ok(dtos);
         }
-        
+
 
 
         [HttpPut("{id}")]
@@ -47,6 +45,6 @@ namespace Backend.Controllers
             var dtos = _usersService.UpdateUser(id, value);
             return dtos;
         }
-       
+
     }
 }
