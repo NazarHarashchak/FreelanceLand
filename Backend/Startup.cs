@@ -30,7 +30,7 @@ namespace Backend
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationContext>();
             services.AddCors();
-
+            services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IUserTokensService, UserTokensService>();
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<ITasksService, TasksService>();
