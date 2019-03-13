@@ -4,6 +4,7 @@ using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
 using System;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -26,40 +27,49 @@ namespace Backend.Services
             return dtos;
         }
 
-        public UserLoginDTO GetUserByLogin(string login)
+
+        public UserAccountDTO GetUserByLogin(string login)
         {
             var user = userRepo.Get(u => u.Login == login).FirstOrDefault();
 
             if (user == null)
                 return null;
 
-            var dto = _mapper.Map<User, UserLoginDTO >(user);
+
+            var dto = _mapper.Map<User, UserAccountDTO >(user);
             return dto;
         }
 
-        public UserLoginDTO Authenticate(string login, string password)
+        public UserAccountDTO Authenticate(string login, string password)
         {
             var dto = GetUserByLogin(login);
 
             if (dto == null)
                 return null;
 
-            if (dto.Password == password)
+
+            if (BCrypt.Net.BCrypt.Verify(password, dto.Password))
                 return dto;
 
             return null;
         }
 
-        public UserRegistrationDTO CreateUser(string email, string login, string password)
+        public UserAccountDTO CreateUser(string email, string login, string password)
         {
             if (GetUserByLogin(login) == null)
             {
-                UserRegistrationDTO dto = new UserRegistrationDTO();
-                dto.Email = email;
-                dto.Login = login;
-                dto.Password = password;
-                var user = _mapper.Map<UserRegistrationDTO, User>(dto);
+                string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
+                User user = new User();
+                user.Name = "";
+                user.Sur_Name = "";
+                user.Birth_Date = new DateTime();
+                user.Phone_Number = "+380-*";
+                user.Email = email;
+                user.Login = login;
+                user.Password = passwordHash;
                 userRepo.Create(user);
+                var dto = _mapper.Map<User, UserAccountDTO>(user);
+
                 return dto;
             }
             return null;
