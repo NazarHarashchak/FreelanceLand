@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 
 namespace Backend.DTOs
 {
-    public class UserLoginDTO
+    public class UserRolesDTO
     {
-        public string Login { get; set; }
-        public string Password { get; set; }
+        public int Id { get; set; }
+
+        public string Type { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
 using System;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,7 +14,7 @@ namespace Backend.Services
     {
         private readonly IMapper _mapper;
         EFGenericRepository<User> userRepo = new EFGenericRepository<User>(new ApplicationContext());
-
+        EFGenericRepository<UserRoles> rolesRepo=new EFGenericRepository<UserRoles>(new ApplicationContext());
         public UsersService(IMapper mapper)
         {
             _mapper = mapper;
@@ -26,46 +27,52 @@ namespace Backend.Services
             return dtos;
         }
 
-        public UserLoginDTO GetUserByLogin(string login)
+
+        public UserAccountDTO GetUserByLogin(string login)
         {
             var user = userRepo.Get(u => u.Login == login).FirstOrDefault();
 
             if (user == null)
                 return null;
 
-            var dto = _mapper.Map<User, UserLoginDTO >(user);
+
+            var dto = _mapper.Map<User, UserAccountDTO >(user);
             return dto;
         }
 
-        public UserLoginDTO Authenticate(string login, string password)
+        public UserAccountDTO Authenticate(string login, string password)
         {
             var dto = GetUserByLogin(login);
 
             if (dto == null)
                 return null;
 
-            if (dto.Password == password)
+
+            if (BCrypt.Net.BCrypt.Verify(password, dto.Password))
                 return dto;
 
             return null;
         }
 
-        public void CreateUser(string login, string password)
+        public UserAccountDTO CreateUser(string email, string login, string password)
         {
             if (GetUserByLogin(login) == null)
             {
-                UserDTO dto = new UserDTO();
-                dto.Name = " ";
-                dto.Sur_Name = " ";
-                dto.Birth_Date = new DateTime();
-                dto.Phone_Number = null;
-                dto.Email = " ";
-                dto.Login = login;
-                dto.Password = password;
-                dto.UserRoleId = 1;
-                var user = _mapper.Map<UserDTO, User>(dto);
+                string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
+                User user = new User();
+                user.Name = "";
+                user.Sur_Name = "";
+                user.Birth_Date = new DateTime();
+                user.Phone_Number = "+380-*";
+                user.Email = email;
+                user.Login = login;
+                user.Password = passwordHash;
                 userRepo.Create(user);
+                var dto = _mapper.Map<User, UserAccountDTO>(user);
+
+                return dto;
             }
+            return null;
         }
         public UserInformation GetUserInformation(int id)
         {

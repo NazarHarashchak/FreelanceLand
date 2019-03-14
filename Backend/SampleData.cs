@@ -13,7 +13,7 @@ namespace Backend
         {
             UserRoles UserRole1 = new UserRoles
             {
-                Type = "User"
+                Type = "Customer"
             };
             UserRoles UserRole2 = new UserRoles
             {
@@ -24,6 +24,10 @@ namespace Backend
                 Type = "Moderator"
             };
 
+            UserRoles UserRole4 = new UserRoles
+            {
+                Type = "Freelancer"
+            };
             User user1 = new User
             {
                 Name = "Anton",
@@ -32,7 +36,7 @@ namespace Backend
                 Phone_Number = "+38(***)**-**-***",
                 Email = "123@gmail.com",
                 Login = "4UprRp",
-                Password = "6cAM7F",
+                Password = BCrypt.Net.BCrypt.HashPassword("6cAM7F"),
                 UserRole = UserRole2
             };
             User user2 = new User
@@ -43,7 +47,7 @@ namespace Backend
                 Phone_Number = "+38(***)**-**-***",
                 Email = "1234@gmail.com",
                 Login = "Py2fGc",
-                Password = "NweL7R",
+                Password = BCrypt.Net.BCrypt.HashPassword("NweL7R"),
                 UserRole = UserRole3
             };
             User user3 = new User
@@ -54,7 +58,7 @@ namespace Backend
                 Phone_Number = "+38(***)**-**-***",
                 Email = "12345@gmail.com",
                 Login = "4bsCNG",
-                Password = "5mGU9u",
+                Password = BCrypt.Net.BCrypt.HashPassword("5mGU9u"),
                 UserRole = UserRole3
             };
             User user4 = new User
@@ -65,7 +69,7 @@ namespace Backend
                 Phone_Number = "+38(***)**-**-***",
                 Email = "123456@gmail.com",
                 Login = "W8P3vN",
-                Password = "G5mhTF",
+                Password = BCrypt.Net.BCrypt.HashPassword("G5mhTF"),
                 UserRole = UserRole1
             };
             User user5 = new User
@@ -76,7 +80,7 @@ namespace Backend
                 Phone_Number = "+38(***)**-**-***",
                 Email = "1234567@gmail.com",
                 Login = "3H3jaX",
-                Password = "Z8GtN2",
+                Password = BCrypt.Net.BCrypt.HashPassword("Z8GtN2"),
                 UserRole = UserRole1
             };
             User user6 = new User
@@ -87,7 +91,7 @@ namespace Backend
                 Phone_Number = "+38(***)**-**-***",
                 Email = "12345678@gmail.com",
                 Login = "qU5gFf",
-                Password = "Le7jCr",
+                Password = BCrypt.Net.BCrypt.HashPassword("Le7jCr"),
                 UserRole = UserRole1
             };
             User user7 = new User
@@ -98,7 +102,7 @@ namespace Backend
                 Phone_Number = "+38(***)**-**-***",
                 Email = "123456789@gmail.com",
                 Login = "xv5TzK",
-                Password = "Na3mgu",
+                Password = BCrypt.Net.BCrypt.HashPassword("Na3mgu"),
                 UserRole = UserRole1
             };
             User user8 = new User
@@ -109,7 +113,7 @@ namespace Backend
                 Phone_Number = "+38(***)**-**-***",
                 Email = "1234567890@gmail.com",
                 Login = "BS9GaS",
-                Password = "U8V6uX",
+                Password = BCrypt.Net.BCrypt.HashPassword("U8V6uX"),
                 UserRole = UserRole1
             };
             User user9 = new User
@@ -120,7 +124,7 @@ namespace Backend
                 Phone_Number = "+38(***)**-**-***",
                 Email = "12345678901@gmail.com",
                 Login = "qRg22k",
-                Password = "uyHK3g",
+                Password = BCrypt.Net.BCrypt.HashPassword("uyHK3g"),
                 UserRole = UserRole1
             };
             User user10 = new User
@@ -131,7 +135,7 @@ namespace Backend
                 Phone_Number = "+38(***)**-**-***",
                 Email = "123456789012@gmail.com",
                 Login = "v4xQ2c",
-                Password = "Ez96k6",
+                Password = BCrypt.Net.BCrypt.HashPassword("Ez96k6"),
                 UserRole = UserRole1
             };
 
@@ -416,7 +420,8 @@ namespace Backend
                 context.UserRoles.AddRange(
                         UserRole1,
                         UserRole2,
-                        UserRole3
+                        UserRole3,
+                        UserRole4
                     );
                 context.SaveChanges();
             }

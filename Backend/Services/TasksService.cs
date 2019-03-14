@@ -19,8 +19,7 @@ namespace Backend.Services
 
         public IEnumerable<TaskDTO> GetToDoEntities()
         {
-            var entities = taskRepo.GetWithInclude(o => o.TaskStatusId == (int)StatusEnum.ToDo, 
-                p => p.TaskCategory, k=> k.Comments);
+            var entities = taskRepo.GetWithInclude(o => o.TaskStatusId == (int)StatusEnum.ToDo, p => p.TaskCategory, k=> k.Comments);
             var dtos = mapper.Map<IEnumerable<Task>, IEnumerable<TaskDTO>>(entities);
             return dtos;
         }

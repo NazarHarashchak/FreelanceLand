@@ -10,9 +10,9 @@ namespace Backend.Interfaces.ServiceInterfaces
     public interface IUsersService
     {
         IEnumerable<UserDTO> GetAllEntities();
-        UserLoginDTO GetUserByLogin(string login);
-        UserLoginDTO Authenticate(string login, string password);
-        void CreateUser(string login, string password);
+        UserAccountDTO GetUserByLogin(string login);
+        UserAccountDTO Authenticate(string login, string password);
+        UserAccountDTO CreateUser(string email, string login, string password);
         UserInformation GetUserInformation(int id);
         User UpdateUser(int id, [FromBody] UserInformation value);
     }

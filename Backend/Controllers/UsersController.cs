@@ -8,6 +8,7 @@ using Backend.DTOs;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.Controllers
 {
@@ -24,12 +25,14 @@ namespace Backend.Controllers
             _usersService = usersService;
         }
         [HttpGet]
+        [Authorize(Roles = "User")]
         public ActionResult<User> Get()
         {
             var dtos = _usersService.GetAllEntities();
 
             return Ok(dtos);
         }
+
         
         [HttpGet("{id}")]
         public ActionResult<User> Get(int id)
@@ -38,6 +41,7 @@ namespace Backend.Controllers
 
             return Ok(dtos);
         }
+
         
 
 

@@ -26,13 +26,14 @@ namespace Backend.MappingProfiles
             CreateMap<User, CustomerDTO>();
         }
     }
-    public class UserInformationUpdate : Profile
+
+    public class UserAccountDTO : Profile
     {
-        public UserInformationUpdate()
+        public UserAccountDTO()
         {
-            CreateMap<User, UserInformationUpdate>();
-            CreateMap<User, User>();
-            CreateMap<UserInformationUpdate, User>();
+            CreateMap<User, UserAccountDTO>();
+            CreateMap<UserAccountDTO, User>();
         }
     }
+   
 }
