@@ -14,7 +14,7 @@ namespace Backend.Services
     {
         private readonly IMapper _mapper;
         EFGenericRepository<User> userRepo = new EFGenericRepository<User>(new ApplicationContext());
-
+        EFGenericRepository<UserRoles> rolesRepo=new EFGenericRepository<UserRoles>(new ApplicationContext());
         public UsersService(IMapper mapper)
         {
             _mapper = mapper;
@@ -53,7 +53,7 @@ namespace Backend.Services
 
             return null;
         }
-
+        
         public UserAccountDTO CreateUser(string email, string login, string password)
         {
             if (GetUserByLogin(login) == null)

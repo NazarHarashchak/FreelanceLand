@@ -18,7 +18,7 @@ namespace FreelanceLand.Models
         [InverseProperty("UserHistories")]
         public User TaskCustomer { get; set; }
 
-        public int? TaskId { get; set; }
+        public int TaskId { get; set; }
         public Task Task { get; set; }
     }
 }
