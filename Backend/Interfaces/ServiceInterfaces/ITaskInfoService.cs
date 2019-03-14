@@ -6,7 +6,6 @@ namespace Backend.Interfaces.ServiceInterfaces
     public interface ITaskInfoService
     {
         TaskDescription GetTaskDescription(int id);
-        Customer GetTaskCustomer(int taskId);
-        IEnumerable<CommentDTO> GetComments(int taskId);
+        CustomerDTO GetTaskCustomer(int taskId);
     }
 }

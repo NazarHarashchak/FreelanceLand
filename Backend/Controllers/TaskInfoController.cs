@@ -34,12 +34,5 @@ namespace Backend.Controllers
 
             return Ok(dtos);
         }
-
-        [HttpGet("{comments},{user},{id}")]
-        public ActionResult<IEnumerable<CommentDTO>> Get (int comments, int user, int id)
-        {
-            var dtos = tasksService.GetComments(id);
-            return Ok(dtos);
-        }
     }
 }
