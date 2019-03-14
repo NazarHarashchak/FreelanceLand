@@ -20,14 +20,14 @@ namespace Backend.Services
 
         public IEnumerable<CommentDTO> GetComments(int taskId)
         {
-            IEnumerable<Comment> MyComments = commentRepo.Get();
+            IEnumerable<Comment> myComments = commentRepo.Get();
             List<CommentDTO> result = new List<CommentDTO>();
-            foreach (var s in MyComments)
+            foreach (var s in myComments)
             {
                 if (s.TaskId == taskId)
                 {
                     var dtos = mapper.Map<Comment, CommentDTO>(s);
-                    dtos.UserName = mapper.Map<User, Customer>(userRepo.FindById(dtos.UserId)).Name;
+                    dtos.UserName = mapper.Map<User, CustomerDTO>(userRepo.FindById(dtos.UserId)).Name;
                     result.Add(dtos);
                 }
             }
@@ -36,13 +36,13 @@ namespace Backend.Services
 
         public CommentDTO AddComment(CommentDTO comment)
         {
-            int commentId = 0;
-            using (var db = new ApplicationContext())
-            {
-                var myComment = mapper.Map<CommentDTO, Comment>(comment);
+            comment.Date = DateTime.Now.ToString();
+            User user = userRepo.FindById(comment.UserId);
+            comment.UserName = user.Name;
 
-                db.Comments.Add(myComment);
-            }
+            var myComment = mapper.Map<CommentDTO, Comment>(comment);
+            commentRepo.Create(myComment);
+
             return comment;
         }
     }

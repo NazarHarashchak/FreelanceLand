@@ -25,7 +25,7 @@ namespace Backend.Services
             return dtos;
         }
 
-        public Customer GetTaskCustomer(int taskId)
+        public CustomerDTO GetTaskCustomer(int taskId)
         {
             int userId = 0;
             IEnumerable<TaskHistory> history = historyRepo.Get();
@@ -33,7 +33,7 @@ namespace Backend.Services
             {
                 if (s.TaskId == taskId) userId = (int)s.TaskCustomerId;
             }
-            var dtos = mapper.Map<User, Customer>(userRepo.FindById(userId));
+            var dtos = mapper.Map<User, CustomerDTO>(userRepo.FindById(userId));
             return dtos;
         }
     }

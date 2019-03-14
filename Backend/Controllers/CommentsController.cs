@@ -2,6 +2,7 @@
 using Backend.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Backend.Interfaces.ServiceInterfaces;
+using Microsoft.AspNetCore.Http;
 using FreelanceLand.Models;
 using System.Collections.Generic;
 
@@ -26,10 +27,10 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        public ActionResult Post([FromBody] CommentDTO comment)
+        public ActionResult<CommentDTO> Post([FromBody] CommentDTO comment)
         {
             var result = commentsService.AddComment(comment);
-            return Ok(result);
+            return Ok(comment);
         }
     }
 }
