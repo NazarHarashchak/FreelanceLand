@@ -2,6 +2,7 @@
 using Backend.Interfaces.ServiceInterfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using FreelanceLand.Models;
 
 namespace Backend.Controllers
 {
@@ -22,6 +23,14 @@ namespace Backend.Controllers
         {
             var dtos = tasksService.GetToDoEntities();
 
+            return Ok(dtos);
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<IEnumerable<TaskDTO>> GetHistoryTasks(int id)
+        {
+            var dtos = tasksService.GetHistoryTaskByUser(id);
+            
             return Ok(dtos);
         }
     }

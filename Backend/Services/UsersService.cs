@@ -53,7 +53,7 @@ namespace Backend.Services
 
             return null;
         }
-
+        
         public UserAccountDTO CreateUser(string email, string login, string password)
         {
             if (GetUserByLogin(login) == null)
