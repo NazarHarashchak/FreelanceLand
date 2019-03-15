@@ -59,6 +59,7 @@ namespace Backend.Services
 
         public UserAccountDTO CreateUser(string email, string login, string password)
         {
+            const string MessagesRegistr = ("<h2>Dear user</h2><h3>Your registration request was successful approve</h3>");
             if (GetUserByLogin(login) == null)
             {
                 string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
@@ -72,7 +73,7 @@ namespace Backend.Services
                 user.Password = passwordHash;
                 userRepo.Create(user);
 
-                _emailService.SendEmailAsync(user.Email, "Registration", "Registration successful");
+                _emailService.SendEmailAsync(user.Email, "Administration", MessagesRegistr);
 
                 var dto = _mapper.Map<User, UserAccountDTO>(user);
 

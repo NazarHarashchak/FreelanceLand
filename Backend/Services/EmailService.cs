@@ -11,7 +11,7 @@ namespace Backend.Services
         {
             var emailMessages = new MimeMessage();
 
-            emailMessages.From.Add(new MailboxAddress("Administration", "stas.glazkov95@gmail.com"));
+            emailMessages.From.Add(new MailboxAddress("Freelance Registration", "freelancelandservice@gmail.com"));
             emailMessages.To.Add(new MailboxAddress("", email));
             emailMessages.Subject = subject;
             emailMessages.Body = new TextPart(MimeKit.Text.TextFormat.Html)
@@ -22,7 +22,8 @@ namespace Backend.Services
             using (var client = new SmtpClient())
             {
                 client.Connect("smtp.gmail.com", 587, false);
-                client.Authenticate("stas.glazkov95@gmail.com", "superman1996");
+                client.Authenticate("freelancelandservice@gmail.com", "qwerty123qwerty");
+                client.AuthenticationMechanisms.Remove("XOAUTH2");
                 client.Send(emailMessages);
 
                 client.Disconnect(true);
