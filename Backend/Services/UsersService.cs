@@ -56,7 +56,7 @@ namespace Backend.Services
 
             return null;
         }
-
+        
         public UserAccountDTO CreateUser(string email, string login, string password)
         {
             const string MessagesRegistr = ("<h2>Dear user</h2><h3>Your registration request was successful approve</h3>");
