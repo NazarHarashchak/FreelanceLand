@@ -22,8 +22,8 @@ namespace Backend.Controllers
         {
             _usersService = usersService;
         }
+
         [HttpGet]
-        [Authorize(Roles = "User")]
         public ActionResult<User> Get()
         {
             var dtos = _usersService.GetAllEntities();
@@ -38,8 +38,6 @@ namespace Backend.Controllers
 
             return Ok(dtos);
         }
-
-
 
         [HttpPut("{id}")]
         public User PutUser(int id, [FromBody] UserInformation value)

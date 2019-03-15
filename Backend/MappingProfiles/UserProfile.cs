@@ -23,7 +23,7 @@ namespace Backend.MappingProfiles
             CreateMap<User, UserInformation>();
             CreateMap<User, User>();
             CreateMap<UserInformation, User>();
-            CreateMap<User, Customer>();
+            CreateMap<User, CustomerDTO>();
         }
     }
 
@@ -35,4 +35,5 @@ namespace Backend.MappingProfiles
             CreateMap<UserAccountDTO, User>();
         }
     }
+   
 }

@@ -37,6 +37,8 @@ namespace Backend
             services.AddTransient<ITopUsersService, TopUsersService>();
             services.AddTransient<ITaskCategoriesService, TaskCategoriesService>();
             services.AddTransient<ITaskInfoService, TaskInfoService>();
+            services.AddTransient<ICommentsService, CommentsService>();
+            services.AddTransient<IRolesUserService, RolesService>();
             services.AddTransient<ApplicationContext, ApplicationContext>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
