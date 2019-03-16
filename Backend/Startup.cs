@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -20,15 +21,14 @@ namespace Backend
         {
             Configuration = configuration;
         }
-        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<ApplicationContext>();
+            services.AddDbContext<ApplicationContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddCors();
 
             services.AddTransient<IUserTokensService, UserTokensService>();
@@ -39,7 +39,8 @@ namespace Backend
             services.AddTransient<ITaskInfoService, TaskInfoService>();
             services.AddTransient<ICommentsService, CommentsService>();
             services.AddTransient<IRolesUserService, RolesService>();
-            services.AddMvc();
+            services.AddTransient<ApplicationContext, ApplicationContext>();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
@@ -57,19 +58,6 @@ namespace Backend
                         };
                     });
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy(MyAllowSpecificOrigins,
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin().AllowAnyHeader()
-                            .AllowAnyMethod();
-
-                    });
-            });
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_0);
-
             InitializeAutomapper(services);
         }
 
@@ -85,7 +73,6 @@ namespace Backend
                 app.UseHsts();
             }
             
-            app.UseCors(MyAllowSpecificOrigins);
             app.UseCors(builder => builder.AllowAnyOrigin());
             app.UseHttpsRedirection();
             app.UseAuthentication();

@@ -13,11 +13,16 @@ namespace Backend.Services
     public class UsersService : IUsersService
     {
         private readonly IMapper _mapper;
-        EFGenericRepository<User> userRepo = new EFGenericRepository<User>(new ApplicationContext());
-        EFGenericRepository<UserRoles> rolesRepo=new EFGenericRepository<UserRoles>(new ApplicationContext());
-        public UsersService(IMapper mapper)
+        private EFGenericRepository<User> userRepo;
+        private EFGenericRepository<UserRoles> rolesRepo;
+        private readonly ApplicationContext db;
+
+        public UsersService(IMapper mapper, ApplicationContext context)
         {
             _mapper = mapper;
+            db = context;
+            rolesRepo = new EFGenericRepository<UserRoles>(context);
+            userRepo  = new EFGenericRepository<User>(context);
         }
 
         public IEnumerable<UserDTO> GetAllEntities()
@@ -83,8 +88,6 @@ namespace Backend.Services
 
         public User UpdateUser(int id, [FromBody] UserInformation value)
         {
-            using (var db = new ApplicationContext())
-            {
                 var result = db.Users.SingleOrDefault(b => b.Id == id);
                 if (result != null)
                 {
@@ -99,9 +102,6 @@ namespace Backend.Services
                 }
 
                 return userRepo.FindById(id);
-
-            }
-
         }
     }
 }
