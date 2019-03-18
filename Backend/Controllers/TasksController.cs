@@ -1,9 +1,8 @@
 ﻿using Backend.DTOs;
 using Backend.Interfaces.ServiceInterfaces;
-using FreelanceLand.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using FreelanceLand.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.Controllers
 {
@@ -18,7 +17,8 @@ namespace Backend.Controllers
             this.tasksService = tasksService;
         }
 
-        // GET api/values
+
+        [Authorize(Roles = "Moderator")]
         [HttpGet]
         public ActionResult<IEnumerable<TaskDTO>> Get()
         {
@@ -33,6 +33,13 @@ namespace Backend.Controllers
             var dtos = tasksService.GetHistoryTaskByUser(id);
             
             return Ok(dtos);
+        }
+
+        [Authorize(Roles = "Moderator")]
+        [HttpGet("{id}")]
+        void DeleteTask(int id)
+        {
+            tasksService.DeleteTask(id);
         }
     }
 }

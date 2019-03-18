@@ -5,6 +5,7 @@ using Backend.Interfaces.ServiceInterfaces;
 using Microsoft.AspNetCore.Http;
 using FreelanceLand.Models;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.Controllers
 {
@@ -31,6 +32,13 @@ namespace Backend.Controllers
         {
             var result = commentsService.AddComment(comment);
             return Ok(comment);
+        }
+
+        [Authorize(Roles = "Moderator")]
+        [HttpGet("{id}")]
+        void DeleteComment(int id)
+        {
+            commentsService.DeleteComment(id);
         }
     }
 }

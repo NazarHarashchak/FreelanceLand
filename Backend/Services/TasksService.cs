@@ -44,5 +44,11 @@ namespace Backend.Services
             var dtos = mapper.Map<IEnumerable<Task>, IEnumerable<TaskDTO>>(entities);
             return dtos;
         }
+
+        public void DeleteTask(int id)
+        {
+            var task = taskRepo.FindById(id);
+            taskRepo.Remove(task);
+        }
     }
 }

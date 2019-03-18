@@ -13,7 +13,7 @@ namespace Backend.Services
         private EFGenericRepository<Comment> commentRepo;
         private EFGenericRepository<User> userRepo;
 
-        public CommentsService(IMapper mapper,ApplicationContext context)
+        public CommentsService(IMapper mapper, ApplicationContext context)
         {
             commentRepo = new EFGenericRepository<Comment>(context);
             userRepo = new EFGenericRepository<User>(context);
@@ -46,6 +46,12 @@ namespace Backend.Services
             commentRepo.Create(myComment);
 
             return comment;
+        }
+
+        public void DeleteComment(int id)
+        {
+            var comment = commentRepo.FindById(id);
+            commentRepo.Remove(comment);
         }
     }
 }
