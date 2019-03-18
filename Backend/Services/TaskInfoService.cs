@@ -3,6 +3,7 @@ using Backend.DTOs;
 using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Backend.Services
 {
@@ -11,29 +12,21 @@ namespace Backend.Services
         private readonly IMapper mapper;
         EFGenericRepository<Task> taskRepo = new EFGenericRepository<Task>(new ApplicationContext());
         EFGenericRepository<TaskHistory> historyRepo = new EFGenericRepository<TaskHistory>(new ApplicationContext());
-        EFGenericRepository<User> userRepo = new EFGenericRepository<User>(new ApplicationContext());
 
         public TaskInfoService(IMapper mapper)
         {
             this.mapper = mapper;
         }
 
-        public TaskDescription GetTaskDescription(int id)
+        public TaskPageDTO GetTaskDescription(int id)
         {
-            var entities = taskRepo.FindById(id);
-            var dtos = mapper.Map<Task, TaskDescription>(entities);
-            return dtos;
-        }
+            List<TaskHistory> history = historyRepo.GetWithInclude(task => task.TaskId == id,
+                                     customer => customer.TaskCustomer, 
+                                     taskDesc => taskDesc.Task, 
+                                     status => status.Task.TaskStatus).ToList();
 
-        public CustomerDTO GetTaskCustomer(int taskId)
-        {
-            int userId = 0;
-            IEnumerable<TaskHistory> history = historyRepo.Get();
-            foreach (TaskHistory s in history)
-            {
-                if (s.TaskId == taskId) userId = (int)s.TaskCustomerId;
-            }
-            var dtos = mapper.Map<User, CustomerDTO>(userRepo.FindById(userId));
+            var dtos = mapper.Map<TaskHistory, TaskPageDTO>(history[0]);
+
             return dtos;
         }
     }

@@ -22,6 +22,9 @@ namespace Backend.Services
         {
             IEnumerable<Comment> myComments = commentRepo.Get();
             List<CommentDTO> result = new List<CommentDTO>();
+
+            // myComments = commentRepo.GetWithInclude(t => t.TaskId == taskId);
+            //result = mapper.Map<Comment, CommentDTO>(myComments);
             foreach (var s in myComments)
             {
                 if (s.TaskId == taskId)

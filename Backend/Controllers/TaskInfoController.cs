@@ -21,17 +21,9 @@ namespace Backend.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<TaskDescription> Get(int id)
+        public ActionResult<TaskPageDTO> Get(int id)
         {
             var dtos = tasksService.GetTaskDescription(id);
-            return Ok(dtos);
-        }
-
-        [HttpGet("{number},{id}")]
-        public ActionResult<User> Get(int number, int id)
-        {
-            var dtos = tasksService.GetTaskCustomer(id);
-
             return Ok(dtos);
         }
     }

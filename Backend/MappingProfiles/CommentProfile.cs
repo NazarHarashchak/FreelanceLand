@@ -2,6 +2,7 @@
 using AutoMapper;
 using Backend.DTOs;
 using FreelanceLand.Models;
+using System.Collections.Generic;
 
 namespace Backend.MappingProfiles
 {
@@ -14,6 +15,8 @@ namespace Backend.MappingProfiles
                 .ForMember("Date", o => o.MapFrom(c => c.DateAndTime.ToString("d")));
             CreateMap<CommentDTO, Comment>()
                 .ForMember("DateAndTime", o => o.MapFrom(c => Convert.ToDateTime(c.Date)));
+           // CreateMap<IEnumerable<Comment>, List<CommentDTO>>()
+             //   .ForMember("Date", o => o.MapFrom(c => c.DateAndTime.ToString("d"))); 
         }
     }
 }
