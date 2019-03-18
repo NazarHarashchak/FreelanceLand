@@ -31,7 +31,7 @@ namespace Backend
             services.AddDbContext<ApplicationContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddCors();
-
+            services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IUserTokensService, UserTokensService>();
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<ITasksService, TasksService>();

@@ -4,7 +4,6 @@ using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
 using System;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,17 +11,20 @@ namespace Backend.Services
 {
     public class UsersService : IUsersService
     {
+        private readonly IEmailService _emailService;
+
         private readonly IMapper _mapper;
         private EFGenericRepository<User> userRepo;
         private EFGenericRepository<UserRoles> rolesRepo;
         private readonly ApplicationContext db;
 
-        public UsersService(IMapper mapper, ApplicationContext context)
+        public UsersService(IMapper mapper, ApplicationContext context, IEmailService emailService)
         {
             _mapper = mapper;
             db = context;
             rolesRepo = new EFGenericRepository<UserRoles>(context);
             userRepo  = new EFGenericRepository<User>(context);
+             _emailService = emailService;
         }
 
         public IEnumerable<UserDTO> GetAllEntities()
@@ -61,6 +63,7 @@ namespace Backend.Services
         
         public UserAccountDTO CreateUser(string email, string login, string password)
         {
+            const string MessagesRegistr = ("<h2>Dear user</h2><h3>Your registration request was successful approve</h3>");
             if (GetUserByLogin(login) == null)
             {
                 string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
@@ -73,6 +76,9 @@ namespace Backend.Services
                 user.Login = login;
                 user.Password = passwordHash;
                 userRepo.Create(user);
+
+                _emailService.SendEmailAsync(user.Email, "Administration", MessagesRegistr);
+
                 var dto = _mapper.Map<User, UserAccountDTO>(user);
 
                 return dto;
