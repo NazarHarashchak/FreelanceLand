@@ -18,13 +18,22 @@ namespace Backend.Services
         private EFGenericRepository<UserRoles> rolesRepo;
         private readonly ApplicationContext db;
 
+<<<<<<< HEAD
         public UsersService(IMapper mapper, IEmailService emailService, ApplicationContext context)
+=======
+        public UsersService(IMapper mapper, ApplicationContext context, IEmailService emailService)
+>>>>>>> 0bf6d7dca81b1c1af9b803f3a39d9778b23f79c7
         {
             _mapper = mapper;
             db = context;
             rolesRepo = new EFGenericRepository<UserRoles>(context);
+<<<<<<< HEAD
             userRepo = new EFGenericRepository<User>(context);
             _emailService = emailService;
+=======
+            userRepo  = new EFGenericRepository<User>(context);
+             _emailService = emailService;
+>>>>>>> 0bf6d7dca81b1c1af9b803f3a39d9778b23f79c7
         }
 
         public IEnumerable<UserDTO> GetAllEntities()
@@ -94,8 +103,6 @@ namespace Backend.Services
 
         public User UpdateUser(int id, [FromBody] UserInformation value)
         {
-            using (var db = new ApplicationContext())
-            {
                 var result = db.Users.SingleOrDefault(b => b.Id == id);
                 if (result != null)
                 {
@@ -110,9 +117,6 @@ namespace Backend.Services
                 }
 
                 return userRepo.FindById(id);
-
-            }
-
         }
     }
 }
