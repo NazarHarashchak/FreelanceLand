@@ -14,12 +14,16 @@ namespace Backend.Services
         private readonly IEmailService _emailService;
 
         private readonly IMapper _mapper;
-        EFGenericRepository<User> userRepo = new EFGenericRepository<User>(new ApplicationContext());
-        EFGenericRepository<UserRoles> rolesRepo=new EFGenericRepository<UserRoles>(new ApplicationContext());
+        private EFGenericRepository<User> userRepo;
+        private EFGenericRepository<UserRoles> rolesRepo;
+        private readonly ApplicationContext db;
 
-        public UsersService(IMapper mapper, IEmailService emailService)
+        public UsersService(IMapper mapper, IEmailService emailService, ApplicationContext context)
         {
             _mapper = mapper;
+            db = context;
+            rolesRepo = new EFGenericRepository<UserRoles>(context);
+            userRepo = new EFGenericRepository<User>(context);
             _emailService = emailService;
         }
 
