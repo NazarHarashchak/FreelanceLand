@@ -10,11 +10,13 @@ namespace Backend.Services
     public class CommentsService : ICommentsService
     {
         private readonly IMapper mapper;
-        EFGenericRepository<Comment> commentRepo = new EFGenericRepository<Comment>(new ApplicationContext());
-        EFGenericRepository<User> userRepo = new EFGenericRepository<User>(new ApplicationContext());
+        private EFGenericRepository<Comment> commentRepo;
+        private EFGenericRepository<User> userRepo;
 
-        public CommentsService(IMapper mapper)
+        public CommentsService(IMapper mapper,ApplicationContext context)
         {
+            commentRepo = new EFGenericRepository<Comment>(context);
+            userRepo = new EFGenericRepository<User>(context);
             this.mapper = mapper;
         }
 

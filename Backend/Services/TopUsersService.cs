@@ -13,11 +13,12 @@ namespace Backend.Services
     {
         private readonly IMapper mapper;
 
-        private readonly EFGenericRepository<User> _users = new EFGenericRepository<User>(new ApplicationContext());
+        private readonly EFGenericRepository<User> _users;
 
-        public TopUsersService(IMapper mapper)
+        public TopUsersService(IMapper mapper, ApplicationContext context)
         {
             this.mapper = mapper;
+            _users = new EFGenericRepository<User>(context);
         }
 
         public IEnumerable<TopUserDTO> GetTop5Users()

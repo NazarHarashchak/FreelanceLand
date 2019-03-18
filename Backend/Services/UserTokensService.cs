@@ -16,12 +16,12 @@ namespace Backend.Services
 {
     public class UserTokensService : IUserTokensService
     {
-        EFGenericRepository<User> userRepo = new EFGenericRepository<User>(new ApplicationContext());
-
+        private EFGenericRepository<User> userRepo;
         private readonly IMapper _mapper;
 
-        public UserTokensService(IMapper mapper)
+        public UserTokensService(IMapper mapper, ApplicationContext context)
         {
+            userRepo = new EFGenericRepository<User>(context);
             _mapper = mapper;
         }
 
