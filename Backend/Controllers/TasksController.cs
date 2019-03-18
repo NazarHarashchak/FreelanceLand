@@ -36,7 +36,7 @@ namespace Backend.Controllers
         }
 
         [Authorize(Roles = "Moderator")]
-        [HttpGet("{id}")]
+        [HttpGet("deleteTask, {id}")]
         void DeleteTask(int id)
         {
             tasksService.DeleteTask(id);

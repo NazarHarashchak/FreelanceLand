@@ -35,7 +35,7 @@ namespace Backend.Controllers
         }
 
         [Authorize(Roles = "Moderator")]
-        [HttpGet("{id}")]
+        [HttpGet("deleteComment, {id}")]
         void DeleteComment(int id)
         {
             commentsService.DeleteComment(id);
