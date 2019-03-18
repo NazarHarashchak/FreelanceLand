@@ -21,6 +21,7 @@ namespace Backend
         {
             Configuration = configuration;
         }
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
         public IConfiguration Configuration { get; }
 
@@ -57,6 +58,19 @@ namespace Backend
                             ValidateIssuerSigningKey = true,
                         };
                     });
+            services.AddCors(options =>
+            {
+                options.AddPolicy(MyAllowSpecificOrigins,
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:3000",
+                                "https://localhost:44332").AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+            });
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_0);
+
 
             InitializeAutomapper(services);
         }
@@ -72,8 +86,8 @@ namespace Backend
             {
                 app.UseHsts();
             }
-            
-            app.UseCors(builder => builder.AllowAnyOrigin());
+
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseHttpsRedirection();
             app.UseAuthentication();
 
