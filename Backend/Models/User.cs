@@ -21,10 +21,12 @@ namespace FreelanceLand.Models
 
         public string Password { get; set; }
 
+
         public List<Review> UserReviews { get; set; }
         public List<TaskHistory> UserHistories { get; set; }
         public List<Message> UserMessages { get; set; }
         public List<Comment> UserComments { get; set; }
+        public List<Image> Images { get; set; }
 
         public int? UserRoleId { get; set; }
         public UserRoles UserRole { get; set; }
