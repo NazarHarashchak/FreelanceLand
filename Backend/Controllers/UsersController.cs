@@ -21,15 +21,18 @@ namespace Backend.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        EFGenericRepository<User> userRepo = new EFGenericRepository<User>(new ApplicationContext());
-        EFGenericRepository<Image> imageRepo = new EFGenericRepository<Image>(new ApplicationContext());
+        EFGenericRepository<User> userRepo;
+        EFGenericRepository<Image> imageRepo;
 
         private IUsersService _usersService;
 
-        public UsersController(IUsersService usersService)
+        public UsersController(IUsersService usersService, ApplicationContext context)
         {
+            userRepo = new EFGenericRepository<User>(context);
+            imageRepo = new EFGenericRepository<Image>(context);
             _usersService = usersService;
         }
+
         [HttpGet]
         public ActionResult<User> Get()
         {
@@ -49,26 +52,10 @@ namespace Backend.Controllers
         [HttpPost("CreateImage")]
         public async Task<IActionResult> Post([FromForm]ImageDTO Image)
         {
-            Image im = imageRepo.Get((el) => el.UserId == Image.UserId).FirstOrDefault();
-            if(im != null)
-            {
-                imageRepo.Remove(im);
-            }
-
-            if (Image == null) { return BadRequest("Empty request!"); } ;
-            byte[] fileBytes = null;
-            using (var fs1 = Image.Image.OpenReadStream())
-            using (var memoryStream = new MemoryStream())
-            {
-                await fs1.CopyToAsync(memoryStream);
-                fileBytes = memoryStream.ToArray();
-            }
-            Image image = new Image();
-            image.UserId = Image.UserId;
-            image.FileName = Image.FileName;
-            image.Picture = fileBytes;
-            imageRepo.Create(image);
-            return Ok();
+            string response = await _usersService.CreateUserImage(Image);
+            if (response == "empty")
+                return BadRequest("Empty request!");
+            return Ok("Success!");
         }
         [HttpGet("GetImage/{id}")]
         public async System.Threading.Tasks.Task GetImage(int id)
@@ -96,6 +83,6 @@ namespace Backend.Controllers
             var dtos = _usersService.UpdateUser(id, value);
             return dtos;
         }
-       
+
     }
 }

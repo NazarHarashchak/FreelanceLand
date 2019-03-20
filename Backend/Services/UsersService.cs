@@ -5,18 +5,30 @@ using FreelanceLand.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Backend.Services
 {
     public class UsersService : IUsersService
     {
+        private readonly IEmailService _emailService;
+
         private readonly IMapper _mapper;
-        EFGenericRepository<User> userRepo = new EFGenericRepository<User>(new ApplicationContext());
-        EFGenericRepository<UserRoles> rolesRepo=new EFGenericRepository<UserRoles>(new ApplicationContext());
-        public UsersService(IMapper mapper)
+        private EFGenericRepository<User> userRepo;
+        private EFGenericRepository<UserRoles> rolesRepo;
+        private EFGenericRepository<Image> imageRepo;
+        private readonly ApplicationContext db;
+
+        public UsersService(IMapper mapper, ApplicationContext context, IEmailService emailService)
         {
             _mapper = mapper;
+            db = context;
+            rolesRepo = new EFGenericRepository<UserRoles>(context);
+            userRepo  = new EFGenericRepository<User>(context);
+            imageRepo = new EFGenericRepository<Image>(context);
+            _emailService = emailService;
         }
 
         public IEnumerable<UserDTO> GetAllEntities()
@@ -55,6 +67,7 @@ namespace Backend.Services
         
         public UserAccountDTO CreateUser(string email, string login, string password)
         {
+            const string MessagesRegistr = ("<h2>Dear user</h2><h3>Your registration request was successful approve</h3>");
             if (GetUserByLogin(login) == null)
             {
                 string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
@@ -67,6 +80,9 @@ namespace Backend.Services
                 user.Login = login;
                 user.Password = passwordHash;
                 userRepo.Create(user);
+
+                _emailService.SendEmailAsync(user.Email, "Administration", MessagesRegistr);
+
                 var dto = _mapper.Map<User, UserAccountDTO>(user);
 
                 return dto;
@@ -82,8 +98,6 @@ namespace Backend.Services
 
         public User UpdateUser(int id, [FromBody] UserInformation value)
         {
-            using (var db = new ApplicationContext())
-            {
                 var result = db.Users.SingleOrDefault(b => b.Id == id);
                 if (result != null)
                 {
@@ -98,9 +112,30 @@ namespace Backend.Services
                 }
 
                 return userRepo.FindById(id);
+        }
 
+        public async Task<string> CreateUserImage(ImageDTO Image)
+        {
+            Image im = imageRepo.Get((el) => el.UserId == Image.UserId).FirstOrDefault();
+            if (im != null)
+            {
+                imageRepo.Remove(im);
             }
 
+            if (Image == null) { return ("empty"); };
+            byte[] fileBytes = null;
+            using (var fs1 = Image.Image.OpenReadStream())
+            using (var memoryStream = new MemoryStream())
+            {
+                await fs1.CopyToAsync(memoryStream);
+                fileBytes = memoryStream.ToArray();
+            }
+            Image image = new Image();
+            image.UserId = Image.UserId;
+            image.FileName = Image.FileName;
+            image.Picture = fileBytes;
+            imageRepo.Create(image);
+            return "done";
         }
     }
 }

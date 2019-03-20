@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Backend.Hubs;
 using Backend.Interfaces.ServiceInterfaces;
 using Backend.MappingProfiles;
 using Backend.Services;
@@ -7,6 +8,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -27,10 +30,10 @@ namespace Backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<ApplicationContext>();
+            services.AddDbContext<ApplicationContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddCors();
-
+            services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IUserTokensService, UserTokensService>();
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<ITasksService, TasksService>();
@@ -39,7 +42,8 @@ namespace Backend
             services.AddTransient<ITaskInfoService, TaskInfoService>();
             services.AddTransient<ICommentsService, CommentsService>();
             services.AddTransient<IRolesUserService, RolesService>();
-            services.AddMvc();
+            services.AddTransient<ApplicationContext, ApplicationContext>();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
@@ -55,20 +59,37 @@ namespace Backend
                             IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
                             ValidateIssuerSigningKey = true,
                         };
+                        options.Events = new JwtBearerEvents
+                        {
+                            OnMessageReceived = context =>
+                            {
+                                var accessToken = context.Request.Query["access_token"];
+                                
+                                var path = context.HttpContext.Request.Path;
+                                if (!string.IsNullOrEmpty(accessToken) &&
+                                    (path.StartsWithSegments("/notification")))
+                                {
+                                    context.Token = accessToken;
+                                }
+                                return System.Threading.Tasks.Task.CompletedTask;
+                            }
+                        };
                     });
-
             services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins,
                     builder =>
                     {
-                        builder.AllowAnyOrigin().AllowAnyHeader()
-                            .AllowAnyMethod();
-
+                        builder.WithOrigins("http://localhost:3000",
+                                "https://localhost:44332").AllowAnyHeader()
+                            .AllowAnyMethod().AllowCredentials();
                     });
             });
 
+            services.AddSignalR();
+            services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_0);
+
 
             InitializeAutomapper(services);
         }
@@ -84,11 +105,15 @@ namespace Backend
             {
                 app.UseHsts();
             }
-            
+
             app.UseCors(MyAllowSpecificOrigins);
-            app.UseCors(builder => builder.AllowAnyOrigin());
+           
             app.UseHttpsRedirection();
             app.UseAuthentication();
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<NotificationHub>("/notification");
+            });
 
             app.UseMvc();
         }

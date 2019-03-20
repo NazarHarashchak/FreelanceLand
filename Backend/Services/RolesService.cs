@@ -12,10 +12,11 @@ namespace Backend.Services
     public class RolesService: IRolesUserService
     {
         private readonly IMapper mapper;
-        EFGenericRepository<UserRoles> userRolesRepo=new EFGenericRepository<UserRoles>(new ApplicationContext());
+        private EFGenericRepository<UserRoles> userRolesRepo;
 
-        public RolesService(IMapper mapper)
+        public RolesService(IMapper mapper, ApplicationContext context)
         {
+            userRolesRepo = new EFGenericRepository<UserRoles>(context);
             this.mapper = mapper;
         }
 

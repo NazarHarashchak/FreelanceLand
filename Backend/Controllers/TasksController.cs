@@ -1,8 +1,8 @@
 ﻿using Backend.DTOs;
 using Backend.Interfaces.ServiceInterfaces;
+using FreelanceLand.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using FreelanceLand.Models;
 
 namespace Backend.Controllers
 {

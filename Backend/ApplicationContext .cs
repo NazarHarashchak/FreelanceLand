@@ -15,16 +15,11 @@ namespace FreelanceLand.Models
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Image> Images { get; set; }
 
-        public ApplicationContext() 
+        public ApplicationContext(DbContextOptions<ApplicationContext> options)
+            : base(options)
         {
             Database.EnsureCreated();
         }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=freelanceland3.0db;Trusted_Connection=True;");
-        }
-
     }
 }
 
