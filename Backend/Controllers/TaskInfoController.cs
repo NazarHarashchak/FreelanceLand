@@ -1,9 +1,7 @@
-﻿using System;
-using Backend.DTOs;
+﻿using Backend.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.Controllers
 {
@@ -12,14 +10,12 @@ namespace Backend.Controllers
     public class TaskInfoController : ControllerBase
     {
         private ITaskInfoService infoTaskService;
-        private ITasksService taskService;
         private IUsersService usersService;
 
-        public TaskInfoController(ITaskInfoService infoTaskService, ITasksService taskService, IUsersService usersService)
+        public TaskInfoController(ITaskInfoService infoTaskService, IUsersService usersService)
         {
             this.infoTaskService = infoTaskService;
             this.usersService = usersService;
-            this.taskService = taskService;
         }
 
         [HttpGet("{id}")]
@@ -35,13 +31,6 @@ namespace Backend.Controllers
             var dtos = infoTaskService.GetTaskCustomer(id);
 
             return Ok(dtos);
-        }
-
-        [Authorize(Roles = "Moderator")]
-        [HttpGet("deleteTask, {id}")]
-        public void DeleteTask(int id)
-        {
-            taskService.DeleteTask(id);
         }
     }
 }

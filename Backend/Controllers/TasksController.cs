@@ -3,6 +3,8 @@ using Backend.Interfaces.ServiceInterfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace Backend.Controllers
 {
@@ -17,8 +19,6 @@ namespace Backend.Controllers
             this.tasksService = tasksService;
         }
 
-
-        [Authorize(Roles = "Moderator")]
         [HttpGet]
         public ActionResult<IEnumerable<TaskDTO>> Get()
         {
@@ -36,10 +36,11 @@ namespace Backend.Controllers
         }
 
         [Authorize(Roles = "Moderator")]
-        [HttpGet("deleteTask, {id}")]
-        void DeleteTask(int id)
+        [HttpPost("DeleteTask")]
+        public async System.Threading.Tasks.Task DeleteTask([FromBody] TaskDTO task)
         {
-            tasksService.DeleteTask(id);
+            tasksService.DeleteTask(task.Id);
+            await Response.WriteAsync(JsonConvert.SerializeObject(task, new JsonSerializerSettings { Formatting = Formatting.Indented }));
         }
     }
 }

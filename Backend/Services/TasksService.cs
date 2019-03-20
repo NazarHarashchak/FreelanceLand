@@ -3,6 +3,7 @@ using Backend.DTOs;
 using Backend.Enums;
 using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,9 +12,9 @@ namespace Backend.Services
     public class TasksService : ITasksService
     {
         private readonly IMapper mapper;
-        private EFGenericRepository<Task> taskRepo;
-        private EFGenericRepository<TaskHistory> historyRepo;
-        private ApplicationContext db;
+        private readonly EFGenericRepository<Task> taskRepo;
+        private readonly EFGenericRepository<TaskHistory> historyRepo;
+        private readonly ApplicationContext db;
 
         public TasksService(IMapper mapper, ApplicationContext context)
         {

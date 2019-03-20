@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using FreelanceLand.Models;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json;
 
 namespace Backend.Controllers
 {
@@ -35,10 +36,11 @@ namespace Backend.Controllers
         }
 
         [Authorize(Roles = "Moderator")]
-        [HttpGet("deleteComment, {id}")]
-        void DeleteComment(int id)
+        [HttpPost("DeleteComment")]
+        public async System.Threading.Tasks.Task DeleteComment([FromBody] CommentDTO comment)
         {
-            commentsService.DeleteComment(id);
+            commentsService.DeleteComment(comment.Id);
+            await Response.WriteAsync(JsonConvert.SerializeObject(comment, new JsonSerializerSettings { Formatting = Formatting.Indented }));
         }
     }
 }
