@@ -8,6 +8,7 @@ namespace Backend.Interfaces.ServiceInterfaces
     {
         IEnumerable<TaskDTO> GetToDoEntities();
         IEnumerable<TaskDTO> GetHistoryTaskByUser(int id);
+        void DeleteTask(int id);
 
     }
 }
