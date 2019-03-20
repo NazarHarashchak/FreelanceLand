@@ -10,11 +10,13 @@ namespace Backend.Services
     public class TaskInfoService : ITaskInfoService
     {
         private readonly IMapper mapper;
-        EFGenericRepository<Task> taskRepo = new EFGenericRepository<Task>(new ApplicationContext());
-        EFGenericRepository<TaskHistory> historyRepo = new EFGenericRepository<TaskHistory>(new ApplicationContext());
+        private EFGenericRepository<Task> taskRepo;
+        private EFGenericRepository<TaskHistory> historyRepo;
 
-        public TaskInfoService(IMapper mapper)
+        public TaskInfoService(IMapper mapper, ApplicationContext context)
         {
+            taskRepo = new EFGenericRepository<Task>(context);
+            historyRepo = new EFGenericRepository<TaskHistory>(context);
             this.mapper = mapper;
         }
 
