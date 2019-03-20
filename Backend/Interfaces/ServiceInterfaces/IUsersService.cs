@@ -15,5 +15,7 @@ namespace Backend.Interfaces.ServiceInterfaces
         UserAccountDTO CreateUser(string email, string login, string password);
         UserInformation GetUserInformation(int id);
         User UpdateUser(int id, [FromBody] UserInformation value);
+        IEnumerable<UserRolesDTO> GetAllRolesDtos();
+
     }
 }

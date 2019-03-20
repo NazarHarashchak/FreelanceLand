@@ -109,5 +109,12 @@ namespace Backend.Services
 
                 return userRepo.FindById(id);
         }
+
+        public IEnumerable<UserRolesDTO> GetAllRolesDtos()
+        {
+            var entities = rolesRepo.Get();
+            var dtos = _mapper.Map<IEnumerable<UserRoles>, IEnumerable<UserRolesDTO>>(entities);
+            return dtos;
+        }
     }
 }
