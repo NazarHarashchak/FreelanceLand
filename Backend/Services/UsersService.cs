@@ -79,6 +79,7 @@ namespace Backend.Services
                 user.Email = email;
                 user.Login = login;
                 user.Password = passwordHash;
+                user.UserRoleId = rolesRepo.Get(r => r.Type == "User").FirstOrDefault().Id;
                 userRepo.Create(user);
 
                 _emailService.SendEmailAsync(user.Email, "Administration", MessagesRegistr);

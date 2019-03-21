@@ -13,7 +13,7 @@ namespace Backend
         {
             UserRoles UserRole1 = new UserRoles
             {
-                Type = "Customer"
+                Type = "User"
             };
             UserRoles UserRole2 = new UserRoles
             {
@@ -23,11 +23,7 @@ namespace Backend
             {
                 Type = "Moderator"
             };
-
-            UserRoles UserRole4 = new UserRoles
-            {
-                Type = "Freelancer"
-            };
+            
             User user1 = new User
             {
                 Name = "Anton",
@@ -420,8 +416,7 @@ namespace Backend
                 context.UserRoles.AddRange(
                         UserRole1,
                         UserRole2,
-                        UserRole3,
-                        UserRole4
+                        UserRole3
                     );
                 context.SaveChanges();
             }

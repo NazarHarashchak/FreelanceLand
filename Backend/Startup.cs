@@ -114,6 +114,7 @@ namespace Backend
             {
                 routes.MapHub<NotificationHub>("/notification");
             });
+            
 
             app.UseMvc();
         }

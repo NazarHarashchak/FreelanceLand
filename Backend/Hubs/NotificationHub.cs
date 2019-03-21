@@ -11,19 +11,15 @@ namespace Backend.Hubs
     public class NotificationHub : Hub
     {
         private EFGenericRepository<Message> messageRepo;
-        private readonly ApplicationContext db;
-
         public NotificationHub( ApplicationContext context)
         {
-            db = context;
             messageRepo = new EFGenericRepository<Message>(context);
         }
 
-        [Authorize]
+
+        [Authorize(Roles = "User")]
         public async System.Threading.Tasks.Task Send(string message, string to)
         {
-            string msg = GetNotification();
-
             var userName = Context.User.Identity.Name;
             
             if (Context.UserIdentifier != to) 
@@ -45,7 +41,7 @@ namespace Backend.Hubs
         }
         public override async System.Threading.Tasks.Task OnDisconnectedAsync(Exception exception)
         {
-            await Clients.All.SendAsync("Notify", $"{Context.ConnectionId} left us.");
+            await Clients.All.SendAsync("Notify", $"{Context.UserIdentifier} left us.");
             await base.OnDisconnectedAsync(exception);
         }
 
