@@ -36,13 +36,12 @@ namespace Backend
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<ITasksService, TasksService>();
             services.AddTransient<ITopUsersService, TopUsersService>();
-            services.AddTransient<ITaskCategoriesService, TaskCategoriesService>();
             services.AddTransient<ITaskInfoService, TaskInfoService>();
             services.AddTransient<ICommentsService, CommentsService>();
             services.AddTransient<IRolesUserService, RolesService>();
             services.AddTransient<ApplicationContext, ApplicationContext>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
+             
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                     {
