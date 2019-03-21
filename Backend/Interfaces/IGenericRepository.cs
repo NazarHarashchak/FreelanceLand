@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
-namespace FreelanceLand.Models
+namespace Backend
 {
     public interface IGenericRepository<TEntity> where TEntity : class
     {
-        void Create(TEntity item);
-        TEntity FindById(int id);
-        IEnumerable<TEntity> Get();
-        IEnumerable<TEntity> Get(Func<TEntity, bool> predicate);
-        void Remove(TEntity item);
-        void Update(TEntity item);
+        Task Create(TEntity item);
+        Task<TEntity> FindById(int id);
+        Task<IEnumerable<TEntity>> Get();
+        Task<IEnumerable<TEntity>> Get(Expression<Func<TEntity, bool>> predicate);
+        Task Remove(TEntity item);
+        Task Update(TEntity item);
     }
 }
