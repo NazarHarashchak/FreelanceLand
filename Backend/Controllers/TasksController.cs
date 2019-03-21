@@ -2,12 +2,9 @@
 using Backend.Interfaces.ServiceInterfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-<<<<<<< HEAD
-=======
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
->>>>>>> d8298a5860533b66e1a09f235540c78552bb2601
 
 namespace Backend.Controllers
 {

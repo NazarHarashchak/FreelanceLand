@@ -68,17 +68,13 @@ namespace Backend.Services
         {
             User person = userRepo.Get(u => u.Login == username).FirstOrDefault();
 
-<<<<<<< HEAD
             string role = rolesRepo.Get(r => r.Id == person.UserRoleId).FirstOrDefault().Type;
-=======
-            string Role = "Moderator";
->>>>>>> d8298a5860533b66e1a09f235540c78552bb2601
             if (person != null)
             {
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimsIdentity.DefaultNameClaimType, person.Login),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, Role)
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, role)
                 };
                 ClaimsIdentity claimsIdentity =
                 new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,

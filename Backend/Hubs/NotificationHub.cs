@@ -24,7 +24,8 @@ namespace Backend.Hubs
             
             if (Context.UserIdentifier != to) 
                 await Clients.User(Context.UserIdentifier).SendAsync("Receive", message, userName);
-            await Clients.User(to).SendAsync("Receive", message, userName);
+
+                await Clients.User(to).SendAsync("Receive", message, userName);
         }
 
         public string GetNotification()
