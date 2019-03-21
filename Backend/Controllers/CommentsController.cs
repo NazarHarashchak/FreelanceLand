@@ -5,6 +5,8 @@ using Backend.Interfaces.ServiceInterfaces;
 using Microsoft.AspNetCore.Http;
 using FreelanceLand.Models;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json;
 
 namespace Backend.Controllers
 {
@@ -31,6 +33,14 @@ namespace Backend.Controllers
         {
             var result = commentsService.AddComment(comment);
             return Ok(comment);
+        }
+
+        [Authorize(Roles = "Moderator")]
+        [HttpPost("DeleteComment")]
+        public async System.Threading.Tasks.Task DeleteComment([FromBody] CommentDTO comment)
+        {
+            commentsService.DeleteComment(comment.Id);
+            await Response.WriteAsync(JsonConvert.SerializeObject(comment, new JsonSerializerSettings { Formatting = Formatting.Indented }));
         }
     }
 }

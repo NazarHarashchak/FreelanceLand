@@ -7,5 +7,6 @@ namespace Backend.Interfaces.ServiceInterfaces
     {
         IEnumerable<CommentDTO> GetComments(int taskId);
         CommentDTO AddComment(CommentDTO comment);
+        void DeleteComment(int id);
     }
 }

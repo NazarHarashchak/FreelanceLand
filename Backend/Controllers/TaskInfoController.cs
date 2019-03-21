@@ -1,9 +1,7 @@
-﻿using System;
-using Backend.DTOs;
+﻿using Backend.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
-using System.Collections.Generic;
 
 namespace Backend.Controllers
 {
@@ -11,26 +9,26 @@ namespace Backend.Controllers
     [ApiController]
     public class TaskInfoController : ControllerBase
     {
-        private ITaskInfoService tasksService;
+        private ITaskInfoService infoTaskService;
         private IUsersService usersService;
 
-        public TaskInfoController(ITaskInfoService tasksService, IUsersService usersService)
+        public TaskInfoController(ITaskInfoService infoTaskService, IUsersService usersService)
         {
-            this.tasksService = tasksService;
+            this.infoTaskService = infoTaskService;
             this.usersService = usersService;
         }
 
         [HttpGet("{id}")]
         public ActionResult<TaskDescription> Get(int id)
         {
-            var dtos = tasksService.GetTaskDescription(id);
+            var dtos = infoTaskService.GetTaskDescription(id);
             return Ok(dtos);
         }
 
         [HttpGet("{number},{id}")]
         public ActionResult<User> Get(int number, int id)
         {
-            var dtos = tasksService.GetTaskCustomer(id);
+            var dtos = infoTaskService.GetTaskCustomer(id);
 
             return Ok(dtos);
         }

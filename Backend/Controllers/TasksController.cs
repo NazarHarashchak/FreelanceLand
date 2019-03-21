@@ -1,8 +1,13 @@
 ﻿using Backend.DTOs;
 using Backend.Interfaces.ServiceInterfaces;
-using FreelanceLand.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+<<<<<<< HEAD
+=======
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+>>>>>>> d8298a5860533b66e1a09f235540c78552bb2601
 
 namespace Backend.Controllers
 {
@@ -17,7 +22,6 @@ namespace Backend.Controllers
             this.tasksService = tasksService;
         }
 
-        // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<TaskDTO>> Get()
         {
@@ -32,6 +36,14 @@ namespace Backend.Controllers
             var dtos = tasksService.GetHistoryTaskByUser(id);
             
             return Ok(dtos);
+        }
+
+        [Authorize(Roles = "Moderator")]
+        [HttpPost("DeleteTask")]
+        public async System.Threading.Tasks.Task DeleteTask([FromBody] TaskDTO task)
+        {
+            tasksService.DeleteTask(task.Id);
+            await Response.WriteAsync(JsonConvert.SerializeObject(task, new JsonSerializerSettings { Formatting = Formatting.Indented }));
         }
     }
 }
