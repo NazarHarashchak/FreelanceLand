@@ -1,11 +1,12 @@
 ﻿using Backend.DTOs;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Backend.Interfaces.ServiceInterfaces
 {
     public interface ITaskInfoService
     {
-        TaskDescription GetTaskDescription(int id);
-        CustomerDTO GetTaskCustomer(int taskId);
+        Task<TaskDescription> GetTaskDescription(int id);
+        Task<CustomerDTO> GetTaskCustomer(int taskId);
     }
 }

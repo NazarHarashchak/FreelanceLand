@@ -4,6 +4,7 @@ using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
 using System.Collections.Generic;
 using System;
+using System.Threading.Tasks;
 
 namespace Backend.Services
 {
@@ -20,38 +21,38 @@ namespace Backend.Services
             this.mapper = mapper;
         }
 
-        public IEnumerable<CommentDTO> GetComments(int taskId)
+        public async Task<IEnumerable<CommentDTO>> GetComments(int taskId)
         {
-            IEnumerable<Comment> myComments = commentRepo.Get();
+            IEnumerable<Comment> myComments =  await commentRepo.GetAsync();
             List<CommentDTO> result = new List<CommentDTO>();
             foreach (var s in myComments)
             {
                 if (s.TaskId == taskId)
                 {
                     var dtos = mapper.Map<Comment, CommentDTO>(s);
-                    dtos.UserName = mapper.Map<User, CustomerDTO>(userRepo.FindById(dtos.UserId)).Name;
+                    dtos.UserName = mapper.Map<User, CustomerDTO>(await userRepo.FindByIdAsync(dtos.UserId)).Name;
                     result.Add(dtos);
                 }
             }
             return result;
         }
 
-        public CommentDTO AddComment(CommentDTO comment)
+        public async Task<CommentDTO> AddComment(CommentDTO comment)
         {
             comment.Date = DateTime.Now.ToString();
-            User user = userRepo.FindById(comment.UserId);
+            User user = await userRepo.FindByIdAsync(comment.UserId);
             comment.UserName = user.Name;
 
             var myComment = mapper.Map<CommentDTO, Comment>(comment);
-            commentRepo.Create(myComment);
+            await commentRepo.CreateAsync(myComment);
 
             return comment;
         }
 
-        public void DeleteComment(int id)
+        public async System.Threading.Tasks.Task DeleteComment(int id)
         {
-            var comment = commentRepo.FindById(id);
-            commentRepo.Remove(comment);
+            var comment = await commentRepo.FindByIdAsync(id);
+            await commentRepo.RemoveAsync(comment);
         }
     }
 }

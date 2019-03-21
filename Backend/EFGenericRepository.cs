@@ -18,50 +18,50 @@ namespace Backend
             _dbSet = context.Set<TEntity>();
         }
 
-        public async Task<IEnumerable<TEntity>> Get()
+        public async Task<IEnumerable<TEntity>> GetAsync()
         {
             return await _dbSet.AsNoTracking().ToListAsync();
         }
 
-        public async Task<IEnumerable<TEntity>> Get(Expression<Func<TEntity, bool>> predicate)
+        public async Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> predicate)
         {
             return await _dbSet.AsNoTracking().Where(predicate).ToListAsync();
         }
 
-        public async Task<IEnumerable<TEntity>> Get(Expression<Func<TEntity, bool>> predicate, int take, int skip = 0)
+        public async Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> predicate, int take, int skip = 0)
         {
             return await _dbSet.AsNoTracking().Where(predicate).Skip(skip).Take(take).ToListAsync();
         }
 
-        public async Task<TEntity> FindById(int id)
+        public async Task<TEntity> FindByIdAsync(int id)
         {
             return await _dbSet.FindAsync(id);
         }
 
-        public async Task Create(TEntity item)
+        public async Task CreateAsync(TEntity item)
         {
             _dbSet.Add(item);
             await _context.SaveChangesAsync();
         }
 
-        public async Task Update(TEntity item)
+        public async Task UpdateAsync(TEntity item)
         {
             _context.Entry(item).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
 
-        public async Task Remove(TEntity item)
+        public async Task RemoveAsync(TEntity item)
         {
             _dbSet.Remove(item);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<TEntity>> GetWithInclude(params Expression<Func<TEntity, object>>[] includeProperties)
+        public async Task<IEnumerable<TEntity>> GetWithIncludeAsync(params Expression<Func<TEntity, object>>[] includeProperties)
         {
             return await Include(includeProperties).ToListAsync();
         }
 
-        public async Task<IEnumerable<TEntity>> GetWithInclude(Expression<Func<TEntity, bool>> predicate,
+        public async Task<IEnumerable<TEntity>> GetWithIncludeAsync(Expression<Func<TEntity, bool>> predicate,
             params Expression<Func<TEntity, object>>[] includeProperties)
         {
             var query = Include(includeProperties);

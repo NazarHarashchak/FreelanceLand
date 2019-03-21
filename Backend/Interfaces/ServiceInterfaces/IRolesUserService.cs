@@ -8,6 +8,6 @@ namespace Backend.Interfaces.ServiceInterfaces
 {
     public interface IRolesUserService
     {
-        IEnumerable<UserRolesDTO> GetAllRolesDtos();
+        Task<IEnumerable<UserRolesDTO>> GetAllRolesDtos();
     }
 }

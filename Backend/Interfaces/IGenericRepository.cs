@@ -7,11 +7,11 @@ namespace Backend
 {
     public interface IGenericRepository<TEntity> where TEntity : class
     {
-        Task Create(TEntity item);
-        Task<TEntity> FindById(int id);
-        Task<IEnumerable<TEntity>> Get();
-        Task<IEnumerable<TEntity>> Get(Expression<Func<TEntity, bool>> predicate);
-        Task Remove(TEntity item);
-        Task Update(TEntity item);
+        Task CreateAsync(TEntity item);
+        Task<TEntity> FindByIdAsync(int id);
+        Task<IEnumerable<TEntity>> GetAsync();
+        Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> predicate);
+        Task RemoveAsync(TEntity item);
+        Task UpdateAsync(TEntity item);
     }
 }

@@ -20,9 +20,9 @@ namespace Backend.Services
             this.mapper = mapper;
         }
 
-        public IEnumerable<UserRolesDTO> GetAllRolesDtos()
+        public async Task<IEnumerable<UserRolesDTO>> GetAllRolesDtos()
         {
-            var entities = userRolesRepo.Get();
+            var entities = await userRolesRepo.GetAsync();
             var dtos = mapper.Map<IEnumerable<UserRoles>, IEnumerable<UserRolesDTO>>(entities);
             return dtos;
         }

@@ -24,25 +24,25 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
-        public ActionResult<User> Get()
+        public async Task<ActionResult<User>> Get()
         {
-            var dtos = _usersService.GetAllEntities();
+            var dtos = await _usersService.GetAllEntities();
 
             return Ok(dtos);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<User> Get(int id)
+        public async Task<ActionResult<User>> Get(int id)
         {
-            var dtos = _usersService.GetUserInformation(id);
+            var dtos = await _usersService.GetUserInformation(id);
 
             return Ok(dtos);
         }
 
         [HttpPut("{id}")]
-        public User PutUser(int id, [FromBody] UserInformation value)
+        public async Task<User> PutUser(int id, [FromBody] UserInformation value)
         {
-            var dtos = _usersService.UpdateUser(id, value);
+            var dtos = await _usersService.UpdateUser(id, value);
             return dtos;
         }
 

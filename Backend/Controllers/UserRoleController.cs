@@ -20,9 +20,9 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
-        public  ActionResult<IEnumerable<UserRolesDTO>> Get()
+        public async Task<ActionResult<IEnumerable<UserRolesDTO>>> Get()
         {
-            var dtos = rolesUserService.GetAllRolesDtos();
+            var dtos = await rolesUserService.GetAllRolesDtos();
             return Ok(dtos);
         }
     }

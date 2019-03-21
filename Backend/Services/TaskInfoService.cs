@@ -3,13 +3,14 @@ using Backend.DTOs;
 using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Backend.Services
 {
     public class TaskInfoService : ITaskInfoService
     {
         private readonly IMapper mapper;
-        EFGenericRepository<Task> taskRepo;
+        EFGenericRepository<FreelanceLand.Models.Task> taskRepo;
         EFGenericRepository<TaskHistory> historyRepo; 
         EFGenericRepository<User> userRepo; 
         EFGenericRepository<Comment> commentRepo; 
@@ -18,28 +19,28 @@ namespace Backend.Services
         public TaskInfoService(IMapper mapper, ApplicationContext context)
         {
             this.mapper = mapper;
-            taskRepo = new EFGenericRepository<Task>(context);
+            taskRepo = new EFGenericRepository<FreelanceLand.Models.Task>(context);
             historyRepo = new EFGenericRepository<TaskHistory>(context);
             userRepo = new EFGenericRepository<User>(context);
             commentRepo = new EFGenericRepository<Comment>(context);
         }
 
-        public TaskDescription GetTaskDescription(int id)
+        public async Task<TaskDescription> GetTaskDescription(int id)
         {
-            var entities = taskRepo.FindById(id);
-            var dtos = mapper.Map<Task, TaskDescription>(entities);
+            var entities = await taskRepo.FindByIdAsync(id);
+            var dtos = mapper.Map<FreelanceLand.Models.Task, TaskDescription>(entities);
             return dtos;
         }
 
-        public CustomerDTO GetTaskCustomer(int taskId)
+        public async Task<CustomerDTO> GetTaskCustomer(int taskId)
         {
             int userId = 0;
-            IEnumerable<TaskHistory> history = historyRepo.Get();
+            IEnumerable<TaskHistory> history = await historyRepo.GetAsync();
             foreach (TaskHistory s in history)
             {
                 if (s.TaskId == taskId) userId = (int)s.TaskCustomerId;
             }
-            var dtos = mapper.Map<User, CustomerDTO>(userRepo.FindById(userId));
+            var dtos = mapper.Map<User, CustomerDTO>(await userRepo.FindByIdAsync(userId));
             return dtos;
         }
     }

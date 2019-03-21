@@ -6,6 +6,7 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Backend.Services
 {
@@ -27,17 +28,17 @@ namespace Backend.Services
              _emailService = emailService;
         }
 
-        public IEnumerable<UserDTO> GetAllEntities()
+        public async Task<IEnumerable<UserDTO>> GetAllEntities()
         {
-            var entities = userRepo.Get();
+            var entities = await userRepo.GetAsync();
             var dtos = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(entities);
             return dtos;
         }
 
 
-        public UserAccountDTO GetUserByLogin(string login)
+        public async Task<UserAccountDTO> GetUserByLogin(string login)
         {
-            var user = userRepo.Get(u => u.Login == login).FirstOrDefault();
+            var user = (await userRepo.GetAsync(u => u.Login == login)).FirstOrDefault();
 
             if (user == null)
                 return null;
@@ -47,9 +48,9 @@ namespace Backend.Services
             return dto;
         }
 
-        public UserAccountDTO Authenticate(string login, string password)
+        public async Task<UserAccountDTO> Authenticate(string login, string password)
         {
-            var dto = GetUserByLogin(login);
+            var dto = await GetUserByLogin(login);
 
             if (dto == null)
                 return null;
@@ -61,7 +62,7 @@ namespace Backend.Services
             return null;
         }
         
-        public UserAccountDTO CreateUser(string email, string login, string password)
+        public async Task<UserAccountDTO> CreateUser(string email, string login, string password)
         {
             const string MessagesRegistr = ("<h2>Dear user</h2><h3>Your registration request was successful approve</h3>");
             if (GetUserByLogin(login) == null)
@@ -75,7 +76,7 @@ namespace Backend.Services
                 user.Email = email;
                 user.Login = login;
                 user.Password = passwordHash;
-                userRepo.Create(user);
+                await userRepo.CreateAsync(user);
 
                 _emailService.SendEmailAsync(user.Email, "Administration", MessagesRegistr);
 
@@ -85,14 +86,14 @@ namespace Backend.Services
             }
             return null;
         }
-        public UserInformation GetUserInformation(int id)
+        public async Task<UserInformation> GetUserInformation(int id)
         {
-            var entities = userRepo.FindById(id);
+            var entities = await userRepo.FindByIdAsync(id);
             var dtos = _mapper.Map<User, UserInformation>(entities);
             return dtos;
         }
 
-        public User UpdateUser(int id, [FromBody] UserInformation value)
+        public async Task<User> UpdateUser(int id, [FromBody] UserInformation value)
         {
                 var result = db.Users.SingleOrDefault(b => b.Id == id);
                 if (result != null)
@@ -107,7 +108,7 @@ namespace Backend.Services
 
                 }
 
-                return userRepo.FindById(id);
+                return await userRepo.FindByIdAsync(id);
         }
     }
 }

@@ -1,14 +1,14 @@
 ﻿using Backend.DTOs;
 using System.Collections.Generic;
 using FreelanceLand.Models;
+using System.Threading.Tasks;
 
 namespace Backend.Interfaces.ServiceInterfaces
 {
     public interface ITasksService
     {
-        IEnumerable<TaskDTO> GetToDoEntities();
+        Task<IEnumerable<TaskDTO>> GetToDoEntities();
         IEnumerable<TaskDTO> GetHistoryTaskByUser(int id);
-        void DeleteTask(int id);
-
+        System.Threading.Tasks.Task DeleteTask(int id);
     }
 }
