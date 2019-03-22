@@ -4,6 +4,7 @@ using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 namespace Backend.Services
 {
@@ -22,28 +23,17 @@ namespace Backend.Services
 
         public IEnumerable<CommentDTO> GetComments(int taskId)
         {
-            IEnumerable<Comment> myComments = commentRepo.Get();
-            List<CommentDTO> result = new List<CommentDTO>();
+            IEnumerable<Comment> myComments = commentRepo.GetWithInclude(task => task.TaskId == taskId,
+                                                                            user => user.User);
+            IEnumerable<CommentDTO> result = mapper.Map< IEnumerable<Comment>, IEnumerable<CommentDTO>> (myComments);
 
-            // myComments = commentRepo.GetWithInclude(t => t.TaskId == taskId);
-            //result = mapper.Map<Comment, CommentDTO>(myComments);
-            foreach (var s in myComments)
-            {
-                if (s.TaskId == taskId)
-                {
-                    var dtos = mapper.Map<Comment, CommentDTO>(s);
-                    dtos.UserName = mapper.Map<User, CustomerDTO>(userRepo.FindById(dtos.UserId)).Name;
-                    result.Add(dtos);
-                }
-            }
             return result;
         }
-
+        
         public CommentDTO AddComment(CommentDTO comment)
         {
             comment.Date = DateTime.Now.ToString();
-            User user = userRepo.FindById(comment.UserId);
-            comment.UserName = user.Name;
+            comment.UserName = userRepo.FindById(comment.UserId).Name;
 
             var myComment = mapper.Map<CommentDTO, Comment>(comment);
             commentRepo.Create(myComment);

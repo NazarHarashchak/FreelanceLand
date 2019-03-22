@@ -20,6 +20,8 @@ namespace Backend.MappingProfiles
                     .ForMember("CustomerId", o => o.MapFrom(c => c.TaskCustomerId))
                     .ForMember("CustomerName", o => o.MapFrom(c => c.TaskCustomer.Name))
                     .ForMember("CustomerSecondName", o => o.MapFrom(c => c.TaskCustomer.Sur_Name));
+            CreateMap<TaskPageDTO, Task>();
+            CreateMap<TaskPageDTO, TaskHistory>();
         }
     }
 }

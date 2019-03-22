@@ -6,5 +6,6 @@ namespace Backend.Interfaces.ServiceInterfaces
     public interface ITaskInfoService
     {
         TaskPageDTO GetTaskDescription(int id);
+        TaskPageDTO AddTask(TaskPageDTO task);
     }
 }

@@ -19,13 +19,27 @@ namespace Backend.Controllers
             this.tasksService = tasksService;
             this.usersService = usersService;
         }
-
+        
         [HttpGet("{id}")]
         public ActionResult<TaskPageDTO> Get(int id)
         {
             var dtos = tasksService.GetTaskDescription(id);
             return Ok(dtos);
         }
-        
+
+        [Route("addexcecutor")]
+        [HttpPost]
+        public ActionResult<User> AddExcecutor([FromBody] CustomerDTO user)
+        {
+            return user;
+        }
+
+        [Route("addnewtask")]
+        [HttpPost]
+        public ActionResult<TaskPageDTO> AddNewTask([FromBody] TaskPageDTO task)
+        {
+            var result = tasksService.AddTask(task);
+            return Ok(result);
+        }
     }
 }
