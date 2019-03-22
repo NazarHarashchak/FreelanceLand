@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace FreelanceLand.Models
 {
@@ -7,19 +8,18 @@ namespace FreelanceLand.Models
     {
         public int Id { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateTime DateUpdated { get; set; }
 
-        public int? TaskExecutorId { get; set; }
-        [ForeignKey("TaskExecutorId")]
-        public User TaskExecutor { get; set; }
+        public virtual TaskStatus StartTaskStatus { get; set; }
 
-        public int? TaskCustomerId { get; set; }
-        [ForeignKey("TaskCustomerId")]
+        public virtual  TaskStatus FinalTaskStatus { get; set; }
+        
+        public virtual User UpdatedByUser { get; set; }
+
         [InverseProperty("UserHistories")]
         public User TaskCustomer { get; set; }
 
-        public int TaskId { get; set; }
-        public Task Task { get; set; }
+        public virtual Task Task { get; set; }
     }
 }
 

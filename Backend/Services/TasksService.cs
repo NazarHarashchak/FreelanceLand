@@ -26,14 +26,8 @@ namespace Backend.Services
 
         public IEnumerable<TaskDTO> GetHistoryTaskByUser(int id)
         {
-            var taskHist = from h in db.TaskHistories
-                           where h.TaskExecutorId == (int)id
-                           select h.TaskId;
+            var entities = taskRepo.GetWithInclude(o => o.TaskStatusId == (int)StatusEnum.Done, p => p.TaskCategory, k => k.Comments).Where(o => o.ExecutorId == id);
 
-
-            var entities = from t in db.Tasks
-                           where taskHist.Contains(t.Id)
-                           select t;
 
             var dtos = mapper.Map<IEnumerable<Task>, IEnumerable<TaskDTO>>(entities);
             return dtos;
@@ -50,6 +44,15 @@ namespace Backend.Services
         {
             var task = taskRepo.FindById(id);
             taskRepo.Remove(task);
+        }
+
+        public IEnumerable<TaskDTO> GetActiveTaskByUser(int id)
+        {
+            var entities = taskRepo.GetWithInclude(o => o.TaskStatusId == (int)StatusEnum.InProgress, p => p.TaskCategory, k => k.Comments).Where(o => o.ExecutorId==id);
+
+
+            var dtos = mapper.Map<IEnumerable<Task>, IEnumerable<TaskDTO>>(entities);
+            return dtos;
         }
     }
 }

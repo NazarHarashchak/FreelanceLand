@@ -77,6 +77,12 @@ namespace Backend.Controllers
             }
         }
 
+        [HttpGet("getRoles")]
+        public ActionResult<IEnumerable<UserRolesDTO>> GetRoles()
+        {
+            var dtos = _usersService.GetAllRolesDtos();
+            return Ok(dtos);
+        }
         [HttpPut("{id}")]
         public User PutUser(int id, [FromBody] UserInformation value)
         {

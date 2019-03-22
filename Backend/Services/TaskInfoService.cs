@@ -37,7 +37,7 @@ namespace Backend.Services
             IEnumerable<TaskHistory> history = historyRepo.Get();
             foreach (TaskHistory s in history)
             {
-                if (s.TaskId == taskId) userId = (int)s.TaskCustomerId;
+                if (s.Id == taskId) userId = (int)s.Id;
             }
             var dtos = mapper.Map<User, CustomerDTO>(userRepo.FindById(userId));
             return dtos;

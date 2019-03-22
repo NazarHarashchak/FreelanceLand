@@ -115,6 +115,7 @@ namespace Backend.Services
                 return userRepo.FindById(id);
         }
 
+<<<<<<< HEAD
         public async Task<string> CreateUserImage(ImageDTO Image)
         {
             Image im = imageRepo.Get((el) => el.UserId == Image.UserId).FirstOrDefault();
@@ -137,6 +138,13 @@ namespace Backend.Services
             image.Picture = fileBytes;
             imageRepo.Create(image);
             return "done";
+=======
+        public IEnumerable<UserRolesDTO> GetAllRolesDtos()
+        {
+            var entities = rolesRepo.Get();
+            var dtos = _mapper.Map<IEnumerable<UserRoles>, IEnumerable<UserRolesDTO>>(entities);
+            return dtos;
+>>>>>>> a0b846781af7bc71c28963c90c175cc181d50a2b
         }
     }
 }
