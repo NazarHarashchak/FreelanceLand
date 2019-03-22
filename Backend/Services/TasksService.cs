@@ -3,6 +3,7 @@ using Backend.DTOs;
 using Backend.Enums;
 using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,9 +12,9 @@ namespace Backend.Services
     public class TasksService : ITasksService
     {
         private readonly IMapper mapper;
-        private EFGenericRepository<Task> taskRepo;
-        private EFGenericRepository<TaskHistory> historyRepo;
-        private ApplicationContext db;
+        private readonly EFGenericRepository<Task> taskRepo;
+        private readonly EFGenericRepository<TaskHistory> historyRepo;
+        private readonly ApplicationContext db;
 
         public TasksService(IMapper mapper, ApplicationContext context)
         {
@@ -25,14 +26,8 @@ namespace Backend.Services
 
         public IEnumerable<TaskDTO> GetHistoryTaskByUser(int id)
         {
-            var taskHist = from h in db.TaskHistories
-                           where h.TaskExecutorId == (int)id
-                           select h.TaskId;
+            var entities = taskRepo.GetWithInclude(o => o.TaskStatusId == (int)StatusEnum.Done, p => p.TaskCategory, k => k.Comments).Where(o => o.ExecutorId == id);
 
-
-            var entities = from t in db.Tasks
-                           where taskHist.Contains(t.Id)
-                           select t;
 
             var dtos = mapper.Map<IEnumerable<Task>, IEnumerable<TaskDTO>>(entities);
             return dtos;
@@ -41,6 +36,21 @@ namespace Backend.Services
         public IEnumerable<TaskDTO> GetToDoEntities()
         {
             var entities = taskRepo.GetWithInclude(o => o.TaskStatusId == (int)StatusEnum.ToDo, p => p.TaskCategory, k => k.Comments);
+            var dtos = mapper.Map<IEnumerable<Task>, IEnumerable<TaskDTO>>(entities);
+            return dtos;
+        }
+
+        public void DeleteTask(int id)
+        {
+            var task = taskRepo.FindById(id);
+            taskRepo.Remove(task);
+        }
+
+        public IEnumerable<TaskDTO> GetActiveTaskByUser(int id)
+        {
+            var entities = taskRepo.GetWithInclude(o => o.TaskStatusId == (int)StatusEnum.InProgress, p => p.TaskCategory, k => k.Comments).Where(o => o.ExecutorId==id);
+
+
             var dtos = mapper.Map<IEnumerable<Task>, IEnumerable<TaskDTO>>(entities);
             return dtos;
         }

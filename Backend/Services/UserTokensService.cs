@@ -53,9 +53,10 @@ namespace Backend.Services
                 access_token = encodedJwt,
                 login = identity.Name,
                 id = user.Id,
-                email = user.Email
+                email = user.Email,
+                role = "Moderator"
 
-        };
+            };
 
             string token = JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented });
             return token;
@@ -65,13 +66,13 @@ namespace Backend.Services
         {
             User person = userRepo.Get(u => u.Login == username).FirstOrDefault();
 
-            string role = "User";
+            string Role = "Moderator";
             if (person != null)
             {
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimsIdentity.DefaultNameClaimType, person.Login),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, role)
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, Role)
                 };
                 ClaimsIdentity claimsIdentity =
                 new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
