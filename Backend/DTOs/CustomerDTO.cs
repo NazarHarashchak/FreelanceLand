@@ -13,4 +13,13 @@ namespace Backend.DTOs
 
         public string Sur_Name { get; set; }
     }
+
+    public class ExcecutorDTO
+    {
+        public int Id { get; set; }
+
+        public int ExcecutorId { get; set; }
+
+        public int TaskId { get; set; }
+    }
 }

@@ -3,44 +3,64 @@ using Backend.DTOs;
 using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
 using System.Collections.Generic;
+using System.Linq;
+using System;
 
 namespace Backend.Services
 {
     public class TaskInfoService : ITaskInfoService
     {
         private readonly IMapper mapper;
-        EFGenericRepository<Task> taskRepo;
-        EFGenericRepository<TaskHistory> historyRepo; 
-        EFGenericRepository<User> userRepo; 
-        EFGenericRepository<Comment> commentRepo; 
-
+        private EFGenericRepository<Task> taskRepo;
+        private EFGenericRepository<TaskHistory> historyRepo;
+        private EFGenericRepository<User> userRepo;
 
         public TaskInfoService(IMapper mapper, ApplicationContext context)
         {
-            this.mapper = mapper;
             taskRepo = new EFGenericRepository<Task>(context);
             historyRepo = new EFGenericRepository<TaskHistory>(context);
             userRepo = new EFGenericRepository<User>(context);
-            commentRepo = new EFGenericRepository<Comment>(context);
+            this.mapper = mapper;
         }
 
-        public TaskDescription GetTaskDescription(int id)
+        public TaskPageDTO GetTaskDescription(int id)
         {
-            var entities = taskRepo.FindById(id);
-            var dtos = mapper.Map<Task, TaskDescription>(entities);
+            Task myTask = taskRepo.GetWithInclude(task => task.Id == id,
+                                     customer => customer.Customer, 
+                                     category => category.TaskCategory,
+                                     status => status.TaskStatus,
+                                     history => history.TaskHistories).FirstOrDefault();
+
+            var dtos = mapper.Map<Task, TaskPageDTO>(myTask);
+
             return dtos;
         }
 
-        public CustomerDTO GetTaskCustomer(int taskId)
+        public ExcecutorDTO AddExcecutor(ExcecutorDTO user)
         {
-            int userId = 0;
-            IEnumerable<TaskHistory> history = historyRepo.Get();
-            foreach (TaskHistory s in history)
-            {
-                if (s.Id == taskId) userId = (int)s.Id;
-            }
-            var dtos = mapper.Map<User, CustomerDTO>(userRepo.FindById(userId));
-            return dtos;
+            int taskId = user.TaskId;
+            int userId = user.ExcecutorId;
+
+            Task task = taskRepo.FindById(taskId);
+            task.ExecutorId = userId;
+            task.TaskStatusId++;
+            task.UpdatedById = task.CustomerId;
+            task.DateUpdated = DateTime.Now;
+
+            taskRepo.Update(task);
+            return user;
+        }
+
+        public TaskPageDTO AddTask(TaskPageDTO task)
+        {
+            task.Date = DateTime.Now.ToString();
+            CustomerDTO user = mapper.Map<User, CustomerDTO> (userRepo.FindById(task.CustomerId));
+            task.CustomerName = user.Name;
+            task.CustomerSecondName = user.Sur_Name;
+
+            Task result = mapper.Map<TaskPageDTO, Task>(task);
+            taskRepo.Create(result);
+            return task;
         }
     }
 }

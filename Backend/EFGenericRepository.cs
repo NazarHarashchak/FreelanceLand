@@ -54,7 +54,7 @@ namespace FreelanceLand.Models
             _dbSet.Remove(item);
             _context.SaveChanges();
         }
-
+        
         public IEnumerable<TEntity> GetWithInclude(params Expression<Func<TEntity, object>>[] includeProperties)
         {
             return Include(includeProperties).ToList();

@@ -5,7 +5,8 @@ namespace Backend.Interfaces.ServiceInterfaces
 {
     public interface ITaskInfoService
     {
-        TaskDescription GetTaskDescription(int id);
-        CustomerDTO GetTaskCustomer(int taskId);
+        TaskPageDTO GetTaskDescription(int id);
+        TaskPageDTO AddTask(TaskPageDTO task);
+        ExcecutorDTO AddExcecutor(ExcecutorDTO user);
     }
 }
