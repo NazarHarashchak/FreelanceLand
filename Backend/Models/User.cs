@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FreelanceLand.Models
 {
@@ -26,6 +27,17 @@ namespace FreelanceLand.Models
         public List<Message> UserMessages { get; set; }
         public List<Comment> UserComments { get; set; }
 
+        [InverseProperty("Customer")]
+        public  virtual List<Task> CustomerTasks { get; set; }
+
+        [InverseProperty("Executor")]
+        public  virtual  List<Task> UserTasks { get; set; }
+
+        [InverseProperty("UpdatedBy")]
+        public virtual  List<Task> UpdateTasks { get; set; }
+
+        [InverseProperty("UpdatedByUser")]
+        public  virtual List<TaskHistory> UpdatedTaskHistories { get; set; }
         public int? UserRoleId { get; set; }
         public UserRoles UserRole { get; set; }
     }
