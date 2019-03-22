@@ -1,4 +1,5 @@
-﻿using FreelanceLand.Models;
+﻿using Backend.Hubs;
+using FreelanceLand.Models;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +12,7 @@ namespace Backend
     {
         public static void Main(string[] args)
         {
+           
 
             var host = CreateWebHostBuilder(args).Build();
             using (var scope = host.Services.CreateScope())

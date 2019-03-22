@@ -5,6 +5,7 @@ using FreelanceLand.Models;
 using System.Collections.Generic;
 using System;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Backend.Services
 {
@@ -23,25 +24,17 @@ namespace Backend.Services
 
         public async Task<IEnumerable<CommentDTO>> GetComments(int taskId)
         {
-            IEnumerable<Comment> myComments =  await commentRepo.GetAsync();
-            List<CommentDTO> result = new List<CommentDTO>();
-            foreach (var s in myComments)
-            {
-                if (s.TaskId == taskId)
-                {
-                    var dtos = mapper.Map<Comment, CommentDTO>(s);
-                    dtos.UserName = mapper.Map<User, CustomerDTO>(await userRepo.FindByIdAsync(dtos.UserId)).Name;
-                    result.Add(dtos);
-                }
-            }
+            IEnumerable<Comment> myComments = await commentRepo.GetWithIncludeAsync(task => task.TaskId == taskId,
+                                                                            user => user.User);
+            IEnumerable<CommentDTO> result = mapper.Map< IEnumerable<Comment>, IEnumerable<CommentDTO>> (myComments);
+
             return result;
         }
-
+        
         public async Task<CommentDTO> AddComment(CommentDTO comment)
         {
             comment.Date = DateTime.Now.ToString();
-            User user = await userRepo.FindByIdAsync(comment.UserId);
-            comment.UserName = user.Name;
+            comment.UserName = (await userRepo.FindByIdAsync(comment.UserId)).Name;
 
             var myComment = mapper.Map<CommentDTO, Comment>(comment);
             await commentRepo.CreateAsync(myComment);
