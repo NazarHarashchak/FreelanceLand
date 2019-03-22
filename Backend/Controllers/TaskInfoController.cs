@@ -10,6 +10,7 @@ namespace Backend.Controllers
     [ApiController]
     public class TaskInfoController : ControllerBase
     {
+
         private ITaskInfoService infoTaskService;
         private IUsersService usersService;
 

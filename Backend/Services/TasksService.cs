@@ -25,17 +25,10 @@ namespace Backend.Services
             historyRepo = new EFGenericRepository<TaskHistory>(context);
         }
 
-        public IEnumerable<TaskDTO> GetHistoryTaskByUser(int id)
+        public async Task<IEnumerable<TaskDTO>> GetHistoryTaskByUser(int id)
         {
-            var taskHist = from h in db.TaskHistories
-                           where h.TaskExecutorId == (int)id
-                           select h.TaskId;
-
-
-            var entities = from t in db.Tasks
-                           where taskHist.Contains(t.Id)
-                           select t;
-
+            var entities = (await taskRepo.GetWithIncludeAsync(o => o.TaskStatusId == (int)StatusEnum.Done, p => p.TaskCategory, k => k.Comments))
+                .Where(o => o.ExecutorId == id);
             var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
             return dtos;
         }
@@ -51,6 +44,14 @@ namespace Backend.Services
         {
             var task = await taskRepo.FindByIdAsync(id);
             await taskRepo.RemoveAsync(task);
+        }
+
+        public async Task<IEnumerable<TaskDTO>> GetActiveTaskByUser(int id)
+        {
+            var entities = (await taskRepo.GetWithIncludeAsync(o => o.TaskStatusId == (int)StatusEnum.InProgress, p => p.TaskCategory, k => k.Comments))
+                .Where(o => o.ExecutorId==id);
+            var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
+            return dtos;
         }
     }
 }

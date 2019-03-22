@@ -28,11 +28,21 @@ namespace Backend.Controllers
             return Ok(dtos);
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<IEnumerable<TaskDTO>> GetHistoryTasks(int id)
+        [Route("history/{id}")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetHistoryTasks(int id)
         {
-            var dtos = tasksService.GetHistoryTaskByUser(id);
+            var dtos = await tasksService.GetHistoryTaskByUser(id);
             
+            return Ok(dtos);
+        }
+
+        [Route("Active/{id}")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetActiveTasks(int id)
+        {
+            var dtos = await tasksService.GetActiveTaskByUser(id);
+
             return Ok(dtos);
         }
 

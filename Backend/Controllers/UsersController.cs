@@ -39,8 +39,14 @@ namespace Backend.Controllers
             return Ok(dtos);
         }
 
+        [HttpGet("getRoles")]
+        public async Task<ActionResult<IEnumerable<UserRolesDTO>>> GetRoles()
+        {
+            var dtos = await _usersService.GetAllRolesDtos();
+            return Ok(dtos);
+        }
         [HttpPut("{id}")]
-        public async Task<User> PutUser(int id, [FromBody] UserInformation value)
+        public async Task<User> UpdateUser(int id, [FromBody] UserInformation value)
         {
             var dtos = await _usersService.UpdateUser(id, value);
             return dtos;

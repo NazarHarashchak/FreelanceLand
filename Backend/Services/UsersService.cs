@@ -43,7 +43,6 @@ namespace Backend.Services
             if (user == null)
                 return null;
 
-
             var dto = _mapper.Map<User, UserAccountDTO >(user);
             return dto;
         }
@@ -65,7 +64,7 @@ namespace Backend.Services
         public async Task<UserAccountDTO> CreateUser(string email, string login, string password)
         {
             const string MessagesRegistr = ("<h2>Dear user</h2><h3>Your registration request was successful approve</h3>");
-            if (GetUserByLogin(login) == null)
+            if (await GetUserByLogin(login) == null)
             {
                 string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
                 User user = new User();
@@ -109,6 +108,13 @@ namespace Backend.Services
                 }
 
                 return await userRepo.FindByIdAsync(id);
+        }
+
+        public async Task<IEnumerable<UserRolesDTO>> GetAllRolesDtos()
+        {
+            var entities = await rolesRepo.GetAsync();
+            var dtos = _mapper.Map<IEnumerable<UserRoles>, IEnumerable<UserRolesDTO>>(entities);
+            return dtos;
         }
     }
 }
