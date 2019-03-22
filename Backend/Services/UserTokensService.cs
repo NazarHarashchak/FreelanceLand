@@ -17,11 +17,13 @@ namespace Backend.Services
     public class UserTokensService : IUserTokensService
     {
         private EFGenericRepository<User> userRepo;
+        private EFGenericRepository<UserRoles> rolesRepo;
         private readonly IMapper _mapper;
 
         public UserTokensService(IMapper mapper, ApplicationContext context)
         {
             userRepo = new EFGenericRepository<User>(context);
+            rolesRepo = new EFGenericRepository<UserRoles>(context);
             _mapper = mapper;
         }
 
@@ -66,13 +68,13 @@ namespace Backend.Services
         {
             User person = userRepo.Get(u => u.Login == username).FirstOrDefault();
 
-            string Role = "Moderator";
+            string role = rolesRepo.Get(r => r.Id == person.UserRoleId).FirstOrDefault().Type;
             if (person != null)
             {
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimsIdentity.DefaultNameClaimType, person.Login),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, Role)
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, role)
                 };
                 ClaimsIdentity claimsIdentity =
                 new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,

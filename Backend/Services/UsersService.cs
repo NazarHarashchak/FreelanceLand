@@ -2,10 +2,12 @@
 using Backend.DTOs;
 using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
-using System;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Backend.Services
 {
@@ -16,6 +18,7 @@ namespace Backend.Services
         private readonly IMapper _mapper;
         private EFGenericRepository<User> userRepo;
         private EFGenericRepository<UserRoles> rolesRepo;
+        private EFGenericRepository<Image> imageRepo;
         private readonly ApplicationContext db;
 
         public UsersService(IMapper mapper, ApplicationContext context, IEmailService emailService)
@@ -24,7 +27,8 @@ namespace Backend.Services
             db = context;
             rolesRepo = new EFGenericRepository<UserRoles>(context);
             userRepo  = new EFGenericRepository<User>(context);
-             _emailService = emailService;
+            imageRepo = new EFGenericRepository<Image>(context);
+            _emailService = emailService;
         }
 
         public IEnumerable<UserDTO> GetAllEntities()
@@ -75,6 +79,7 @@ namespace Backend.Services
                 user.Email = email;
                 user.Login = login;
                 user.Password = passwordHash;
+                user.UserRoleId = rolesRepo.Get(r => r.Type == "User").FirstOrDefault().Id;
                 userRepo.Create(user);
 
                 _emailService.SendEmailAsync(user.Email, "Administration", MessagesRegistr);
@@ -110,6 +115,29 @@ namespace Backend.Services
                 return userRepo.FindById(id);
         }
 
+        public async Task<string> CreateUserImage(ImageDTO Image)
+        {
+            Image im = imageRepo.Get((el) => el.UserId == Image.UserId).FirstOrDefault();
+            if (im != null)
+            {
+                imageRepo.Remove(im);
+            }
+
+            if (Image == null) { return ("empty"); };
+            byte[] fileBytes = null;
+            using (var fs1 = Image.Image.OpenReadStream())
+            using (var memoryStream = new MemoryStream())
+            {
+                await fs1.CopyToAsync(memoryStream);
+                fileBytes = memoryStream.ToArray();
+            }
+            Image image = new Image();
+            image.UserId = Image.UserId;
+            image.FileName = Image.FileName;
+            image.Picture = fileBytes;
+            imageRepo.Create(image);
+            return "done";
+        }
         public IEnumerable<UserRolesDTO> GetAllRolesDtos()
         {
             var entities = rolesRepo.Get();
