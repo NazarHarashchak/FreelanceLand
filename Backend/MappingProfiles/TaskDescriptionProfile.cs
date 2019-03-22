@@ -11,8 +11,8 @@ namespace Backend.MappingProfiles
         {
             CreateMap<Task, Task>();
             CreateMap<Task, TaskDescription>()
-                .ForMember("DateAdded", o => o.MapFrom(c => c.Date.ToString("d")))
-                .ForMember("Deadline", o => o.MapFrom(c => c.Deadline.ToString("d")))
+                .ForMember("DateAdded", o => o.MapFrom(c => c.DateCreate.ToString("d")))
+                .ForMember("Deadline", o => o.MapFrom(c => c.DateUpdated.ToString("d")))
                 .ForMember("TaskStatus", o => o.MapFrom(c => Convert.ToInt32(c.TaskStatusId)));
         }
     }
