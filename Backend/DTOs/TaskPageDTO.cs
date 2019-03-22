@@ -21,6 +21,8 @@ namespace Backend.DTOs
 
         public string TaskCategory { get; set; }
 
+        public string TaskStatus { get; set; }
+        
         public int CustomerId { get; set; }
 
         public string CustomerName { get; set; }

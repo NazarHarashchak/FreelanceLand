@@ -29,9 +29,10 @@ namespace Backend.Controllers
 
         [Route("addexcecutor")]
         [HttpPost]
-        public ActionResult<User> AddExcecutor([FromBody] CustomerDTO user)
+        public ActionResult<ExcecutorDTO> AddExcecutor([FromBody] ExcecutorDTO user)
         {
-            return user;
+            var dtos = tasksService.AddExcecutor(user);
+            return Ok(dtos);
         }
 
         [Route("addnewtask")]

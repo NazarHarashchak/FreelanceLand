@@ -25,21 +25,32 @@ namespace Backend.Services
 
         public TaskPageDTO GetTaskDescription(int id)
         {
-            TaskHistory history = historyRepo.GetWithInclude(task => task.TaskId == id,
-                                     customer => customer.TaskCustomer, 
-                                     taskDesc => taskDesc.Task, 
-                                     status => status.Task.TaskStatus).FirstOrDefault();
+            Task myTask = taskRepo.GetWithInclude(task => task.Id == id,
+                                     customer => customer.Customer, 
+                                     category => category.TaskCategory,
+                                     status => status.TaskStatus,
+                                     history => history.TaskHistories).FirstOrDefault();
 
-            var dtos = mapper.Map<TaskHistory, TaskPageDTO>(history);
+            var dtos = mapper.Map<Task, TaskPageDTO>(myTask);
 
             return dtos;
         }
 
-        public CustomerDTO AddExcecutor(CustomerDTO user)
+        public ExcecutorDTO AddExcecutor(ExcecutorDTO user)
         {
+            int taskId = user.TaskId;
+            int userId = user.ExcecutorId;
 
+            Task task = taskRepo.FindById(taskId);
+            task.ExecutorId = userId;
+            task.TaskStatusId++;
+            task.UpdatedById = task.CustomerId;
+            task.DateUpdated = DateTime.Now;
+
+            taskRepo.Update(task);
             return user;
         }
+
         public TaskPageDTO AddTask(TaskPageDTO task)
         {
             task.Date = DateTime.Now.ToString();
