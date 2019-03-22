@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace FreelanceLand.Models
 {
@@ -23,11 +25,18 @@ namespace FreelanceLand.Models
         public int? TaskCategoryId { get; set; }
         public TaskCategory TaskCategory { get; set; }
         
-        public virtual User Customer { get; set; }
+        [ForeignKey("Customer")]
+        public  int? CustomerId { get; set; }
+        public  User Customer { get; set; }
 
-        public virtual User Executor { get; set; }
 
-        public virtual User UpdatedBy { get; set; }
+        [ForeignKey("Executor")]
+        public int? ExecutorId { get; set; }
+        public  User Executor { get; set; }
+
+        [ForeignKey("UpdatedBy")]
+        public int? UpdatedById { get; set; }
+        public  User UpdatedBy { get; set; }
 
 
         public virtual List<TaskHistory> TaskHistories { get; set; }
