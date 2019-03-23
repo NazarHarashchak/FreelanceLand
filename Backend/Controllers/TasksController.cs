@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace Backend.Controllers
 {
@@ -20,36 +21,36 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<TaskDTO>> Get()
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> Get()
         {
-            var dtos = tasksService.GetToDoEntities();
+            var dtos = await tasksService.GetToDoEntities();
 
             return Ok(dtos);
         }
 
         [Route("history/{id}")]
         [HttpGet]
-        public ActionResult<IEnumerable<TaskDTO>> GetHistoryTasks(int id)
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetHistoryTasks(int id)
         {
-            var dtos = tasksService.GetHistoryTaskByUser(id);
+            var dtos = await tasksService.GetHistoryTaskByUser(id);
             
             return Ok(dtos);
         }
 
         [Route("Active/{id}")]
         [HttpGet]
-        public ActionResult<IEnumerable<TaskDTO>> GetActiveTasks(int id)
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetActiveTasks(int id)
         {
-            var dtos = tasksService.GetActiveTaskByUser(id);
+            var dtos = await tasksService.GetActiveTaskByUser(id);
 
             return Ok(dtos);
         }
 
         [Authorize(Roles = "Moderator")]
         [HttpPost("DeleteTask")]
-        public async System.Threading.Tasks.Task DeleteTask([FromBody] TaskDTO task)
+        public async Task DeleteTask([FromBody] TaskDTO task)
         {
-            tasksService.DeleteTask(task.Id);
+            await tasksService.DeleteTask(task.Id);
             await Response.WriteAsync(JsonConvert.SerializeObject(task, new JsonSerializerSettings { Formatting = Formatting.Indented }));
         }
     }

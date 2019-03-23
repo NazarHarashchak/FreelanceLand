@@ -9,6 +9,6 @@ namespace Backend.Interfaces.ServiceInterfaces
 {
     public interface ITopUsersService
     {
-        IEnumerable<TopUserDTO> GetTop5Users();
+        Task<IEnumerable<TopUserDTO>> GetTop5Users();
     }
 }
