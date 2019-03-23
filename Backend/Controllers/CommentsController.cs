@@ -7,6 +7,7 @@ using FreelanceLand.Models;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace Backend.Controllers
 {
@@ -22,16 +23,16 @@ namespace Backend.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<CommentDTO>> Get(int id)
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> Get(int id)
         {
-            var dtos = commentsService.GetComments(id);
+            var dtos = await commentsService.GetComments(id);
             return Ok(dtos);
         }
 
         [HttpPost]
-        public ActionResult<CommentDTO> Post([FromBody] CommentDTO comment)
+        public async Task<ActionResult<CommentDTO>> Post([FromBody] CommentDTO comment)
         {
-            var result = commentsService.AddComment(comment);
+            var result = await commentsService.AddComment(comment);
             return Ok(comment);
         }
 
@@ -39,7 +40,7 @@ namespace Backend.Controllers
         [HttpPost("DeleteComment")]
         public async System.Threading.Tasks.Task DeleteComment([FromBody] CommentDTO comment)
         {
-            commentsService.DeleteComment(comment.Id);
+            await commentsService.DeleteComment(comment.Id);
             await Response.WriteAsync(JsonConvert.SerializeObject(comment, new JsonSerializerSettings { Formatting = Formatting.Indented }));
         }
     }

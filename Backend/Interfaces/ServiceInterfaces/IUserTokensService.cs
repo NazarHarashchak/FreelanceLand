@@ -9,6 +9,6 @@ namespace Backend.Interfaces.ServiceInterfaces
 {
     public interface IUserTokensService
     {
-        string CreateToken(UserAccountDTO user);
+        Task<string> CreateToken(UserAccountDTO user);
     }
 }

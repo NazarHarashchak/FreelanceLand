@@ -3,6 +3,7 @@ using Backend.DTOs;
 using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Linq;
 using System;
 
@@ -11,55 +12,56 @@ namespace Backend.Services
     public class TaskInfoService : ITaskInfoService
     {
         private readonly IMapper mapper;
-        private EFGenericRepository<Task> taskRepo;
-        private EFGenericRepository<TaskHistory> historyRepo;
-        private EFGenericRepository<User> userRepo;
+        EFGenericRepository<FreelanceLand.Models.Task> taskRepo;
+        EFGenericRepository<TaskHistory> historyRepo; 
+        EFGenericRepository<User> userRepo; 
+        EFGenericRepository<Comment> commentRepo; 
 
         public TaskInfoService(IMapper mapper, ApplicationContext context)
         {
-            taskRepo = new EFGenericRepository<Task>(context);
+            taskRepo = new EFGenericRepository<FreelanceLand.Models.Task>(context);
             historyRepo = new EFGenericRepository<TaskHistory>(context);
             userRepo = new EFGenericRepository<User>(context);
             this.mapper = mapper;
         }
 
-        public TaskPageDTO GetTaskDescription(int id)
+        public async Task<TaskPageDTO> GetTaskDescription(int id)
         {
-            Task myTask = taskRepo.GetWithInclude(task => task.Id == id,
+            FreelanceLand.Models.Task myTask = (await taskRepo.GetWithIncludeAsync(task => task.Id == id,
                                      customer => customer.Customer, 
                                      category => category.TaskCategory,
                                      status => status.TaskStatus,
-                                     history => history.TaskHistories).FirstOrDefault();
+                                     history => history.TaskHistories)).FirstOrDefault();
 
-            var dtos = mapper.Map<Task, TaskPageDTO>(myTask);
+            var dtos = mapper.Map<FreelanceLand.Models.Task, TaskPageDTO>(myTask);
 
             return dtos;
         }
 
-        public ExcecutorDTO AddExcecutor(ExcecutorDTO user)
+        public async Task<ExcecutorDTO> AddExcecutor(ExcecutorDTO user)
         {
             int taskId = user.TaskId;
             int userId = user.ExcecutorId;
 
-            Task task = taskRepo.FindById(taskId);
+            FreelanceLand.Models.Task task = await taskRepo.FindByIdAsync(taskId);
             task.ExecutorId = userId;
             task.TaskStatusId++;
             task.UpdatedById = task.CustomerId;
             task.DateUpdated = DateTime.Now;
 
-            taskRepo.Update(task);
+            await taskRepo.UpdateAsync(task);
             return user;
         }
 
-        public TaskPageDTO AddTask(TaskPageDTO task)
+        public async Task<TaskPageDTO> AddTask(TaskPageDTO task)
         {
             task.Date = DateTime.Now.ToString();
-            CustomerDTO user = mapper.Map<User, CustomerDTO> (userRepo.FindById(task.CustomerId));
+            CustomerDTO user = mapper.Map<User, CustomerDTO> (await userRepo.FindByIdAsync(task.CustomerId));
             task.CustomerName = user.Name;
             task.CustomerSecondName = user.Sur_Name;
 
-            Task result = mapper.Map<TaskPageDTO, Task>(task);
-            taskRepo.Create(result);
+            FreelanceLand.Models.Task result = mapper.Map<TaskPageDTO, FreelanceLand.Models.Task>(task);
+            await taskRepo.CreateAsync(result);
             return task;
         }
     }
