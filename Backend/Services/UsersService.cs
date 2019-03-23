@@ -115,29 +115,6 @@ namespace Backend.Services
                 return userRepo.FindById(id);
         }
 
-        public async Task<string> CreateUserImage(ImageDTO Image)
-        {
-            Image im = imageRepo.Get((el) => el.UserId == Image.UserId).FirstOrDefault();
-            if (im != null)
-            {
-                imageRepo.Remove(im);
-            }
-
-            if (Image == null) { return ("empty"); };
-            byte[] fileBytes = null;
-            using (var fs1 = Image.Image.OpenReadStream())
-            using (var memoryStream = new MemoryStream())
-            {
-                await fs1.CopyToAsync(memoryStream);
-                fileBytes = memoryStream.ToArray();
-            }
-            Image image = new Image();
-            image.UserId = Image.UserId;
-            image.FileName = Image.FileName;
-            image.Picture = fileBytes;
-            imageRepo.Create(image);
-            return "done";
-        }
         public IEnumerable<UserRolesDTO> GetAllRolesDtos()
         {
             var entities = rolesRepo.Get();

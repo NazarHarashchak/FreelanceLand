@@ -56,9 +56,8 @@ namespace Backend.Services
                 login = identity.Name,
                 id = user.Id,
                 email = user.Email,
-                role = "Moderator"
-
-            };
+                role = "User"
+        };
 
             string token = JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented });
             return token;

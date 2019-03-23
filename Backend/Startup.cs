@@ -33,6 +33,7 @@ namespace Backend
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddCors();
             services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<IImageService, ImageService>();
             services.AddTransient<IUserTokensService, UserTokensService>();
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<ITasksService, TasksService>();
