@@ -34,6 +34,8 @@ namespace Backend
             services.AddCors();
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IImageService, ImageService>();
+            services.AddTransient<IMessageService, MessageService>();
+            services.AddTransient<IChatRoomService, ChatRoomService>();
             services.AddTransient<IUserTokensService, UserTokensService>();
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<ITasksService, TasksService>();
@@ -65,7 +67,7 @@ namespace Backend
                                 
                                 var path = context.HttpContext.Request.Path;
                                 if (!string.IsNullOrEmpty(accessToken) &&
-                                    (path.StartsWithSegments("/notification")))
+                                    (path.StartsWithSegments("/chat")))
                                 {
                                     context.Token = accessToken;
                                 }
@@ -110,7 +112,7 @@ namespace Backend
             app.UseAuthentication();
             app.UseSignalR(routes =>
             {
-                routes.MapHub<NotificationHub>("/notification");
+                routes.MapHub<ChatHub>("/chat");
             });
             
 

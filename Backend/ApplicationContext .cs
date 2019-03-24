@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FreelanceLand.Models
 {
@@ -11,6 +12,7 @@ namespace FreelanceLand.Models
         public DbSet<TaskCategory> TaskCategories { get; set; }
         public DbSet<TaskHistory> TaskHistories { get; set; }
         public DbSet<TaskStatus> TaskStatuses { get; set; }
+        public DbSet<ChatRoom> ChatRooms { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Image> Images { get; set; }

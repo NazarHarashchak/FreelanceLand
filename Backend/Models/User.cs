@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Backend.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -37,6 +38,12 @@ namespace FreelanceLand.Models
 
         [InverseProperty("UpdatedBy")]
         public virtual  List<Task> UpdateTasks { get; set; }
+
+        [InverseProperty("Creator")]
+        public virtual List<ChatRoom> Creators { get; set; }
+
+        [InverseProperty("SecondUser")]
+        public virtual List<ChatRoom> SecondUsers { get; set; }
 
         [InverseProperty("UpdatedByUser")]
         public  virtual List<TaskHistory> UpdatedTaskHistories { get; set; }

@@ -1,4 +1,5 @@
-﻿using FreelanceLand.Models;
+﻿using Backend.Models;
+using FreelanceLand.Models;
 using System;
 using System.Linq;
 using TASK = FreelanceLand.Models.Task;
@@ -301,40 +302,47 @@ namespace Backend
                 CustomerUser = user5
             };
 
+            ChatRoom chatRoom1 = new ChatRoom
+            {
+                Name = "Room1",
+                Creator = user1,
+                SecondUser = user6
+            };
+
             Message message1 = new Message
             {
                 Content = "Hi",
                 DateAndTime = new DateTime(2018, 9, 4, 18, 30, 25),
                 SenderUser = user1,
-                GetterUser = user6
+                ChatRoom = chatRoom1
             };
             Message message2 = new Message
             {
                 Content = "Hello",
                 DateAndTime = new DateTime(2018, 9, 4, 18, 31, 25),
                 SenderUser = user6,
-                GetterUser = user1
+                ChatRoom = chatRoom1
             };
             Message message3 = new Message
             {
                 Content = "What about my task?",
                 DateAndTime = new DateTime(2018, 9, 4, 20, 30, 25),
-                SenderUser = user3,
-                GetterUser = user4
+                SenderUser = user6,
+                ChatRoom = chatRoom1
             };
             Message message4 = new Message
             {
                 Content = "It is in progress",
                 DateAndTime = new DateTime(2018, 9, 4, 22, 30, 25),
-                SenderUser = user4,
-                GetterUser = user3
+                SenderUser = user1,
+                ChatRoom = chatRoom1
             };
             Message message5 = new Message
             {
                 Content = "Nice job, thank you.",
                 DateAndTime = new DateTime(2018, 9, 4, 18, 30, 25),
-                SenderUser = user3,
-                GetterUser = user7
+                SenderUser = user6,
+                ChatRoom = chatRoom1
             };
 
             Comment comment1 = new Comment
@@ -462,6 +470,13 @@ namespace Backend
                         task8,
                         task9,
                         task10
+                    );
+                context.SaveChanges();
+            }
+            if (!context.ChatRooms.Any())
+            {
+                context.ChatRooms.AddRange(
+                        chatRoom1
                     );
                 context.SaveChanges();
             }

@@ -4,14 +4,16 @@ using FreelanceLand.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Backend.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20190323143309_CreateChatRomAndEditMessage")]
+    partial class CreateChatRomAndEditMessage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,17 +27,9 @@ namespace Backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CreatorId");
-
                     b.Property<string>("Name");
 
-                    b.Property<int?>("SecondUserId");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatorId");
-
-                    b.HasIndex("SecondUserId");
 
                     b.ToTable("ChatRooms");
                 });
@@ -268,17 +262,6 @@ namespace Backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserRoles");
-                });
-
-            modelBuilder.Entity("Backend.Models.ChatRoom", b =>
-                {
-                    b.HasOne("FreelanceLand.Models.User", "Creator")
-                        .WithMany("Creators")
-                        .HasForeignKey("CreatorId");
-
-                    b.HasOne("FreelanceLand.Models.User", "SecondUser")
-                        .WithMany("SecondUsers")
-                        .HasForeignKey("SecondUserId");
                 });
 
             modelBuilder.Entity("FreelanceLand.Models.Comment", b =>
