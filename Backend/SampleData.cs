@@ -12,7 +12,7 @@ namespace Backend
         {
             UserRoles UserRole1 = new UserRoles
             {
-                Type = "Customer"
+                Type = "User"
             };
             UserRoles UserRole2 = new UserRoles
             {
@@ -22,11 +22,7 @@ namespace Backend
             {
                 Type = "Moderator"
             };
-
-            UserRoles UserRole4 = new UserRoles
-            {
-                Type = "Freelancer"
-            };
+            
             User user1 = new User
             {
                 Name = "Anton",
@@ -173,8 +169,8 @@ namespace Backend
                 Price = 1,
                 Title = "Task1",
                 Description = "Some task description1",
-                Date = new DateTime(2019, 1, 1),
-                Deadline = new DateTime(2019, 1, 2),
+                DateCreate = new DateTime(2019, 1, 1),
+                DateUpdated = new DateTime(2019, 1, 2),
                 TaskStatus = taskStatus2,
                 TaskCategory = taskCategory1
             };
@@ -183,8 +179,8 @@ namespace Backend
                 Price = 2,
                 Title = "Task2",
                 Description = "Some task description2",
-                Date = new DateTime(2019, 2, 1),
-                Deadline = new DateTime(2019, 2, 2),
+                DateCreate = new DateTime(2019, 2, 1),
+                DateUpdated = new DateTime(2019, 2, 2),
                 TaskStatus = taskStatus1,
                 TaskCategory = taskCategory2
             };
@@ -193,8 +189,8 @@ namespace Backend
                 Price = 3,
                 Title = "Task3",
                 Description = "Some task description3",
-                Date = new DateTime(2019, 3, 1),
-                Deadline = new DateTime(2019, 3, 2),
+                DateCreate = new DateTime(2019, 3, 1),
+                DateUpdated = new DateTime(2019, 3, 2),
                 TaskStatus = taskStatus3,
                 TaskCategory = taskCategory1
             };
@@ -203,8 +199,8 @@ namespace Backend
                 Price = 4,
                 Title = "Task4",
                 Description = "Some task description4",
-                Date = new DateTime(2019, 4, 1),
-                Deadline = new DateTime(2019, 4, 2),
+                DateCreate = new DateTime(2019, 4, 1),
+                DateUpdated = new DateTime(2019, 4, 2),
                 TaskStatus = taskStatus1,
                 TaskCategory = taskCategory3
             };
@@ -213,8 +209,8 @@ namespace Backend
                 Price = 5,
                 Title = "Task5",
                 Description = "Some task description5",
-                Date = new DateTime(2019, 5, 1),
-                Deadline = new DateTime(2019, 5, 2),
+                DateCreate = new DateTime(2019, 5, 1),
+                DateUpdated = new DateTime(2019, 5, 2),
                 TaskStatus = taskStatus1,
                 TaskCategory = taskCategory4
             };
@@ -223,8 +219,8 @@ namespace Backend
                 Price = 6,
                 Title = "Task6",
                 Description = "Some task description6",
-                Date = new DateTime(2019, 6, 1),
-                Deadline = new DateTime(2019, 6, 2),
+                DateCreate = new DateTime(2019, 6, 1),
+                DateUpdated = new DateTime(2019, 6, 2),
                 TaskStatus = taskStatus2,
                 TaskCategory = taskCategory4
             };
@@ -233,8 +229,8 @@ namespace Backend
                 Price = 7,
                 Title = "Task7",
                 Description = "Some task description7",
-                Date = new DateTime(2019, 7, 1),
-                Deadline = new DateTime(2019, 7, 2),
+                DateCreate = new DateTime(2019, 7, 1),
+                DateUpdated = new DateTime(2019, 7, 2),
                 TaskStatus = taskStatus3,
                 TaskCategory = taskCategory2
             };
@@ -243,8 +239,8 @@ namespace Backend
                 Price = 8,
                 Title = "Task8",
                 Description = "Some task description8",
-                Date = new DateTime(2019, 8, 1),
-                Deadline = new DateTime(2019, 8, 2),
+                DateCreate = new DateTime(2019, 8, 1),
+                DateUpdated = new DateTime(2019, 8, 2),
                 TaskStatus = taskStatus3,
                 TaskCategory = taskCategory3
             };
@@ -253,8 +249,8 @@ namespace Backend
                 Price = 9,
                 Title = "Task9",
                 Description = "Some task description9",
-                Date = new DateTime(2019, 9, 1),
-                Deadline = new DateTime(2019, 9, 2),
+                DateCreate = new DateTime(2019, 9, 1),
+                DateUpdated = new DateTime(2019, 9, 2),
                 TaskStatus = taskStatus2,
                 TaskCategory = taskCategory1
             };
@@ -263,8 +259,8 @@ namespace Backend
                 Price = 10,
                 Title = "Task10",
                 Description = "Some task description10",
-                Date = new DateTime(2019, 10, 1),
-                Deadline = new DateTime(2019, 10, 2),
+                DateCreate = new DateTime(2019, 10, 1),
+                DateUpdated = new DateTime(2019, 10, 2),
                 TaskStatus = taskStatus3,
                 TaskCategory = taskCategory2
             };
@@ -379,36 +375,31 @@ namespace Backend
 
             TaskHistory taskHistory1 = new TaskHistory
             {
-                Date = new DateTime(2018, 9, 4),
-                TaskExecutor = user6,
+                DateUpdated = new DateTime(2018, 9, 4),
                 TaskCustomer = user1,
                 Task = task1
             };
             TaskHistory taskHistory2 = new TaskHistory
             {
-                Date = new DateTime(2018, 10, 4),
-                TaskExecutor = user7,
+                DateUpdated = new DateTime(2018, 10, 4),
                 TaskCustomer = user2,
                 Task = task2
             };
             TaskHistory taskHistory3 = new TaskHistory
             {
-                Date = new DateTime(2018, 11, 4),
-                TaskExecutor = user8,
+                DateUpdated = new DateTime(2018, 11, 4),
                 TaskCustomer = user3,
                 Task = task3
             };
             TaskHistory taskHistory4 = new TaskHistory
             {
-                Date = new DateTime(2018, 9, 4),
-                TaskExecutor = user9,
+                DateUpdated = new DateTime(2018, 9, 4),
                 TaskCustomer = user4,
                 Task = task4
             };
             TaskHistory taskHistory5 = new TaskHistory
             {
-                Date = new DateTime(2018, 12, 4),
-                TaskExecutor = user10,
+                DateUpdated = new DateTime(2018, 12, 4),
                 TaskCustomer = user5,
                 Task = task1
             };
@@ -419,8 +410,7 @@ namespace Backend
                 context.UserRoles.AddRange(
                         UserRole1,
                         UserRole2,
-                        UserRole3,
-                        UserRole4
+                        UserRole3
                     );
                 context.SaveChanges();
             }

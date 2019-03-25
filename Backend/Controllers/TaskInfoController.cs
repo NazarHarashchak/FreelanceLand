@@ -1,7 +1,10 @@
-﻿using Backend.DTOs;
+﻿using System;
+using Backend.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Backend.Controllers
 {
@@ -9,28 +12,36 @@ namespace Backend.Controllers
     [ApiController]
     public class TaskInfoController : ControllerBase
     {
-        private ITaskInfoService infoTaskService;
+        private ITaskInfoService tasksService;
         private IUsersService usersService;
 
-        public TaskInfoController(ITaskInfoService infoTaskService, IUsersService usersService)
+        public TaskInfoController(ITaskInfoService tasksService, IUsersService usersService)
         {
-            this.infoTaskService = infoTaskService;
+            this.tasksService = tasksService;
             this.usersService = usersService;
         }
-
+        
         [HttpGet("{id}")]
-        public ActionResult<TaskDescription> Get(int id)
+        public async Task<ActionResult<TaskPageDTO>> Get(int id)
         {
-            var dtos = infoTaskService.GetTaskDescription(id);
+            var dtos = await tasksService.GetTaskDescription(id);
             return Ok(dtos);
         }
 
-        [HttpGet("{number},{id}")]
-        public ActionResult<User> Get(int number, int id)
+        [Route("addexcecutor")]
+        [HttpPost]
+        public async Task<ActionResult<ExcecutorDTO>> AddExcecutor([FromBody] ExcecutorDTO user)
         {
-            var dtos = infoTaskService.GetTaskCustomer(id);
-
+            var dtos = await tasksService.AddExcecutor(user);
             return Ok(dtos);
+        }
+
+        [Route("addnewtask")]
+        [HttpPost]
+        public async Task<ActionResult<TaskPageDTO>> AddNewTask([FromBody] TaskPageDTO task)
+        {
+            var result = await tasksService.AddTask(task);
+            return Ok(result);
         }
     }
 }

@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Backend.DTOs;
+using System.Drawing;
 
 namespace Backend.Interfaces.ServiceInterfaces
 {
-    public interface IRolesUserService
+    public interface IImageService
     {
-        IEnumerable<UserRolesDTO> GetAllRolesDtos();
     }
 }

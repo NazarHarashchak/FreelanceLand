@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Backend.Hubs;
 using Backend.Interfaces.ServiceInterfaces;
 using Backend.MappingProfiles;
 using Backend.Services;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,13 +37,11 @@ namespace Backend
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<ITasksService, TasksService>();
             services.AddTransient<ITopUsersService, TopUsersService>();
-            services.AddTransient<ITaskCategoriesService, TaskCategoriesService>();
             services.AddTransient<ITaskInfoService, TaskInfoService>();
             services.AddTransient<ICommentsService, CommentsService>();
-            services.AddTransient<IRolesUserService, RolesService>();
             services.AddTransient<ApplicationContext, ApplicationContext>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
+             
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                     {
@@ -56,6 +56,21 @@ namespace Backend
                             IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
                             ValidateIssuerSigningKey = true,
                         };
+                        options.Events = new JwtBearerEvents
+                        {
+                            OnMessageReceived = context =>
+                            {
+                                var accessToken = context.Request.Query["access_token"];
+                                
+                                var path = context.HttpContext.Request.Path;
+                                if (!string.IsNullOrEmpty(accessToken) &&
+                                    (path.StartsWithSegments("/notification")))
+                                {
+                                    context.Token = accessToken;
+                                }
+                                return System.Threading.Tasks.Task.CompletedTask;
+                            }
+                        };
                     });
             services.AddCors(options =>
             {
@@ -64,10 +79,12 @@ namespace Backend
                     {
                         builder.WithOrigins("http://localhost:3000",
                                 "https://localhost:44332").AllowAnyHeader()
-                            .AllowAnyMethod();
+                            .AllowAnyMethod().AllowCredentials();
                     });
             });
 
+            services.AddSignalR();
+            services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_0);
 
 
@@ -87,8 +104,14 @@ namespace Backend
             }
 
             app.UseCors(MyAllowSpecificOrigins);
+           
             app.UseHttpsRedirection();
             app.UseAuthentication();
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<NotificationHub>("/notification");
+            });
+            
 
             app.UseMvc();
         }

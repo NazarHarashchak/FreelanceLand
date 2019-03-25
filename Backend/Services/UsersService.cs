@@ -2,10 +2,12 @@
 using Backend.DTOs;
 using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
-using System;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Backend.Services
 {
@@ -16,6 +18,7 @@ namespace Backend.Services
         private readonly IMapper _mapper;
         private EFGenericRepository<User> userRepo;
         private EFGenericRepository<UserRoles> rolesRepo;
+        private EFGenericRepository<Image> imageRepo;
         private readonly ApplicationContext db;
 
         public UsersService(IMapper mapper, ApplicationContext context, IEmailService emailService)
@@ -24,20 +27,21 @@ namespace Backend.Services
             db = context;
             rolesRepo = new EFGenericRepository<UserRoles>(context);
             userRepo  = new EFGenericRepository<User>(context);
-             _emailService = emailService;
+            imageRepo = new EFGenericRepository<Image>(context);
+            _emailService = emailService;
         }
 
-        public IEnumerable<UserDTO> GetAllEntities()
+        public async Task<IEnumerable<UserDTO>> GetAllEntities()
         {
-            var entities = userRepo.Get();
+            var entities = await userRepo.GetAsync();
             var dtos = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(entities);
             return dtos;
         }
 
 
-        public User GetUserByLogin(string login)
+        public async Task<User> GetUserByLogin(string login)
         {
-            var user = userRepo.Get(u => u.Login == login).FirstOrDefault();
+            var user = (await userRepo.GetAsync(u => u.Login == login)).FirstOrDefault();
 
             if (user == null)
                 return null;
@@ -45,9 +49,9 @@ namespace Backend.Services
             return user;
         }
 
-        public UserAccountDTO Authenticate(string login, string password)
+        public async Task<UserAccountDTO> Authenticate(string login, string password)
         {
-            var user = GetUserByLogin(login);
+            var user = await GetUserByLogin(login);
 
             if (user == null)
                 return null;
@@ -60,10 +64,10 @@ namespace Backend.Services
             return null;
         }
         
-        public UserAccountDTO CreateUser(string email, string login, string password)
+        public async Task<UserAccountDTO> CreateUser(string email, string login, string password)
         {
             const string MessagesRegistr = ("<h2>Dear user</h2><h3>Your registration request was successful approve</h3>");
-            if (GetUserByLogin(login) == null)
+            if (await GetUserByLogin(login) == null)
             {
                 string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
                 User user = new User();
@@ -74,8 +78,8 @@ namespace Backend.Services
                 user.Email = email;
                 user.Login = login;
                 user.Password = passwordHash;
-                user.UserRoleId = rolesRepo.Get(r => r.Type == "User").FirstOrDefault().Id;
-                userRepo.Create(user);
+                user.UserRoleId = (await rolesRepo.GetAsync(r => r.Type == "User")).FirstOrDefault().Id;
+                await userRepo.CreateAsync(user);
 
                 _emailService.SendEmailAsync(user.Email, "Administration", MessagesRegistr);
 
@@ -85,14 +89,14 @@ namespace Backend.Services
             }
             return null;
         }
-        public UserInformation GetUserInformation(int id)
+        public async Task<UserInformation> GetUserInformation(int id)
         {
-            var entities = userRepo.FindById(id);
+            var entities = await userRepo.FindByIdAsync(id);
             var dtos = _mapper.Map<User, UserInformation>(entities);
             return dtos;
         }
 
-        public User UpdateUser(int id, [FromBody] UserInformation value)
+        public async Task<User> UpdateUser(int id, [FromBody] UserInformation value)
         {
                 var result = db.Users.SingleOrDefault(b => b.Id == id);
                 if (result != null)
@@ -107,15 +111,46 @@ namespace Backend.Services
 
                 }
 
-                return userRepo.FindById(id);
+                return await userRepo.FindByIdAsync(id);
         }
 
-        public UserAccountDTO ChangePass(string login, string password)
+        public async Task<string> CreateUserImage(ImageDTO Image)
+        {
+            Image im = (await imageRepo.GetAsync((el) => el.UserId == Image.UserId)).FirstOrDefault();
+            if (im != null)
+            {
+                await imageRepo.RemoveAsync(im);
+            }
+
+            if (Image == null) { return ("empty"); };
+            byte[] fileBytes = null;
+            using (var fs1 = Image.Image.OpenReadStream())
+            using (var memoryStream = new MemoryStream())
+            {
+                await fs1.CopyToAsync(memoryStream);
+                fileBytes = memoryStream.ToArray();
+            }
+            Image image = new Image();
+            image.UserId = Image.UserId;
+            image.FileName = Image.FileName;
+            image.Picture = fileBytes;
+            await imageRepo.CreateAsync(image);
+            return "done";
+        }
+
+        public async Task<IEnumerable<UserRolesDTO>> GetAllRolesDtos()
+        {
+            var entities = await rolesRepo.GetAsync();
+            var dtos = _mapper.Map<IEnumerable<UserRoles>, IEnumerable<UserRolesDTO>>(entities);
+            return dtos;
+        }
+
+        public async Task<UserAccountDTO> ChangePass(string login, string password)
         {
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
-            var user = GetUserByLogin(login);
+            var user = await GetUserByLogin(login);
             user.Password = passwordHash;
-            userRepo.Update(user);
+            await userRepo.UpdateAsync(user);
             var dto = _mapper.Map<User, UserAccountDTO>(user);
             return dto;
         }

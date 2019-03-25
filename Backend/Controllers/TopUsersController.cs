@@ -21,9 +21,9 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<DTOs.TopUserDTO>> GetTop5Users()
+        public async Task<ActionResult<IEnumerable<DTOs.TopUserDTO>>> GetTop5Users()
         {
-            var topUsers = _usersService.GetTop5Users();
+            var topUsers = await _usersService.GetTop5Users();
             return Ok(topUsers);
         }
 

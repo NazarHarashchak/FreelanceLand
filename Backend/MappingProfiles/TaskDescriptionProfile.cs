@@ -10,10 +10,19 @@ namespace Backend.MappingProfiles
         public TaskDescriptionProfile()
         {
             CreateMap<Task, Task>();
-            CreateMap<Task, TaskDescription>()
-                .ForMember("DateAdded", o => o.MapFrom(c => c.Date.ToString("d")))
-                .ForMember("Deadline", o => o.MapFrom(c => c.Deadline.ToString("d")))
-                .ForMember("TaskStatus", o => o.MapFrom(c => Convert.ToInt32(c.TaskStatusId)));
+            CreateMap<Task, TaskPageDTO>()
+                    .ForMember("Date", o => o.MapFrom(c => c.DateCreate.ToString("d")))
+                    .ForMember("Deadline", o => o.MapFrom(c => c.DateUpdated.ToString("d")))
+                    .ForMember("Title", o => o.MapFrom(c => c.Title))
+                    .ForMember("Price", o => o.MapFrom(c => c.Price))
+                    .ForMember("Description", o => o.MapFrom(c => c.Description))
+                    .ForMember("TaskCategory", o => o.MapFrom(c => c.TaskCategory.Type.ToString()))
+                    .ForMember("CustomerId", o => o.MapFrom(c => c.CustomerId))
+                    .ForMember("CustomerName", o => o.MapFrom(c => c.Customer.Name))
+                    .ForMember("CustomerSecondName", o => o.MapFrom(c => c.Customer.Sur_Name))
+                    .ForMember("TaskStatus", o => o.MapFrom(c => c.TaskStatus.Type));
+            CreateMap<TaskPageDTO, Task>();
+            CreateMap<TaskPageDTO, TaskHistory>();
         }
     }
 }
