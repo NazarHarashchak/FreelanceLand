@@ -12,8 +12,8 @@ namespace Backend.Services
     public class TasksService : ITasksService
     {
         private readonly IMapper mapper;
-        private readonly EFGenericRepository<Task> taskRepo;
-        private readonly EFGenericRepository<TaskHistory> historyRepo;
+        private  EFGenericRepository<Task> taskRepo;
+        private  EFGenericRepository<TaskHistory> historyRepo;
         private readonly ApplicationContext db;
 
         public TasksService(IMapper mapper, ApplicationContext context)

@@ -35,25 +35,24 @@ namespace Backend.Services
         }
 
 
-        public UserAccountDTO GetUserByLogin(string login)
+        public User GetUserByLogin(string login)
         {
             var user = userRepo.Get(u => u.Login == login).FirstOrDefault();
 
             if (user == null)
                 return null;
 
-
-            var dto = _mapper.Map<User, UserAccountDTO >(user);
-            return dto;
+            return user;
         }
 
         public UserAccountDTO Authenticate(string login, string password)
         {
-            var dto = GetUserByLogin(login);
+            var user = GetUserByLogin(login);
 
-            if (dto == null)
+            if (user == null)
                 return null;
 
+            var dto = _mapper.Map<User, UserAccountDTO>(user);
 
             if (BCrypt.Net.BCrypt.Verify(password, dto.Password))
                 return dto;
@@ -75,6 +74,7 @@ namespace Backend.Services
                 user.Email = email;
                 user.Login = login;
                 user.Password = passwordHash;
+                user.UserRoleId = rolesRepo.Get(r => r.Type == "User").FirstOrDefault().Id;
                 userRepo.Create(user);
 
                 _emailService.SendEmailAsync(user.Email, "Administration", MessagesRegistr);
@@ -108,6 +108,16 @@ namespace Backend.Services
                 }
 
                 return userRepo.FindById(id);
+        }
+
+        public UserAccountDTO ChangePass(string login, string password)
+        {
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
+            var user = GetUserByLogin(login);
+            user.Password = passwordHash;
+            userRepo.Update(user);
+            var dto = _mapper.Map<User, UserAccountDTO>(user);
+            return dto;
         }
     }
 }
