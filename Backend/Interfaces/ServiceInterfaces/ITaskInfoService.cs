@@ -8,5 +8,6 @@ namespace Backend.Interfaces.ServiceInterfaces
         TaskPageDTO GetTaskDescription(int id);
         TaskPageDTO AddTask(TaskPageDTO task);
         ExcecutorDTO AddExcecutor(ExcecutorDTO user);
+        List<TaskCategoryDTO> GetCategories();
     }
 }

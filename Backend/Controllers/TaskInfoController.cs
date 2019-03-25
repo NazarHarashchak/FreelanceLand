@@ -27,6 +27,14 @@ namespace Backend.Controllers
             return Ok(dtos);
         }
 
+        [Route("getCategories")]
+        [HttpGet]
+        public ActionResult<TaskPageDTO> Get()
+        {
+            var dtos = tasksService.GetCategories();
+            return Ok(dtos);
+        }
+
         [Route("addexcecutor")]
         [HttpPost]
         public ActionResult<ExcecutorDTO> AddExcecutor([FromBody] ExcecutorDTO user)

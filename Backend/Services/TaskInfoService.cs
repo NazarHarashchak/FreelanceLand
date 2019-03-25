@@ -14,12 +14,14 @@ namespace Backend.Services
         private EFGenericRepository<Task> taskRepo;
         private EFGenericRepository<TaskHistory> historyRepo;
         private EFGenericRepository<User> userRepo;
+        private EFGenericRepository<TaskCategory> categoryRepo;
 
         public TaskInfoService(IMapper mapper, ApplicationContext context)
         {
             taskRepo = new EFGenericRepository<Task>(context);
             historyRepo = new EFGenericRepository<TaskHistory>(context);
             userRepo = new EFGenericRepository<User>(context);
+            categoryRepo = new EFGenericRepository<TaskCategory>(context);
             this.mapper = mapper;
         }
 
@@ -61,6 +63,13 @@ namespace Backend.Services
             Task result = mapper.Map<TaskPageDTO, Task>(task);
             taskRepo.Create(result);
             return task;
+        }
+
+        public List<TaskCategoryDTO> GetCategories()
+        {
+            List<TaskCategoryDTO> result = mapper.Map<IEnumerable<TaskCategory>, IEnumerable<TaskCategoryDTO>>
+                                        (categoryRepo.Get()).ToList();
+            return result;
         }
     }
 }
