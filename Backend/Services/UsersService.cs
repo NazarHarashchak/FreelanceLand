@@ -45,9 +45,12 @@ namespace Backend.Services
 
             if (user == null)
                 return null;
-
-            var dto = _mapper.Map<User, UserAccountDTO >(user);
-            return dto;
+            if (user.EmailConfirmed == true)
+            {
+                var dto = _mapper.Map<User, UserAccountDTO>(user);
+                return dto;
+            }
+            return null;
         }
 
         public async Task<UserAccountDTO> Authenticate(string login, string password)
@@ -63,10 +66,22 @@ namespace Backend.Services
 
             return null;
         }
-        
+
+        public async Task<UserAccountDTO> ConfirmEmail(string confirmCode)
+        {
+            var user = (await userRepo.GetAsync(u => u.ConfirmCode == confirmCode)).FirstOrDefault();
+            if (user == null)
+                return null;
+
+            user.EmailConfirmed = true;
+            await userRepo.UpdateAsync(user);
+
+            return _mapper.Map<User, UserAccountDTO>(user);
+        }
+
         public async Task<UserAccountDTO> CreateUser(string email, string login, string password)
         {
-            const string MessagesRegistr = ("<h2>Dear user</h2><h3>Your registration request was successful approve</h3>");
+            
             if (await GetUserByLogin(login) == null)
             {
                 string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
@@ -78,9 +93,12 @@ namespace Backend.Services
                 user.Email = email;
                 user.Login = login;
                 user.Password = passwordHash;
+                user.EmailConfirmed = false;
+                user.ConfirmCode = Guid.NewGuid().ToString();
                 user.UserRoleId = (await rolesRepo.GetAsync(r => r.Type == "User")).FirstOrDefault().Id;
                 await userRepo.CreateAsync(user);
 
+                string MessagesRegistr = $"<h2>Dear user</h2><h3>Your registration request was successful approve</h3><a href='https://localhost:44332/Account/confirmEmail?confirmCode={user.ConfirmCode}'>Confirm registration </a>";
                 _emailService.SendEmailAsync(user.Email, "Administration", MessagesRegistr);
 
                 var dto = _mapper.Map<User, UserAccountDTO>(user);
