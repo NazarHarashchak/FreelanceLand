@@ -9,14 +9,14 @@ namespace Backend.Interfaces.ServiceInterfaces
 {
     public interface IUsersService
     {
-        IEnumerable<UserDTO> GetAllEntities();
-        UserAccountDTO GetUserByLogin(string login);
-        UserAccountDTO Authenticate(string login, string password);
-        UserAccountDTO CreateUser(string email, string login, string password);
-        UserInformation GetUserInformation(int id);
-        User UpdateUser(int id, [FromBody] UserInformation value);
+        Task<UserAccountDTO> ConfirmEmail(string confirmCode);
+        Task<IEnumerable<UserDTO>> GetAllEntities();
+        Task<UserAccountDTO> GetUserByLogin(string login);
+        Task<UserAccountDTO> Authenticate(string login, string password);
+        Task<UserAccountDTO> CreateUser(string email, string login, string password);
+        Task<UserInformation> GetUserInformation(int id);
+        Task<User> UpdateUser(int id, [FromBody] UserInformation value);
         Task<string> CreateUserImage(ImageDTO Image);
-        IEnumerable<UserRolesDTO> GetAllRolesDtos();
-
+        Task<IEnumerable<UserRolesDTO>> GetAllRolesDtos();
     }
 }

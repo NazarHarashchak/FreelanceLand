@@ -3,6 +3,7 @@ using Backend.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 namespace Backend.Controllers
@@ -21,9 +22,9 @@ namespace Backend.Controllers
         }
         
         [HttpGet("{id}")]
-        public ActionResult<TaskPageDTO> Get(int id)
+        public async Task<ActionResult<TaskPageDTO>> Get(int id)
         {
-            var dtos = tasksService.GetTaskDescription(id);
+            var dtos = await tasksService.GetTaskDescription(id);
             return Ok(dtos);
         }
 
@@ -37,17 +38,17 @@ namespace Backend.Controllers
 
         [Route("addexcecutor")]
         [HttpPost]
-        public ActionResult<ExcecutorDTO> AddExcecutor([FromBody] ExcecutorDTO user)
+        public async Task<ActionResult<ExcecutorDTO>> AddExcecutor([FromBody] ExcecutorDTO user)
         {
-            var dtos = tasksService.AddExcecutor(user);
+            var dtos = await tasksService.AddExcecutor(user);
             return Ok(dtos);
         }
 
         [Route("addnewtask")]
         [HttpPost]
-        public ActionResult<TaskPageDTO> AddNewTask([FromBody] TaskPageDTO task)
+        public async Task<ActionResult<TaskPageDTO>> AddNewTask([FromBody] TaskPageDTO task)
         {
-            var result = tasksService.AddTask(task);
+            var result = await tasksService.AddTask(task);
             return Ok(result);
         }
     }

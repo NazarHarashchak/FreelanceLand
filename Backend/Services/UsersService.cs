@@ -31,29 +31,31 @@ namespace Backend.Services
             _emailService = emailService;
         }
 
-        public IEnumerable<UserDTO> GetAllEntities()
+        public async Task<IEnumerable<UserDTO>> GetAllEntities()
         {
-            var entities = userRepo.Get();
+            var entities = await userRepo.GetAsync();
             var dtos = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(entities);
             return dtos;
         }
 
 
-        public UserAccountDTO GetUserByLogin(string login)
+        public async Task<UserAccountDTO> GetUserByLogin(string login)
         {
-            var user = userRepo.Get(u => u.Login == login).FirstOrDefault();
+            var user = (await userRepo.GetAsync(u => u.Login == login)).FirstOrDefault();
 
             if (user == null)
                 return null;
-
-
-            var dto = _mapper.Map<User, UserAccountDTO >(user);
-            return dto;
+            if (user.EmailConfirmed == true)
+            {
+                var dto = _mapper.Map<User, UserAccountDTO>(user);
+                return dto;
+            }
+            return null;
         }
 
-        public UserAccountDTO Authenticate(string login, string password)
+        public async Task<UserAccountDTO> Authenticate(string login, string password)
         {
-            var dto = GetUserByLogin(login);
+            var dto = await GetUserByLogin(login);
 
             if (dto == null)
                 return null;
@@ -64,11 +66,23 @@ namespace Backend.Services
 
             return null;
         }
-        
-        public UserAccountDTO CreateUser(string email, string login, string password)
+
+        public async Task<UserAccountDTO> ConfirmEmail(string confirmCode)
         {
-            const string MessagesRegistr = ("<h2>Dear user</h2><h3>Your registration request was successful approve</h3>");
-            if (GetUserByLogin(login) == null)
+            var user = (await userRepo.GetAsync(u => u.ConfirmCode == confirmCode)).FirstOrDefault();
+            if (user == null)
+                return null;
+
+            user.EmailConfirmed = true;
+            await userRepo.UpdateAsync(user);
+
+            return _mapper.Map<User, UserAccountDTO>(user);
+        }
+
+        public async Task<UserAccountDTO> CreateUser(string email, string login, string password)
+        {
+            
+            if (await GetUserByLogin(login) == null)
             {
                 string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
                 User user = new User();
@@ -79,9 +93,12 @@ namespace Backend.Services
                 user.Email = email;
                 user.Login = login;
                 user.Password = passwordHash;
-                user.UserRoleId = rolesRepo.Get(r => r.Type == "User").FirstOrDefault().Id;
-                userRepo.Create(user);
+                user.EmailConfirmed = false;
+                user.ConfirmCode = Guid.NewGuid().ToString();
+                user.UserRoleId = (await rolesRepo.GetAsync(r => r.Type == "User")).FirstOrDefault().Id;
+                await userRepo.CreateAsync(user);
 
+                string MessagesRegistr = $"<h2>Dear user</h2><h3>Your registration request was successful approve</h3><a href='https://localhost:44332/Account/confirmEmail?confirmCode={user.ConfirmCode}'>Confirm registration </a>";
                 _emailService.SendEmailAsync(user.Email, "Administration", MessagesRegistr);
 
                 var dto = _mapper.Map<User, UserAccountDTO>(user);
@@ -90,14 +107,14 @@ namespace Backend.Services
             }
             return null;
         }
-        public UserInformation GetUserInformation(int id)
+        public async Task<UserInformation> GetUserInformation(int id)
         {
-            var entities = userRepo.FindById(id);
+            var entities = (await userRepo.GetWithIncludeAsync(u => u.Id == id, r => r.UserRole)).FirstOrDefault();
             var dtos = _mapper.Map<User, UserInformation>(entities);
             return dtos;
         }
 
-        public User UpdateUser(int id, [FromBody] UserInformation value)
+        public async Task<User> UpdateUser(int id, [FromBody] UserInformation value)
         {
                 var result = db.Users.SingleOrDefault(b => b.Id == id);
                 if (result != null)
@@ -108,19 +125,21 @@ namespace Backend.Services
                     result.Sur_Name = value.Sur_Name;
                     result.Phone_Number = value.Phone_Number;
                     result.Login = value.Login;
-                    db.SaveChanges();
+                    if (value.UserRoleName!=null)
+                        result.UserRoleId = (await rolesRepo.GetAsync(r => r.Type == value.UserRoleName)).FirstOrDefault().Id;
+                db.SaveChanges();
 
                 }
 
-                return userRepo.FindById(id);
+                return await userRepo.FindByIdAsync(id);
         }
 
         public async Task<string> CreateUserImage(ImageDTO Image)
         {
-            Image im = imageRepo.Get((el) => el.UserId == Image.UserId).FirstOrDefault();
+            Image im = (await imageRepo.GetAsync((el) => el.UserId == Image.UserId)).FirstOrDefault();
             if (im != null)
             {
-                imageRepo.Remove(im);
+                await imageRepo.RemoveAsync(im);
             }
 
             if (Image == null) { return ("empty"); };
@@ -135,12 +154,13 @@ namespace Backend.Services
             image.UserId = Image.UserId;
             image.FileName = Image.FileName;
             image.Picture = fileBytes;
-            imageRepo.Create(image);
+            await imageRepo.CreateAsync(image);
             return "done";
         }
-        public IEnumerable<UserRolesDTO> GetAllRolesDtos()
+
+        public async Task<IEnumerable<UserRolesDTO>> GetAllRolesDtos()
         {
-            var entities = rolesRepo.Get();
+            var entities = await rolesRepo.GetAsync();
             var dtos = _mapper.Map<IEnumerable<UserRoles>, IEnumerable<UserRolesDTO>>(entities);
             return dtos;
         }

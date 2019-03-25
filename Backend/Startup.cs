@@ -32,6 +32,7 @@ namespace Backend
             services.AddDbContext<ApplicationContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddCors();
+            
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IUserTokensService, UserTokensService>();
             services.AddTransient<IUsersService, UsersService>();
@@ -122,6 +123,7 @@ namespace Backend
             {
                 cfg.AddProfile<UserProfile>();
                 cfg.AddProfile<TaskProfile>();
+                cfg.AddProfile<UserInformationProfile>();
             });
 
             return services;

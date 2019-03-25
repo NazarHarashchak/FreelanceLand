@@ -28,9 +28,9 @@ namespace Backend.Hubs
                 await Clients.User(to).SendAsync("Receive", message, userName);
         }
 
-        public string GetNotification()
+        public async Task<string> GetNotification()
         {
-            Message msg = messageRepo.Get().FirstOrDefault();
+            Message msg = (await messageRepo.GetAsync()).FirstOrDefault();
 
             return msg.Content;
         }

@@ -27,12 +27,12 @@ namespace Backend.Services
             _mapper = mapper;
         }
 
-        public string CreateToken(UserAccountDTO user)
+        public async Task<string> CreateToken(UserAccountDTO user)
         {
             var username = user.Login;
             var password = user.Password;
 
-            var identity = GetIdentity(username, password);
+            var identity = await GetIdentity(username, password);
 
             if (identity == null)
             {
@@ -56,7 +56,7 @@ namespace Backend.Services
                 login = identity.Name,
                 id = user.Id,
                 email = user.Email,
-                role = "Moderator"
+                role = "Administrator"
 
             };
 
@@ -64,11 +64,11 @@ namespace Backend.Services
             return token;
            }
 
-        private ClaimsIdentity GetIdentity(string username, string password)
+        private async Task<ClaimsIdentity> GetIdentity(string username, string password)
         {
-            User person = userRepo.Get(u => u.Login == username).FirstOrDefault();
+            User person = (await userRepo.GetAsync(u => u.Login == username)).FirstOrDefault();
 
-            string role = rolesRepo.Get(r => r.Id == person.UserRoleId).FirstOrDefault().Type;
+            string role = (await rolesRepo.GetAsync(r => r.Id == person.UserRoleId)).FirstOrDefault().Type;
             if (person != null)
             {
                 var claims = new List<Claim>
