@@ -24,10 +24,10 @@ namespace Backend.Controllers
         public async Task Login([FromBody] UserAccountDTO user)
         {
             var dto = await _userService.Authenticate(user.Login, user.Password);
-            if(dto == null)
-            {
-                await Response.WriteAsync(JsonConvert.SerializeObject(dto, new JsonSerializerSettings { Formatting = Formatting.Indented }));
-            }
+            //if(dto == null)
+            //{
+            //    await Response.WriteAsync(JsonConvert.SerializeObject(dto, new JsonSerializerSettings { Formatting = Formatting.Indented }));
+            //}
             await Response.WriteAsync(await _userTokensService.CreateToken(dto));
         }
 
