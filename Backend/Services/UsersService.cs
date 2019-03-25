@@ -109,7 +109,7 @@ namespace Backend.Services
         }
         public async Task<UserInformation> GetUserInformation(int id)
         {
-            var entities = await userRepo.FindByIdAsync(id);
+            var entities = (await userRepo.GetWithIncludeAsync(u => u.Id == id, r => r.UserRole)).FirstOrDefault();
             var dtos = _mapper.Map<User, UserInformation>(entities);
             return dtos;
         }
@@ -125,7 +125,9 @@ namespace Backend.Services
                     result.Sur_Name = value.Sur_Name;
                     result.Phone_Number = value.Phone_Number;
                     result.Login = value.Login;
-                    db.SaveChanges();
+                    if (value.UserRoleName!=null)
+                        result.UserRoleId = (await rolesRepo.GetAsync(r => r.Type == value.UserRoleName)).FirstOrDefault().Id;
+                db.SaveChanges();
 
                 }
 

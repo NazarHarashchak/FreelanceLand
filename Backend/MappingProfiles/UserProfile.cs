@@ -16,11 +16,12 @@ namespace Backend.MappingProfiles
         }
     }
 
-    public class UserInformation : Profile
+    public class UserInformationProfile : Profile
     {
-        public UserInformation()
+        public UserInformationProfile()
         {
-            CreateMap<User, UserInformation>();
+            CreateMap<User, UserInformation>()
+                .ForMember("UserRoleName",u=>u.MapFrom(o=>o.UserRole.Type));
             CreateMap<User, User>();
             CreateMap<UserInformation, User>();
             CreateMap<User, CustomerDTO>();

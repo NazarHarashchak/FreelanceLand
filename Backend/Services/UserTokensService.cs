@@ -56,7 +56,7 @@ namespace Backend.Services
                 login = identity.Name,
                 id = user.Id,
                 email = user.Email,
-                role = "Moderator"
+                role = "Administrator"
 
             };
 
