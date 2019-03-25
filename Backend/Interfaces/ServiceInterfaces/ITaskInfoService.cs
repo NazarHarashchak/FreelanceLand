@@ -1,13 +1,14 @@
 ﻿using Backend.DTOs;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Backend.Interfaces.ServiceInterfaces
 {
     public interface ITaskInfoService
     {
-        TaskPageDTO GetTaskDescription(int id);
-        TaskPageDTO AddTask(TaskPageDTO task);
-        ExcecutorDTO AddExcecutor(ExcecutorDTO user);
-        List<TaskCategoryDTO> GetCategories();
+        Task<TaskPageDTO> GetTaskDescription(int id);
+        Task<TaskPageDTO> AddTask(TaskPageDTO task);
+        Task<ExcecutorDTO> AddExcecutor(ExcecutorDTO user);
+        Task<List<TaskCategoryDTO>> GetCategories();
     }
 }
