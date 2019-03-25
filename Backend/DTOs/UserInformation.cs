@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FreelanceLand.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,5 +21,6 @@ namespace Backend.DTOs
 
         public string Login { get; set; }
 
+        public string UserRoleName { get; set; }
     }
 }
