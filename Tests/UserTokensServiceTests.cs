@@ -1,13 +1,9 @@
-﻿using Backend.DTOs;
+﻿using AutoMapper;
+using Backend.DTOs;
 using Backend.Interfaces.ServiceInterfaces;
 using Backend.Services;
 using FreelanceLand.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
-using Moq;
-using AutoMapper;
 
 namespace Tests
 {

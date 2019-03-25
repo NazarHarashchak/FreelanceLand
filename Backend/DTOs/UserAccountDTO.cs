@@ -14,5 +14,9 @@ namespace Backend.DTOs
         public string Login { get; set; }
 
         public string Password { get; set; }
+
+        public bool EmailConfirmed { get; set; }
+
+        public string ConfirmCode { get; set; }
     }
 }

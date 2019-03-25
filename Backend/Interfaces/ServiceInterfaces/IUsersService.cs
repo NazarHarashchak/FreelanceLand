@@ -9,6 +9,7 @@ namespace Backend.Interfaces.ServiceInterfaces
 {
     public interface IUsersService
     {
+        Task<UserAccountDTO> ConfirmEmail(string confirmCode);
         Task<IEnumerable<UserDTO>> GetAllEntities();
         Task<UserAccountDTO> GetUserByLogin(string login);
         Task<UserAccountDTO> Authenticate(string login, string password);

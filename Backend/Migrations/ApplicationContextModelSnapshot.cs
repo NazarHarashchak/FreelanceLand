@@ -215,7 +215,11 @@ namespace Backend.Migrations
 
                     b.Property<DateTime>("Birth_Date");
 
+                    b.Property<string>("ConfirmCode");
+
                     b.Property<string>("Email");
+
+                    b.Property<bool>("EmailConfirmed");
 
                     b.Property<string>("Login");
 

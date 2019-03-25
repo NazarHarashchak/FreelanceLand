@@ -22,6 +22,10 @@ namespace FreelanceLand.Models
 
         public string Password { get; set; }
 
+        public string ConfirmCode { get; set; }
+
+        public bool EmailConfirmed { get; set; }
+
 
         public List<Review> UserReviews { get; set; }
         public List<TaskHistory> UserHistories { get; set; }

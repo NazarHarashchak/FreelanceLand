@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20190322083208_changeTasks")]
-    partial class changeTasks
+    [Migration("20190324144122_First")]
+    partial class First
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -42,6 +42,25 @@ namespace Backend.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("FreelanceLand.Models.Image", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("FileName");
+
+                    b.Property<byte[]>("Picture");
+
+                    b.Property<int?>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("FreelanceLand.Models.Message", b =>
@@ -198,7 +217,11 @@ namespace Backend.Migrations
 
                     b.Property<DateTime>("Birth_Date");
 
+                    b.Property<string>("ConfirmCode");
+
                     b.Property<string>("Email");
+
+                    b.Property<bool>("EmailConfirmed");
 
                     b.Property<string>("Login");
 
@@ -240,6 +263,13 @@ namespace Backend.Migrations
 
                     b.HasOne("FreelanceLand.Models.User", "User")
                         .WithMany("UserComments")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("FreelanceLand.Models.Image", b =>
+                {
+                    b.HasOne("FreelanceLand.Models.User", "User")
+                        .WithMany("Images")
                         .HasForeignKey("UserId");
                 });
 
