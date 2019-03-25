@@ -81,9 +81,7 @@ namespace Backend.Services
 
         public async Task<UserAccountDTO> CreateUser(string email, string login, string password)
         {
-            //https://localhost:44332/Account/confirmEmail?confirmCode=73fa0f05-5b8b-44ab-8be1-bbae86ec8940
             
-
             if (await GetUserByLogin(login) == null)
             {
                 string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
