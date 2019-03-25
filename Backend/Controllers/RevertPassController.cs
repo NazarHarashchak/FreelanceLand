@@ -15,14 +15,12 @@ namespace Backend.Controllers
         public IUsersService _userService;
         private readonly IEmailService _emailService;
         private Random rand;
-        private CodeDTO verificationCode;
 
         public RevertPassController(IUsersService userService, IEmailService emailService)
         {
             _userService = userService;
             _emailService = emailService;
             rand = new Random();
-            verificationCode = new CodeDTO();
         }
 
         [HttpPost("validateUser")]
@@ -36,9 +34,12 @@ namespace Backend.Controllers
         [HttpPost("sendCode")]
         public async Task SendCode([FromBody] UserAccountDTO user)
         {
-            verificationCode.Code = rand.Next(100000, 999999);
+            CodeDTO verificationCode = new CodeDTO()
+            {
+                Code = rand.Next(100000, 999999)
+            };            
             string message = $"<h2>Your verification code: {verificationCode.Code}<h2>";
-            _emailService.SendEmailAsync(user.Email, "Administration", message);
+            _emailService.SendEmailAsync(user.Email, "Verification code", message);
             await Response.WriteAsync(JsonConvert.SerializeObject(verificationCode, new JsonSerializerSettings { Formatting = Formatting.Indented }));
         }
 
