@@ -39,5 +39,10 @@ namespace Backend.Controllers
             await Response.WriteAsync(JsonConvert.SerializeObject(dto, new JsonSerializerSettings { Formatting = Formatting.Indented }));
             
         }
+        [HttpGet("confirmEmail")]
+        public async Task ConfirmEmail([FromQuery]string confirmCode)
+        {
+            await _userService.ConfirmEmail(confirmCode);
+        }
     }
 }

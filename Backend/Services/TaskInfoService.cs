@@ -12,16 +12,17 @@ namespace Backend.Services
     public class TaskInfoService : ITaskInfoService
     {
         private readonly IMapper mapper;
-        EFGenericRepository<FreelanceLand.Models.Task> taskRepo;
-        EFGenericRepository<TaskHistory> historyRepo; 
-        EFGenericRepository<User> userRepo; 
-        EFGenericRepository<Comment> commentRepo; 
+        private EFGenericRepository<FreelanceLand.Models.Task> taskRepo;
+        private EFGenericRepository<TaskHistory> historyRepo;
+        private EFGenericRepository<User> userRepo;
+        private EFGenericRepository<TaskCategory> categoryRepo;
 
         public TaskInfoService(IMapper mapper, ApplicationContext context)
         {
             taskRepo = new EFGenericRepository<FreelanceLand.Models.Task>(context);
             historyRepo = new EFGenericRepository<TaskHistory>(context);
             userRepo = new EFGenericRepository<User>(context);
+            categoryRepo = new EFGenericRepository<TaskCategory>(context);
             this.mapper = mapper;
         }
 
@@ -31,7 +32,7 @@ namespace Backend.Services
                                      customer => customer.Customer, 
                                      category => category.TaskCategory,
                                      status => status.TaskStatus,
-                                     history => history.TaskHistories)).FirstOrDefault();
+                                     history => history.TaskHistories)).Where(o => o.Id==id).FirstOrDefault();
 
             var dtos = mapper.Map<FreelanceLand.Models.Task, TaskPageDTO>(myTask);
 
@@ -63,6 +64,13 @@ namespace Backend.Services
             FreelanceLand.Models.Task result = mapper.Map<TaskPageDTO, FreelanceLand.Models.Task>(task);
             await taskRepo.CreateAsync(result);
             return task;
+        }
+
+        public async Task<List<TaskCategoryDTO>> GetCategories()
+        {
+            List<TaskCategoryDTO> result = mapper.Map<IEnumerable<TaskCategory>, IEnumerable<TaskCategoryDTO>>
+                                        (await categoryRepo.GetAsync()).ToList();
+            return result;
         }
     }
 }
