@@ -46,7 +46,12 @@ namespace Backend.Services
             if (user == null)
                 return null;
 
-            return user;
+            if (user.EmailConfirmed == true)
+            {
+                var dto = _mapper.Map<User, UserAccountDTO>(user);
+                return user;
+            }
+            return null;
         }
 
         public async Task<UserAccountDTO> Authenticate(string login, string password)
