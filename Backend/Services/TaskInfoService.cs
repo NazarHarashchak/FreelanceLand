@@ -32,7 +32,7 @@ namespace Backend.Services
                                      customer => customer.Customer, 
                                      category => category.TaskCategory,
                                      status => status.TaskStatus,
-                                     history => history.TaskHistories)).FirstOrDefault();
+                                     history => history.TaskHistories)).Where(o => o.Id==id).FirstOrDefault();
 
             var dtos = mapper.Map<FreelanceLand.Models.Task, TaskPageDTO>(myTask);
 

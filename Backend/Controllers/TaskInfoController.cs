@@ -30,9 +30,9 @@ namespace Backend.Controllers
 
         [Route("getCategories")]
         [HttpGet]
-        public ActionResult<TaskPageDTO> Get()
+        public async Task<ActionResult<TaskPageDTO>> Get()
         {
-            var dtos = tasksService.GetCategories();
+            var dtos = await tasksService.GetCategories();
             return Ok(dtos);
         }
 
