@@ -1,4 +1,5 @@
-﻿using Backend.Models;
+﻿using Backend.DTOs;
+using Backend.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,7 @@ namespace Backend.Interfaces.ServiceInterfaces
         IEnumerable<ChatRoom> GetChatRoomsAsync();
 
         void AddChatRoomAsync(ChatRoom chatRoom);
+
+        List<ChatRoomWithUserNamesDTO> GetChatRoomsList(int id);
     }
 }

@@ -1,18 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using FreelanceLand.Models;
-using Backend.Interfaces.ServiceInterfaces;
 using Backend.DTOs;
-using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using System.Linq;
-using Microsoft.AspNetCore.Authorization;
-using System.IO;
+using Backend.Interfaces.ServiceInterfaces;
+using FreelanceLand.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Backend.Controllers
 {

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Backend.DTOs;
 using System.Threading.Tasks;
-using System.Drawing;
-using Backend.DTOs;
 
 namespace Backend.Interfaces.ServiceInterfaces
 {
