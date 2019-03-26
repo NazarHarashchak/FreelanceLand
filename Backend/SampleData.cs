@@ -306,35 +306,30 @@ namespace Backend
                 Content = "Hi",
                 DateAndTime = new DateTime(2018, 9, 4, 18, 30, 25),
                 SenderUser = user1,
-                GetterUser = user6
             };
             Message message2 = new Message
             {
                 Content = "Hello",
                 DateAndTime = new DateTime(2018, 9, 4, 18, 31, 25),
                 SenderUser = user6,
-                GetterUser = user1
             };
             Message message3 = new Message
             {
                 Content = "What about my task?",
                 DateAndTime = new DateTime(2018, 9, 4, 20, 30, 25),
                 SenderUser = user3,
-                GetterUser = user4
             };
             Message message4 = new Message
             {
                 Content = "It is in progress",
                 DateAndTime = new DateTime(2018, 9, 4, 22, 30, 25),
                 SenderUser = user4,
-                GetterUser = user3
             };
             Message message5 = new Message
             {
                 Content = "Nice job, thank you.",
                 DateAndTime = new DateTime(2018, 9, 4, 18, 30, 25),
                 SenderUser = user3,
-                GetterUser = user7
             };
 
             Comment comment1 = new Comment
