@@ -27,7 +27,8 @@ namespace Backend.Services
 
         public async Task<IEnumerable<TaskDTO>> GetHistoryTaskByUser(int id)
         {
-            var entities = (await taskRepo.GetWithIncludeAsync(o => o.TaskStatusId == (int)StatusEnum.Done, p => p.TaskCategory, k => k.Comments))
+            var entities = (await taskRepo.GetWithIncludeAsync(o => o.TaskStatusId == (int)StatusEnum.Done,
+                p => p.TaskCategory, k => k.Comments))
                 .Where(o => o.ExecutorId == id);
             var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
             return dtos;

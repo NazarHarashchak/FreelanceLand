@@ -28,6 +28,14 @@ namespace Backend.Controllers
             return Ok(dtos);
         }
 
+        [Route("getCategories")]
+        [HttpGet]
+        public async Task<ActionResult<TaskPageDTO>> Get()
+        {
+            var dtos = await tasksService.GetCategories();
+            return Ok(dtos);
+        }
+
         [Route("addexcecutor")]
         [HttpPost]
         public async Task<ActionResult<ExcecutorDTO>> AddExcecutor([FromBody] ExcecutorDTO user)
