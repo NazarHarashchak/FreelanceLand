@@ -1,18 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using FreelanceLand.Models;
-using Backend.Interfaces.ServiceInterfaces;
 using Backend.DTOs;
-using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using System.Linq;
-using Microsoft.AspNetCore.Authorization;
-using System.IO;
+using Backend.Interfaces.ServiceInterfaces;
+using FreelanceLand.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Backend.Controllers
 {
@@ -25,12 +19,14 @@ namespace Backend.Controllers
         EFGenericRepository<Image> imageRepo;
 
         private IUsersService _usersService;
+        private IImageService _imageService;
 
-        public UsersController(IUsersService usersService, ApplicationContext context)
+        public UsersController(IUsersService usersService, ApplicationContext context, IImageService imageService)
         {
             userRepo = new EFGenericRepository<User>(context);
             imageRepo = new EFGenericRepository<Image>(context);
             _usersService = usersService;
+            _imageService = imageService;
         }
 
         [HttpGet]
@@ -52,7 +48,7 @@ namespace Backend.Controllers
         [HttpPost("CreateImage")]
         public async Task<IActionResult> Post([FromForm]ImageDTO Image)
         {
-            string response = await _usersService.CreateUserImage(Image);
+            string response = await _imageService.CreateUserImage(Image);
             if (response == "empty")
                 return BadRequest("Empty request!");
             return Ok("Success!");
@@ -60,19 +56,13 @@ namespace Backend.Controllers
         [HttpGet("GetImage/{id}")]
         public async System.Threading.Tasks.Task GetImage(int id)
         {
-            Image image = (await imageRepo.GetAsync(im => im.UserId == id)).FirstOrDefault();
-            if (image == null)
+            string imgDataURL = await _imageService.GetImageAsync(id);
+            if (imgDataURL == null)
             {
                 await Response.WriteAsync(JsonConvert.SerializeObject("", new JsonSerializerSettings { Formatting = Formatting.Indented }));
             }
             else
             {
-                byte[] fileBytes = image.Picture;
-                string imgBase64Data = Convert.ToBase64String(fileBytes);
-                string imgDataURL = string.Format("data:image/png;base64,{0}", imgBase64Data);
-                ImageToClientDTO imgDTO = new ImageToClientDTO();
-                imgDTO.Image = imgDataURL;
-                imgDTO.FileName = image.FileName;
                 await Response.WriteAsync(JsonConvert.SerializeObject(imgDataURL, new JsonSerializerSettings { Formatting = Formatting.Indented }));
             }
         }

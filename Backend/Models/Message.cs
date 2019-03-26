@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Backend.Models;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
@@ -16,10 +17,8 @@ namespace FreelanceLand.Models
         [ForeignKey("SenderUserId")]
         public User SenderUser { get; set; }
 
-        public int? GetterUserId { get; set; }
-        [ForeignKey("GetterUserId")]
-        [InverseProperty("UserMessages")]
-        public User GetterUser { get; set; }
+        public int? ChatRoomId { get; set; }
+        public ChatRoom ChatRoom { get; set; }
 
     }
 }
