@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20190324144122_First")]
-    partial class First
+    [Migration("20190326104152_AddedChat")]
+    partial class AddedChat
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,27 @@ namespace Backend.Migrations
                 .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Backend.Models.ChatRoom", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("CreatorId");
+
+                    b.Property<string>("Name");
+
+                    b.Property<int?>("SecondUserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("SecondUserId");
+
+                    b.ToTable("ChatRoom");
+                });
 
             modelBuilder.Entity("FreelanceLand.Models.Comment", b =>
                 {
@@ -69,17 +90,17 @@ namespace Backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("ChatRoomId");
+
                     b.Property<string>("Content");
 
                     b.Property<DateTime>("DateAndTime");
-
-                    b.Property<int?>("GetterUserId");
 
                     b.Property<int?>("SenderUserId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GetterUserId");
+                    b.HasIndex("ChatRoomId");
 
                     b.HasIndex("SenderUserId");
 
@@ -255,6 +276,17 @@ namespace Backend.Migrations
                     b.ToTable("UserRoles");
                 });
 
+            modelBuilder.Entity("Backend.Models.ChatRoom", b =>
+                {
+                    b.HasOne("FreelanceLand.Models.User", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorId");
+
+                    b.HasOne("FreelanceLand.Models.User", "SecondUser")
+                        .WithMany()
+                        .HasForeignKey("SecondUserId");
+                });
+
             modelBuilder.Entity("FreelanceLand.Models.Comment", b =>
                 {
                     b.HasOne("FreelanceLand.Models.Task", "Task")
@@ -275,12 +307,12 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("FreelanceLand.Models.Message", b =>
                 {
-                    b.HasOne("FreelanceLand.Models.User", "GetterUser")
-                        .WithMany("UserMessages")
-                        .HasForeignKey("GetterUserId");
+                    b.HasOne("Backend.Models.ChatRoom", "ChatRoom")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatRoomId");
 
                     b.HasOne("FreelanceLand.Models.User", "SenderUser")
-                        .WithMany()
+                        .WithMany("UserMessages")
                         .HasForeignKey("SenderUserId");
                 });
 

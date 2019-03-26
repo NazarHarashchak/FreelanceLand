@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Backend.DTOs;
 using System.Threading.Tasks;
-using System.Drawing;
 
 namespace Backend.Interfaces.ServiceInterfaces
 {
     public interface IImageService
     {
+        Task<string> CreateUserImage(ImageDTO Image);
+
+        Task<string> GetImageAsync(int id);
+
     }
 }
