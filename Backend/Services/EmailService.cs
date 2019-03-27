@@ -11,7 +11,7 @@ namespace Backend.Services
         {
             var emailMessages = new MimeMessage();
 
-            emailMessages.From.Add(new MailboxAddress("Freelance Registration", "freelancelandservice@gmail.com"));
+            emailMessages.From.Add(new MailboxAddress("Freelance Land", "freelancelandservice@gmail.com"));
             emailMessages.To.Add(new MailboxAddress("", email));
             emailMessages.Subject = subject;
             emailMessages.Body = new TextPart(MimeKit.Text.TextFormat.Html)
