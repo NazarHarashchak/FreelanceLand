@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Backend.Interfaces.ServiceInterfaces;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using NLog;
+using System;
+using Backend.Common;
 
 namespace Backend.Controllers
 {
@@ -13,6 +16,7 @@ namespace Backend.Controllers
     {
         public IUsersService _userService;
         private IUserTokensService _userTokensService;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         public AccountController(IUsersService userService, IUserTokensService userTokensService)
         {
@@ -23,6 +27,7 @@ namespace Backend.Controllers
         [HttpPost("login")]
         public async Task Login([FromBody] UserAccountDTO user)
         {
+            logger.Info(Environment.NewLine + DateTime.Now);
             var dto = await _userService.Authenticate(user.Login, user.Password);
             if(dto == null)
             {

@@ -4,14 +4,16 @@ using FreelanceLand.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Backend.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20190327083857_first")]
+    partial class first
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,31 +40,6 @@ namespace Backend.Migrations
                     b.HasIndex("SecondUserId");
 
                     b.ToTable("ChatRoom");
-                });
-
-            modelBuilder.Entity("Backend.Models.ExceptionLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Exception");
-
-                    b.Property<string>("Level");
-
-                    b.Property<string>("Logger");
-
-                    b.Property<string>("Message");
-
-                    b.Property<string>("StackTrace");
-
-                    b.Property<DateTime>("TimeStamp");
-
-                    b.Property<int?>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ExeptionLogs");
                 });
 
             modelBuilder.Entity("FreelanceLand.Models.Comment", b =>

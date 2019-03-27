@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using NLog;
+using System;
 
 namespace Backend.Controllers
 {
@@ -14,6 +16,7 @@ namespace Backend.Controllers
     public class TasksController : ControllerBase
     {
         private ITasksService tasksService;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         public TasksController(ITasksService tasksService)
         {
@@ -32,6 +35,8 @@ namespace Backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskDTO>>> GetHistoryTasks(int id)
         {
+            logger.Info(Environment.NewLine + DateTime.Now);
+
             var dtos = await tasksService.GetHistoryTaskByUser(id);
             
             return Ok(dtos);
@@ -41,6 +46,8 @@ namespace Backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskDTO>>> GetActiveTasks(int id)
         {
+            logger.Info(Environment.NewLine + DateTime.Now);
+
             var dtos = await tasksService.GetActiveTaskByUser(id);
 
             return Ok(dtos);

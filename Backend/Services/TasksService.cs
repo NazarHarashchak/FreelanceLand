@@ -3,6 +3,7 @@ using Backend.DTOs;
 using Backend.Enums;
 using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace Backend.Services
         private readonly EFGenericRepository<FreelanceLand.Models.Task> taskRepo;
         private readonly EFGenericRepository<TaskHistory> historyRepo;
         private readonly ApplicationContext db;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         public TasksService(IMapper mapper, ApplicationContext context)
         {
@@ -27,6 +29,8 @@ namespace Backend.Services
 
         public async Task<IEnumerable<TaskDTO>> GetHistoryTaskByUser(int id)
         {
+            logger.Error(Environment.NewLine );
+
             var entities = (await taskRepo.GetWithIncludeAsync(o => o.TaskStatusId == (int)StatusEnum.Done,
                 p => p.TaskCategory, k => k.Comments))
                 .Where(o => o.ExecutorId == id);
