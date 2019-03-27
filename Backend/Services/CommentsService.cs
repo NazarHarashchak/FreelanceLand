@@ -31,7 +31,7 @@ namespace Backend.Services
             return result;
         }
         
-        public async Task<CommentDTO> AddComment(CommentDTO comment)
+        public async Task<IEnumerable<CommentDTO>> AddComment(CommentDTO comment)
         {
             comment.Date = DateTime.Now.ToString();
             comment.UserName = (await userRepo.FindByIdAsync(comment.UserId)).Name;
@@ -39,7 +39,10 @@ namespace Backend.Services
             var myComment = mapper.Map<CommentDTO, Comment>(comment);
             await commentRepo.CreateAsync(myComment);
 
-            return comment;
+            IEnumerable<CommentDTO> result = mapper.Map<IEnumerable<Comment>, IEnumerable<CommentDTO>>(await 
+                                    commentRepo.GetWithIncludeAsync(task => task.TaskId == comment.TaskId,
+                                                                            user => user.User));
+            return result;
         }
 
         public async System.Threading.Tasks.Task DeleteComment(int id)

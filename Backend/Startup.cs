@@ -124,6 +124,7 @@ namespace Backend
                 cfg.AddProfile<UserProfile>();
                 cfg.AddProfile<TaskProfile>();
                 cfg.AddProfile<UserInformationProfile>();
+                cfg.AddProfile<TaskDescriptionProfile>();
             });
 
             return services;

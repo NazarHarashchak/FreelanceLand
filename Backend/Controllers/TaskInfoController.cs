@@ -20,7 +20,7 @@ namespace Backend.Controllers
             this.tasksService = tasksService;
             this.usersService = usersService;
         }
-        
+
         [HttpGet("{id}")]
         public async Task<ActionResult<TaskPageDTO>> Get(int id)
         {
@@ -51,5 +51,15 @@ namespace Backend.Controllers
             var result = await tasksService.AddTask(task);
             return Ok(result);
         }
+
+        [Route("closetask")]
+        [HttpPost]
+        public async Task<ActionResult<TaskPageDTO>> CloseTask([FromBody] int id)
+        {
+            var result = await tasksService.CloseTask(id);
+
+            return Ok(result);
+        }
     }
+
 }
