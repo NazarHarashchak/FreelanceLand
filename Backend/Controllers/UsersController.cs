@@ -21,6 +21,8 @@ namespace Backend.Controllers
 
         private IUsersService _usersService;
         private IImageService _imageService;
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; } = 5;
 
         public UsersController(IUsersService usersService, ApplicationContext context, IImageService imageService)
         {
@@ -30,12 +32,12 @@ namespace Backend.Controllers
             _imageService = imageService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Get([FromQuery]PagingParams pagingParams)
+        [HttpGet("PageNumber/{pageNumber}")]
+        public async Task<IActionResult> GetPageNumber( int pageNumber )
         {
             // var all = await _usersService.GetAllEntities();
 
-            var dtos = await _usersService.GetUsers(pagingParams);
+            var dtos = await _usersService.GetUsers(pageNumber);
 
             return Ok(dtos);
         }

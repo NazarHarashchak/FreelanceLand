@@ -20,6 +20,7 @@ namespace Backend.Interfaces.ServiceInterfaces
         Task<string> CreateUserImage(ImageDTO Image);
         Task<IEnumerable<UserRolesDTO>> GetAllRolesDtos();
 
-        Task<PagedList<UserDTO>> GetUsers([FromQuery]PagingParams pagingParams);
+      //  Task<PagedList<UserDTO>> GetUsers([FromQuery] PagingParams pagingParams);
+        Task<PagedList<UserDTO>> GetUsers(int pageNumber);
     }
 }

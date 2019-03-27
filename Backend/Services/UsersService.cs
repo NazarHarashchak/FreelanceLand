@@ -32,15 +32,15 @@ namespace Backend.Services
             _emailService = emailService;
         }
 
-       
-        public async Task<PagedList<UserDTO>> GetUsers([FromQuery] PagingParams pagingParams)
+        const int pageSize = 10;
+        public async Task<PagedList<UserDTO>> GetUsers(int pageNumber)
         {
             var entities = await userRepo.GetAsync();
             var dtos = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(entities);
             var query = dtos.AsQueryable();
 
             return new PagedList<UserDTO>(
-                query, pagingParams.PageNumber, pagingParams.PageSize);
+                query, pageNumber, pageSize);
         }
 
 
@@ -119,6 +119,8 @@ namespace Backend.Services
             return dtos;
         }
 
+        
+       
         public async Task<User> UpdateUser(int id, [FromBody] UserInformation value)
         {
                 var result = db.Users.SingleOrDefault(b => b.Id == id);
