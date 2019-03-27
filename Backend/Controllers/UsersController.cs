@@ -1,5 +1,6 @@
 using Backend.DTOs;
 using Backend.Interfaces.ServiceInterfaces;
+using Backend.Pagination;
 using FreelanceLand.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -30,12 +31,15 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<User>> Get()
+        public async Task<IActionResult> Get([FromQuery]PagingParams pagingParams)
         {
-            var dtos = await _usersService.GetAllEntities();
+            // var all = await _usersService.GetAllEntities();
+
+            var dtos = await _usersService.GetUsers(pagingParams);
 
             return Ok(dtos);
         }
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> Get(int id)

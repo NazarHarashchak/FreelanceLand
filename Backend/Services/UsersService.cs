@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Backend.DTOs;
 using Backend.Interfaces.ServiceInterfaces;
+using Backend.Pagination;
 using FreelanceLand.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -31,11 +32,15 @@ namespace Backend.Services
             _emailService = emailService;
         }
 
-        public async Task<IEnumerable<UserDTO>> GetAllEntities()
+       
+        public async Task<PagedList<UserDTO>> GetUsers([FromQuery] PagingParams pagingParams)
         {
             var entities = await userRepo.GetAsync();
             var dtos = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(entities);
-            return dtos;
+            var query = dtos.AsQueryable();
+
+            return new PagedList<UserDTO>(
+                query, pagingParams.PageNumber, pagingParams.PageSize);
         }
 
 
