@@ -43,6 +43,7 @@ namespace Backend.Controllers
         public async Task ConfirmEmail([FromQuery]string confirmCode)
         {
             await _userService.ConfirmEmail(confirmCode);
+            Response.Redirect("http://localhost:3000/loginPage");
         }
     }
 }
