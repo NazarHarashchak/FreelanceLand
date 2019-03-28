@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Backend.Common;
 using Backend.Hubs;
 using Backend.Interfaces.ServiceInterfaces;
 using Backend.MappingProfiles;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -42,9 +44,11 @@ namespace Backend
             services.AddTransient<ITopUsersService, TopUsersService>();
             services.AddTransient<ITaskInfoService, TaskInfoService>();
             services.AddTransient<ICommentsService, CommentsService>();
+            services.AddTransient<ActionFilterAttribute, LogAttribute>();
             services.AddTransient<ApplicationContext, ApplicationContext>();
+           
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-             
+            
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                     {
@@ -90,7 +94,6 @@ namespace Backend
             services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_0);
 
-
             InitializeAutomapper(services);
         }
 
@@ -126,6 +129,7 @@ namespace Backend
                 cfg.AddProfile<UserProfile>();
                 cfg.AddProfile<TaskProfile>();
                 cfg.AddProfile<UserInformationProfile>();
+                cfg.AddProfile<TaskDescriptionProfile>();
             });
 
             return services;

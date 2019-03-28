@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using System;
+using Backend.Enums;
 
 namespace Backend.Services
 {
@@ -32,7 +33,8 @@ namespace Backend.Services
                                      customer => customer.Customer, 
                                      category => category.TaskCategory,
                                      status => status.TaskStatus,
-                                     history => history.TaskHistories)).Where(o => o.Id==id).FirstOrDefault();
+                                     history => history.TaskHistories,
+                                     excecutor => excecutor.Executor)).Where(o => o.Id==id).FirstOrDefault();
 
             var dtos = mapper.Map<FreelanceLand.Models.Task, TaskPageDTO>(myTask);
 
@@ -46,22 +48,42 @@ namespace Backend.Services
 
             FreelanceLand.Models.Task task = await taskRepo.FindByIdAsync(taskId);
             task.ExecutorId = userId;
-            task.TaskStatusId++;
             task.UpdatedById = task.CustomerId;
             task.DateUpdated = DateTime.Now;
+            StatusEnum status = StatusEnum.InProgress;
+            task.TaskStatusId = (int)status;
 
             await taskRepo.UpdateAsync(task);
             return user;
         }
 
+
+        public async Task<TaskPageDTO> CloseTask(int taskId)
+        {
+            FreelanceLand.Models.Task task = await taskRepo.FindByIdAsync(taskId);
+
+            task.UpdatedById = task.CustomerId;
+            task.DateUpdated = DateTime.Now;
+            StatusEnum status = StatusEnum.Done;
+            task.TaskStatusId = (int)status;
+
+            await taskRepo.UpdateAsync(task);
+      
+            return (mapper.Map<FreelanceLand.Models.Task,TaskPageDTO>(task));
+        }
+
         public async Task<TaskPageDTO> AddTask(TaskPageDTO task)
         {
             task.Date = DateTime.Now.ToString();
-            CustomerDTO user = mapper.Map<User, CustomerDTO> (await userRepo.FindByIdAsync(task.CustomerId));
-            task.CustomerName = user.Name;
-            task.CustomerSecondName = user.Sur_Name;
+            StatusEnum status = StatusEnum.ToDo;
 
-            FreelanceLand.Models.Task result = mapper.Map<TaskPageDTO, FreelanceLand.Models.Task>(task);
+            var result = mapper.Map<TaskPageDTO, FreelanceLand.Models.Task>(task);
+
+            result.TaskCategoryId = (await categoryRepo.GetWithIncludeAsync(c => c.Type == task.TaskCategory))
+                .FirstOrDefault().Id;
+            result.TaskStatusId = (int)status;
+            result.UpdatedById = task.CustomerId;
+            result.DateUpdated = DateTime.Now;
             await taskRepo.CreateAsync(result);
             return task;
         }

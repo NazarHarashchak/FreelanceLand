@@ -56,8 +56,9 @@ namespace Backend.Services
                 login = identity.Name,
                 id = user.Id,
                 email = user.Email,
-                role = "Administrator"
-
+                role = identity.Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
             };
 
             string token = JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented });

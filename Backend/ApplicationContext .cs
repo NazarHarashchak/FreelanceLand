@@ -15,7 +15,7 @@ namespace FreelanceLand.Models
         public DbSet<Message> Messages { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Image> Images { get; set; }
-        public DbSet<ExceptionLog> ExeptionLogs { get; set; }
+        public DbSet<ExceptionLog> ExceptionLogs { get; set; }
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)

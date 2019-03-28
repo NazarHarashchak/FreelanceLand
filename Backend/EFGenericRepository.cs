@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Backend.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,17 @@ namespace Backend
     {
         DbContext _context;
         DbSet<TEntity> _dbSet;
+        private ExceptionLog exceptionLog;
 
         public EFGenericRepository(DbContext context)
         {
             _context = context;
             _dbSet = context.Set<TEntity>();
+        }
+
+        public EFGenericRepository(ExceptionLog exceptionLog)
+        {
+            this.exceptionLog = exceptionLog;
         }
 
         public async Task<IEnumerable<TEntity>> GetAsync()

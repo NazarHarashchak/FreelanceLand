@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System.Threading.Tasks;
 using NLog;
 using System;
+using Backend.Common;
 
 namespace Backend.Controllers
 {

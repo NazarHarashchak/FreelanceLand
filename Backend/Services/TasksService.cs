@@ -14,6 +14,7 @@ namespace Backend.Services
     public class TasksService : ITasksService
     {
         private readonly IMapper mapper;
+        private readonly EFGenericRepository<Comment> commentRepo;
         private readonly EFGenericRepository<FreelanceLand.Models.Task> taskRepo;
         private readonly EFGenericRepository<TaskHistory> historyRepo;
         private readonly ApplicationContext db;
@@ -25,6 +26,7 @@ namespace Backend.Services
             this.mapper = mapper;
             taskRepo = new EFGenericRepository<FreelanceLand.Models.Task>(context);
             historyRepo = new EFGenericRepository<TaskHistory>(context);
+            commentRepo = new EFGenericRepository<Comment>(context);
         }
 
         public async Task<IEnumerable<TaskDTO>> GetHistoryTaskByUser(int id)
@@ -48,6 +50,16 @@ namespace Backend.Services
         public async System.Threading.Tasks.Task DeleteTask(int id)
         {
             var task = await taskRepo.FindByIdAsync(id);
+            var comment = await commentRepo.GetAsync(c => c.TaskId == task.Id);
+            var history = await historyRepo.GetAsync(h => h.Task.Id == task.Id);
+            foreach (var c in comment)
+            {
+                await commentRepo.RemoveAsync(c);
+            }
+            foreach (var h in history)
+            {
+                await historyRepo.RemoveAsync(h);
+            }
             await taskRepo.RemoveAsync(task);
         }
 

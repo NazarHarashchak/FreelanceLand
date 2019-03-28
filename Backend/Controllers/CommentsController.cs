@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using Backend.Common;
 
 namespace Backend.Controllers
 {
@@ -30,10 +31,10 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CommentDTO>> Post([FromBody] CommentDTO comment)
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> Post([FromBody] CommentDTO comment)
         {
             var result = await commentsService.AddComment(comment);
-            return Ok(comment);
+            return Ok(result);
         }
 
         [Authorize(Roles = "Moderator")]
