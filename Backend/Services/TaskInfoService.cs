@@ -29,7 +29,7 @@ namespace Backend.Services
 
         public async Task<TaskPageDTO> GetTaskDescription(int id)
         {
-            FreelanceLand.Models.Task myTask = (await taskRepo.GetWithIncludeAsync(task => task.Id == id,
+            var myTask = (await taskRepo.GetWithIncludeAsync(task => task.Id == id,
                                      customer => customer.Customer, 
                                      category => category.TaskCategory,
                                      status => status.TaskStatus,
@@ -43,11 +43,8 @@ namespace Backend.Services
 
         public async Task<ExcecutorDTO> AddExcecutor(ExcecutorDTO user)
         {
-            int taskId = user.TaskId;
-            int userId = user.ExcecutorId;
-
-            FreelanceLand.Models.Task task = await taskRepo.FindByIdAsync(taskId);
-            task.ExecutorId = userId;
+            var task = await taskRepo.FindByIdAsync(user.TaskId);
+            task.ExecutorId = user.ExcecutorId;
             task.UpdatedById = task.CustomerId;
             task.DateUpdated = DateTime.Now;
             StatusEnum status = StatusEnum.InProgress;
@@ -60,7 +57,7 @@ namespace Backend.Services
 
         public async Task<TaskPageDTO> CloseTask(int taskId)
         {
-            FreelanceLand.Models.Task task = await taskRepo.FindByIdAsync(taskId);
+            var task = await taskRepo.FindByIdAsync(taskId);
 
             task.UpdatedById = task.CustomerId;
             task.DateUpdated = DateTime.Now;
@@ -74,7 +71,6 @@ namespace Backend.Services
 
         public async Task<TaskPageDTO> AddTask(TaskPageDTO task)
         {
-            task.Date = DateTime.Now.ToString();
             StatusEnum status = StatusEnum.ToDo;
 
             var result = mapper.Map<TaskPageDTO, FreelanceLand.Models.Task>(task);
@@ -88,10 +84,10 @@ namespace Backend.Services
             return task;
         }
 
-        public async Task<List<TaskCategoryDTO>> GetCategories()
+        public async Task<IEnumerable<TaskCategoryDTO>> GetCategories()
         {
-            List<TaskCategoryDTO> result = mapper.Map<IEnumerable<TaskCategory>, IEnumerable<TaskCategoryDTO>>
-                                        (await categoryRepo.GetAsync()).ToList();
+            IEnumerable<TaskCategoryDTO> result = mapper.Map<IEnumerable<TaskCategory>, IEnumerable<TaskCategoryDTO>>
+                                        (await categoryRepo.GetAsync());
             return result;
         }
     }
