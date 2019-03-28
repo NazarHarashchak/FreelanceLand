@@ -44,27 +44,29 @@ namespace Backend.Services
         }
 
 
-        public async Task<UserAccountDTO> GetUserByLogin(string login)
+        public async Task<User> GetUserByLogin(string login)
         {
             var user = (await userRepo.GetAsync(u => u.Login == login)).FirstOrDefault();
 
             if (user == null)
                 return null;
+
             if (user.EmailConfirmed == true)
             {
                 var dto = _mapper.Map<User, UserAccountDTO>(user);
-                return dto;
+                return user;
             }
             return null;
         }
 
         public async Task<UserAccountDTO> Authenticate(string login, string password)
         {
-            var dto = await GetUserByLogin(login);
+            var user = await GetUserByLogin(login);
 
-            if (dto == null)
+            if (user == null)
                 return null;
 
+            var dto = _mapper.Map<User, UserAccountDTO>(user);
 
             if (BCrypt.Net.BCrypt.Verify(password, dto.Password))
                 return dto;
@@ -170,6 +172,16 @@ namespace Backend.Services
             var entities = await rolesRepo.GetAsync();
             var dtos = _mapper.Map<IEnumerable<UserRoles>, IEnumerable<UserRolesDTO>>(entities);
             return dtos;
+        }
+
+        public async Task<UserAccountDTO> ChangePass(string login, string password)
+        {
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
+            var user = await GetUserByLogin(login);
+            user.Password = passwordHash;
+            await userRepo.UpdateAsync(user);
+            var dto = _mapper.Map<User, UserAccountDTO>(user);
+            return dto;
         }
     }
 }

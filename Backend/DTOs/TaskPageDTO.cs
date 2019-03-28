@@ -29,6 +29,12 @@ namespace Backend.DTOs
 
         public string CustomerSecondName { get; set; }
 
+        public int ExcecutorId { get; set; }
+
+        public string ExcecutorName { get; set; }
+
+        public string ExcecutorSecondName { get; set; }
+
     }
 }
 

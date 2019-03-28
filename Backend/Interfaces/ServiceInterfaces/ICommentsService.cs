@@ -7,7 +7,7 @@ namespace Backend.Interfaces.ServiceInterfaces
     public interface ICommentsService
     {
         Task<IEnumerable<CommentDTO>> GetComments(int taskId);
-        Task<CommentDTO> AddComment(CommentDTO comment);
+        Task<IEnumerable<CommentDTO>> AddComment(CommentDTO comment);
         Task DeleteComment(int id);
     }
 }
