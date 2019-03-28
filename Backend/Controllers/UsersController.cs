@@ -1,5 +1,6 @@
 using Backend.DTOs;
 using Backend.Interfaces.ServiceInterfaces;
+using Backend.Pagination;
 using FreelanceLand.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +21,8 @@ namespace Backend.Controllers
 
         private IUsersService _usersService;
         private IImageService _imageService;
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; } = 5;
 
         public UsersController(IUsersService usersService, ApplicationContext context, IImageService imageService)
         {
@@ -29,13 +32,16 @@ namespace Backend.Controllers
             _imageService = imageService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<User>> Get()
+        [HttpGet("PageNumber/{pageNumber}")]
+        public async Task<IActionResult> GetPageNumber( int pageNumber )
         {
-            var dtos = await _usersService.GetAllEntities();
+            // var all = await _usersService.GetAllEntities();
+
+            var dtos = await _usersService.GetUsers(pageNumber);
 
             return Ok(dtos);
         }
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> Get(int id)
