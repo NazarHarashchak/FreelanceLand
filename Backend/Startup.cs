@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Serialization;
 
 namespace Backend
 {
@@ -89,7 +90,14 @@ namespace Backend
             services.AddSignalR();
             services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_0);
+            services.AddMvc()
+                    .AddJsonOptions(options =>
+                    {
+                        options.SerializerSettings.ContractResolver =
+                            new CamelCasePropertyNamesContractResolver();
+                    });
 
+           
 
             InitializeAutomapper(services);
         }
@@ -114,8 +122,9 @@ namespace Backend
             {
                 routes.MapHub<ChatHub>("/chat");
             });
-            
 
+            app.UseMvcWithDefaultRoute();
+            
             app.UseMvc();
         }
 
