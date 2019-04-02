@@ -9,8 +9,8 @@ namespace Backend
     {
         Task CreateAsync(TEntity item);
         Task<TEntity> FindByIdAsync(int id);
-        Task<IEnumerable<TEntity>> GetAsync();
-        Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> predicate);
+        Task<IEnumerable<TEntity>> GetAsync(object p);
+        Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> predicate, int v);
         Task RemoveAsync(TEntity item);
         Task UpdateAsync(TEntity item);
     }
