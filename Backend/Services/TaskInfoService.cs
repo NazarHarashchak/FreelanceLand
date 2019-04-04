@@ -17,6 +17,7 @@ namespace Backend.Services
         private EFGenericRepository<TaskHistory> historyRepo;
         private EFGenericRepository<User> userRepo;
         private EFGenericRepository<TaskCategory> categoryRepo;
+        private EFGenericRepository<FreelanceLand.Models.TaskStatus> statusRepo;
 
         public TaskInfoService(IMapper mapper, ApplicationContext context)
         {
@@ -24,6 +25,7 @@ namespace Backend.Services
             historyRepo = new EFGenericRepository<TaskHistory>(context);
             userRepo = new EFGenericRepository<User>(context);
             categoryRepo = new EFGenericRepository<TaskCategory>(context);
+            statusRepo = new EFGenericRepository<FreelanceLand.Models.TaskStatus>(context);
             this.mapper = mapper;
         }
 
@@ -47,8 +49,8 @@ namespace Backend.Services
             task.ExecutorId = user.ExcecutorId;
             task.UpdatedById = task.CustomerId;
             task.DateUpdated = DateTime.Now;
-            StatusEnum status = StatusEnum.InProgress;
-            task.TaskStatusId = (int)status;
+            var status = (await statusRepo.GetWithIncludeAsync(s => s.Type == "In progress")).FirstOrDefault();
+            task.TaskStatusId = status.Id;
 
             await taskRepo.UpdateAsync(task);
             return user;
@@ -61,8 +63,8 @@ namespace Backend.Services
 
             task.UpdatedById = task.CustomerId;
             task.DateUpdated = DateTime.Now;
-            StatusEnum status = StatusEnum.Done;
-            task.TaskStatusId = (int)status;
+            var status = (await statusRepo.GetWithIncludeAsync(s => s.Type == "Done")).FirstOrDefault();
+            task.TaskStatusId = status.Id;
 
             await taskRepo.UpdateAsync(task);
       
@@ -71,13 +73,12 @@ namespace Backend.Services
 
         public async Task<TaskPageDTO> AddTask(TaskPageDTO task)
         {
-            StatusEnum status = StatusEnum.ToDo;
-
             var result = mapper.Map<TaskPageDTO, FreelanceLand.Models.Task>(task);
 
             result.TaskCategoryId = (await categoryRepo.GetWithIncludeAsync(c => c.Type == task.TaskCategory))
                 .FirstOrDefault().Id;
-            result.TaskStatusId = (int)status;
+            var status = (await statusRepo.GetWithIncludeAsync(s => s.Type == "To do")).FirstOrDefault();
+            result.TaskStatusId = status.Id;
             result.UpdatedById = task.CustomerId;
             result.DateUpdated = DateTime.Now;
             await taskRepo.CreateAsync(result);
