@@ -2,6 +2,7 @@
 using Backend.DTOs;
 using Backend.Enums;
 using Backend.Interfaces.ServiceInterfaces;
+using Backend.Pagination;
 using FreelanceLand.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,13 +35,24 @@ namespace Backend.Services
             var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
             return dtos;
         }
-
-        public async Task<IEnumerable<TaskDTO>> GetToDoEntities()
+        const int pageSize = 10;
+        public async Task<PagedList<TaskDTO>> GetTasks(int pageNumber)
         {
             var entities = await taskRepo.GetWithIncludeAsync(o => o.TaskStatusId == (int)StatusEnum.ToDo, p => p.TaskCategory, k => k.Comments);
+
             var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
-            return dtos;
+            var query = dtos.AsQueryable();
+
+            return new PagedList<TaskDTO>(
+                query, pageNumber, pageSize);
         }
+
+        //public async Task<IEnumerable<TaskDTO>> GetToDoEntities()
+        //{
+        //    var entities = await taskRepo.GetWithIncludeAsync(o => o.TaskStatusId == (int)StatusEnum.ToDo, p => p.TaskCategory, k => k.Comments);
+        //    var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
+        //    return dtos;
+        //}
 
         public async System.Threading.Tasks.Task DeleteTask(int id)
         {
