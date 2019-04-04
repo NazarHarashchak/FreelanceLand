@@ -123,7 +123,7 @@ namespace Backend.Services
 
         
        
-        public async Task<User> UpdateUser(int id, [FromBody] UserInformation value)
+        public async Task<User> UpdateUser(int id, UserInformation value)
         {
                 var result = db.Users.SingleOrDefault(b => b.Id == id);
                 if (result != null)

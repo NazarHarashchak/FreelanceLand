@@ -26,6 +26,7 @@ namespace Backend.Services
             historyRepo = new EFGenericRepository<TaskHistory>(context);
             commentRepo = new EFGenericRepository<Comment>(context);
         }
+        public TasksService() { }
 
         public async Task<IEnumerable<TaskDTO>> GetHistoryTaskByUser(int id)
         {
