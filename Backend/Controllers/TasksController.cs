@@ -20,12 +20,13 @@ namespace Backend.Controllers
             this.tasksService = tasksService;
         }
 
-        [HttpGet("PageNumber/{pageNumber}")]
-        public async Task<IActionResult> GetPageNumber(int pageNumber)
+        [HttpPost("all")]
+        public async Task<IActionResult> GetPageNumber([FromBody] PaginationDTO  paginationDTO)
         {
             // var all = await _usersService.GetAllEntities();
 
-            var dtos = await tasksService.GetTasks(pageNumber);
+
+            var dtos = await tasksService.GetTasks(1);
 
             return Ok(dtos);
         }
