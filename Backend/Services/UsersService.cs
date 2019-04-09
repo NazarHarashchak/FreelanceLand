@@ -33,9 +33,9 @@ namespace Backend.Services
         }
 
         const int pageSize = 10;
-        public async Task<PagedList<UserDTO>> GetUsers(int pageNumber)
+        public async Task<PagedList<UserDTO>> GetUsers(int pageNumber, string text)
         {
-            var entities = await userRepo.GetAsync();
+            var entities = await userRepo.GetWithIncludeAsync(x=> x.Name.Contains(text));
             var dtos = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(entities);
             var query = dtos.AsQueryable();
 

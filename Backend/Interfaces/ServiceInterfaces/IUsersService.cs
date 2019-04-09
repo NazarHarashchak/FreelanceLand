@@ -29,7 +29,7 @@ namespace Backend.Interfaces.ServiceInterfaces
 
 
       //  Task<PagedList<UserDTO>> GetUsers([FromQuery] PagingParams pagingParams);
-        Task<PagedList<UserDTO>> GetUsers(int pageNumber);
+        Task<PagedList<UserDTO>> GetUsers(int pageNumbe, string text);
 
         Task<UserAccountDTO> ChangePass(string login, string password);
 
