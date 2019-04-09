@@ -12,24 +12,24 @@ namespace Tests
         private readonly IMapper _mapper;
         private readonly ApplicationContext db;
        
-        [Fact]
-        public void PassingTest()
-        {
-            UserAccountDTO user = new UserAccountDTO();
+        //[Fact]
+        //public void PassingTest()
+        //{
+        //    UserAccountDTO user = new UserAccountDTO();
             
-            IUserTokensService _userTokensService = new UserTokensService(_mapper,db);
+        //    IUserTokensService _userTokensService = new UserTokensService(_mapper,db);
 
-            Assert.Equal("?", funct(1));
+        //    Assert.Equal("?", funct(1));
 
-        }
+        //}
 
-        public string funct(int i)
-        {
-            if (i < 0)
-                return "!";
-            else
-                return "?";
-        }
+        //public string funct(int i)
+        //{
+        //    if (i < 0)
+        //        return "!";
+        //    else
+        //        return "?";
+        //}
         
     }
 }

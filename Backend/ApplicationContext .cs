@@ -15,6 +15,7 @@ namespace FreelanceLand.Models
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Image> Images { get; set; }
         
+        public ApplicationContext() { }
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
