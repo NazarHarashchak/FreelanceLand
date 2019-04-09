@@ -82,7 +82,7 @@ namespace Backend
                     builder =>
                     {
                         builder.WithOrigins("http://localhost:3000",
-                                "https://localhost:44332").AllowAnyHeader()
+                                "https://localhost:44338").AllowAnyHeader()
                             .AllowAnyMethod().AllowCredentials();
                     });
             });

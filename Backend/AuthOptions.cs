@@ -5,7 +5,7 @@ namespace Backend
 {
     public class AuthOptions
     {
-        public const string ISSUER = "https://localhost:44332"; 
+        public const string ISSUER = "https://localhost:44338"; 
         public const string AUDIENCE = "http://localhost:3000/"; 
         const string KEY = "mysupersecret_secretkey!"; 
         public const int LIFETIME = 60;
