@@ -34,16 +34,17 @@ namespace Backend.Controllers
         [HttpPost("register")]
         public async Task Register([FromBody] UserAccountDTO user)
         {
-            var dto = await _userService.CreateUser(user.Email, user.Login, user.Password);
-            
+            string requestUrl = Request.Scheme + "://" + Request.Host;
+            var dto = await _userService.CreateUser(user.Email, user.Login, user.Password,requestUrl);
             await Response.WriteAsync(JsonConvert.SerializeObject(dto, new JsonSerializerSettings { Formatting = Formatting.Indented }));
             
         }
+
         [HttpGet("confirmEmail")]
         public async Task ConfirmEmail([FromQuery]string confirmCode)
         {
             await _userService.ConfirmEmail(confirmCode);
-            Response.Redirect("http://localhost:3000/loginPage");
+            Response.Redirect(Request.Headers["origin"]+"/loginPage");
         }
     }
 }
