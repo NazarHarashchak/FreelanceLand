@@ -13,6 +13,7 @@ namespace Backend.Controllers
     {
         public IUsersService _userService;
         private IUserTokensService _userTokensService;
+        static private string clientURL;
 
         public AccountController(IUsersService userService, IUserTokensService userTokensService)
         {
@@ -34,6 +35,7 @@ namespace Backend.Controllers
         [HttpPost("register")]
         public async Task Register([FromBody] UserAccountDTO user)
         {
+            clientURL = Request.Headers["origin"];
             string requestUrl = Request.Scheme + "://" + Request.Host;
             var dto = await _userService.CreateUser(user.Email, user.Login, user.Password,requestUrl);
             await Response.WriteAsync(JsonConvert.SerializeObject(dto, new JsonSerializerSettings { Formatting = Formatting.Indented }));
@@ -44,7 +46,7 @@ namespace Backend.Controllers
         public async Task ConfirmEmail([FromQuery]string confirmCode)
         {
             await _userService.ConfirmEmail(confirmCode);
-            Response.Redirect(Request.Headers["origin"]+"/loginPage");
+            Response.Redirect(clientURL + "/loginPage");
         }
     }
 }
