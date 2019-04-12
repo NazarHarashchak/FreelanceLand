@@ -12,6 +12,6 @@ namespace Backend.Interfaces.ServiceInterfaces
         Task<IEnumerable<TaskDTO>> GetHistoryTaskByUser(int id);
         System.Threading.Tasks.Task DeleteTask(int id);
         Task<IEnumerable<TaskDTO>> GetActiveTaskByUser(int id);
-        Task<PagedList<TaskDTO>> GetTasks(int pageNumber);
+        Task<PagedList<TaskDTO>> GetTasks(int page, string searchText, int priceTo, int priceFrom, string[] categ);
     }
 }
