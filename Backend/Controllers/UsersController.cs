@@ -32,12 +32,13 @@ namespace Backend.Controllers
             _imageService = imageService;
         }
 
-        [HttpGet("PageNumber/{pageNumber}")]
-        public async Task<IActionResult> GetPageNumber( int pageNumber )
+        [HttpGet("Pagination/{text}")]
+        
+        public async Task<IActionResult> GetPageNumber([FromQuery] TextDTO text )
         {
             // var all = await _usersService.GetAllEntities();
-
-            var dtos = await _usersService.GetUsers(pageNumber);
+           
+            var dtos = await _usersService.GetUsers(text);
 
             return Ok(dtos);
         }
