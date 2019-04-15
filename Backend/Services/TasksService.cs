@@ -39,14 +39,14 @@ namespace Backend.Services
             return dtos;
         }
         const int pageSize = 10;
-        public async Task<PagedList<TaskDTO>> GetTasks(int page, string searchText, int priceTo, int priceFrom, string[] categ)
+        public async Task<PagedList<TaskDTO>> GetTasks(int page, string search, int priceTo, int priceFrom, string[] categ)
         {
-            searchText = searchText ?? "";
+            search = search ?? "";
             if (priceTo == 0) priceTo = 999999;
             if (categ.Length == 0) categ = new string[] { "" };
             var entities = await taskRepo.GetWithIncludeAsync(
                     o => o.TaskStatusId == (int)StatusEnum.ToDo && 
-                    o.Title.Contains(searchText) &&
+                    o.Title.Contains(search) &&
                     o.Price <= priceTo && 
                     o.Price >= priceFrom&&
                     categ.Any(s=> o.TaskCategory.Type.Contains(s)),

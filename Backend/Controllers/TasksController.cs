@@ -21,9 +21,9 @@ namespace Backend.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> GetTasks([FromQuery] int page, string searchText, int priceTo, int priceFrom, string[] categ)
+        public async Task<IActionResult> GetTasks([FromQuery] int page, string search, int priceTo, int priceFrom, string[] categ)
         {
-            var dtos = await tasksService.GetTasks(page, searchText, priceTo, priceFrom, categ);
+            var dtos = await tasksService.GetTasks(page, search, priceTo, priceFrom, categ);
 
             return Ok(dtos);
         }
