@@ -163,6 +163,10 @@ namespace Backend
             {
                 Type = "To do"
             };
+            TASK_STATUS taskStatus4 = new TASK_STATUS
+            {
+                Type = "Ready for veryfycation"
+            };
 
             TASK task1 = new TASK
             {

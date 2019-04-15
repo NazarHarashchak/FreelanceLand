@@ -35,7 +35,7 @@ namespace Backend.Controllers
         public async Task<ActionResult<IEnumerable<TaskDTO>>> GetHistoryTasks(int id)
         {
             var dtos = await tasksService.GetHistoryTaskByUser(id);
-            
+
             return Ok(dtos);
         }
 
@@ -44,6 +44,15 @@ namespace Backend.Controllers
         public async Task<ActionResult<IEnumerable<TaskDTO>>> GetActiveTasks(int id)
         {
             var dtos = await tasksService.GetActiveTaskByUser(id);
+
+            return Ok(dtos);
+        }
+
+        [Route("Created/{id}")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetCreatedTasks(int id)
+        {
+            var dtos = await tasksService.GetCreatedTaskByUser(id);
 
             return Ok(dtos);
         }

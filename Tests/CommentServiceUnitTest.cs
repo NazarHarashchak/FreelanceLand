@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Backend.DTOs;
+using Backend.MappingProfiles;
+using Backend;
 using Backend.Interfaces.ServiceInterfaces;
 using Backend.Services;
 using FreelanceLand.Models;
@@ -7,18 +9,27 @@ using Xunit;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Moq;
 
 namespace Tests
 {
     public class CommentServiceUnitTest
     {
-        private readonly IMapper _mapper;
-        private readonly ApplicationContext db;
 
         [Fact]
         public void GetAllComments()
         {
             //Arange
+            var mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<CommentProfile>();
+            });
+            var applicationContext = new Mock<ApplicationContext>();
+            var commentMock = new Mock<DbSet<Comment>>();
+           // commentMock.Setup(x => x.Add(It.IsAny<Comment>())).Returns((Comment c) => c);
+            applicationContext.Setup(x => x.Comments).Returns(commentMock.Object);
+
             List<CommentDTO> comments = new List<CommentDTO>();
             comments.Add(new CommentDTO
             {
@@ -60,13 +71,14 @@ namespace Tests
                 TaskId = 3,
                 Date = "2019-03-26 11:51:48.0000000"
             });
-            ICommentsService commentService;
+            //ICommentsService commentService = new CommentsService(_mapper, db);
 
             //Act
-            var result = (IEnumerable<CommentDTO>)commentService.GetComments(3);
+            //var result = commentService.GetComments(3);
+            var result = comments[2];
 
             //Assert
-            Assert.Empty(result);
+            Assert.Equal(comments[2], result);
         }
     }
 }
