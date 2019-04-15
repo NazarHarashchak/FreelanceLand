@@ -81,9 +81,11 @@ namespace Backend
                 options.AddPolicy(MyAllowSpecificOrigins,
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:3000",
-                                "https://localhost:44332").AllowAnyHeader()
-                            .AllowAnyMethod().AllowCredentials();
+                        builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
                     });
             });
 
