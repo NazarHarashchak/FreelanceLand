@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Backend.DTOs
 {
@@ -21,6 +22,12 @@ namespace Backend.DTOs
         public string Password { get; set; }
 
         public int? UserRoleId { get; set; }
+    }
+    public class TextDTO
+    {
+        public string Search { get; set; }
+        public int PageNumber { get; set; }
+        public List<string> Role { get; set; }
     }
 }
 

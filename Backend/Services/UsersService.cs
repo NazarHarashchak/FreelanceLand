@@ -33,14 +33,23 @@ namespace Backend.Services
         }
 
         const int pageSize = 10;
-        public async Task<PagedList<UserDTO>> GetUsers(int pageNumber)
+        public async Task<PagedList<UserDTO>> GetUsers(TextDTO text)
         {
-            var entities = await userRepo.GetAsync();
-            var dtos = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(entities);
-            var query = dtos.AsQueryable();
+            if (text.Search == "undefined" || text.Search == null) text.Search = "";
+            if (text.Role == null) text.Role = new List<string>();
 
-            return new PagedList<UserDTO>(
-                query, pageNumber, pageSize);
+           var roles = await rolesRepo.GetWithIncludeAsync();
+
+           var entities = await userRepo.GetWithIncludeAsync(x => x.Name.Contains(text.Search) &&
+           ((text.Role.Count == 0) ? roles.Any(s => x.UserRole.Type.Contains(s.Type)) : text.Role.Any(s => x.UserRole.Type.Contains(s))));
+
+
+           var dtos = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(entities);
+           var query = dtos.AsQueryable();
+
+           return new PagedList<UserDTO>(
+               query, text.PageNumber, pageSize);
+            
         }
 
 
