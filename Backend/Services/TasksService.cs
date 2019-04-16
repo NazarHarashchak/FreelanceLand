@@ -30,13 +30,26 @@ namespace Backend.Services
         }
         public TasksService() { }
 
-        public async Task<IEnumerable<TaskDTO>> GetHistoryTaskByUser(int id)
+        public async Task<PagedList<TaskDTO>> GetHistoryTaskByUser(int id, int page, string search, int priceTo, int priceFrom, string[] categ)
         {
-            var entities = (await taskRepo.GetWithIncludeAsync(o => o.TaskStatusId == (int)StatusEnum.Done,
-                p => p.TaskCategory, k => k.Comments))
-                .Where(o => o.ExecutorId == id);
+            search = search ?? "";
+            if (priceTo == 0) priceTo = 999999;
+            if (categ.Length == 0) categ = new string[] { "" };
+            var entities = await taskRepo.GetWithIncludeAsync(
+                    o => o.TaskStatusId == (int)StatusEnum.Done  &&
+                    o.Title.Contains(search) &&
+                    o.Price <= priceTo &&
+                    o.Price >= priceFrom &&
+                    o.ExecutorId == id &&
+                    categ.Any(s => o.TaskCategory.Type.Contains(s)),
+
+                    p => p.TaskCategory, k => k.Comments
+            );
             var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
-            return dtos;
+            var query = dtos.AsQueryable();
+
+            return new PagedList<TaskDTO>(
+                query, page, pageSize);
         }
         const int pageSize = 10;
         public async Task<PagedList<TaskDTO>> GetTasks(int page, string search, int priceTo, int priceFrom, string[] categ)
@@ -76,12 +89,26 @@ namespace Backend.Services
             await taskRepo.RemoveAsync(task);
         }
 
-        public async Task<IEnumerable<TaskDTO>> GetActiveTaskByUser(int id)
+        public async Task<PagedList<TaskDTO>> GetActiveTaskByUser( int id, int page, string search, int priceTo, int priceFrom, string[] categ)
         {
-            var entities = (await taskRepo.GetWithIncludeAsync(o => o.TaskStatusId == (int)StatusEnum.InProgress, p => p.TaskCategory, k => k.Comments))
-                .Where(o => o.ExecutorId==id);
+            search = search ?? "";
+            if (priceTo == 0) priceTo = 999999;
+            if (categ.Length == 0) categ = new string[] { "" };
+            var entities = await taskRepo.GetWithIncludeAsync(
+                    o => o.TaskStatusId == (int)StatusEnum.InProgress &&
+                    o.Title.Contains(search) &&
+                    o.Price <= priceTo &&
+                    o.Price >= priceFrom &&
+                    o.ExecutorId == id &&
+                    categ.Any(s => o.TaskCategory.Type.Contains(s)),
+
+                    p => p.TaskCategory, k => k.Comments
+            );
             var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
-            return dtos;
+            var query = dtos.AsQueryable();
+
+            return new PagedList<TaskDTO>(
+                query, page, pageSize);
         }
     }
 }

@@ -28,20 +28,20 @@ namespace Backend.Controllers
             return Ok(dtos);
         }
 
-        [Route("history/{id}")]
+        [Route("History")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetHistoryTasks(int id)
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetHistoryTasks([FromQuery] int id, int page, string search, int priceTo, int priceFrom, string[] categ)
         {
-            var dtos = await tasksService.GetHistoryTaskByUser(id);
+            var dtos = await tasksService.GetHistoryTaskByUser(id, page, search, priceTo, priceFrom, categ);
             
             return Ok(dtos);
         }
 
-        [Route("Active/{id}")]
+        [Route("Active")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetActiveTasks(int id)
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetActiveTasks([FromQuery] int id, int page, string search, int priceTo, int priceFrom, string[] categ)
         {
-            var dtos = await tasksService.GetActiveTaskByUser(id);
+            var dtos = await tasksService.GetActiveTaskByUser(id,page,search,priceTo,priceFrom,categ);
 
             return Ok(dtos);
         }

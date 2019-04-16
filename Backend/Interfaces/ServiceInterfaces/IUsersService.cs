@@ -28,8 +28,9 @@ namespace Backend.Interfaces.ServiceInterfaces
         Task<IEnumerable<UserRolesDTO>> GetAllRolesDtos();
 
 
-      //  Task<PagedList<UserDTO>> GetUsers([FromQuery] PagingParams pagingParams);
-        Task<PagedList<UserDTO>> GetUsers( TextDTO text);
+        //  Task<PagedList<UserDTO>> GetUsers([FromQuery] PagingParams pagingParams);
+        Task<PagedList<UserDTO>> GetUsers(TextDTO text);
+
 
         Task<UserAccountDTO> ChangePass(string login, string password);
 
