@@ -57,6 +57,19 @@ namespace Backend.Services
             search = search ?? "";
             if (priceTo == 0) priceTo = 999999;
             if (categ.Length == 0) categ = new string[] { "" };
+            /* Expression<Func<FreelanceLand.Models.Task, bool>> predicate = (o) => 
+                  o.TaskStatusId == (int)StatusEnum.ToDo &&
+                  o.Title.Contains(searchText) &&
+                  o.Price <= priceTo &&
+                  o.Price >= priceFrom;
+
+             BinaryExpression body = (o) =>
+                  o.TaskStatusId == (int)StatusEnum.ToDo &&
+                 o.Title.Contains(searchText);
+             Expression <Func<FreelanceLand.Models.Task, bool>> predicate1 = Expression.Lambda<Func<FreelanceLand.Models.Task, bool>>(body, null);
+
+             predicate = predicate && (o => o.Price >= priceFrom); */
+
             var entities = await taskRepo.GetWithIncludeAsync(
                     o => o.TaskStatusId == (int)StatusEnum.ToDo && 
                     o.Title.Contains(search) &&
