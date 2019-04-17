@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Backend.DTOs
 {
@@ -35,6 +36,9 @@ namespace Backend.DTOs
 
         public string ExcecutorSecondName { get; set; }
 
+        public string CustomerPhoto { get; set; }
+
+        public string ExcecutorPhoto { get; set; }
     }
 }
 
