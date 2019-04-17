@@ -21,6 +21,7 @@ namespace Backend.Services
         private EFGenericRepository<UserRoles> rolesRepo;
         private EFGenericRepository<Image> imageRepo;
         private readonly ApplicationContext db;
+        private IImageService imageService;
 
         public UsersService(IMapper mapper, ApplicationContext context, IEmailService emailService)
         {
@@ -29,15 +30,21 @@ namespace Backend.Services
             rolesRepo = new EFGenericRepository<UserRoles>(context);
             userRepo  = new EFGenericRepository<User>(context);
             imageRepo = new EFGenericRepository<Image>(context);
+            imageService = new ImageService(mapper, context);
             _emailService = emailService;
         }
 
         const int pageSize = 10;
         public async Task<PagedList<UserDTO>> GetUsers(int pageNumber)
         {
-            var entities = await userRepo.GetAsync();
-            var dtos = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(entities);
+            var entities = (await userRepo.GetAsync()).ToList();
+            var dtos = _mapper.Map<List<User>, List<UserDTO>>(entities);
             var query = dtos.AsQueryable();
+
+            for (int i = 0; i < dtos.Count(); i++)
+            {
+                dtos[i].UserPhoto = await imageService.GetImageAsync(dtos[i].Id);
+            }
 
             return new PagedList<UserDTO>(
                 query, pageNumber, pageSize);
