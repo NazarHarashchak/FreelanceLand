@@ -69,7 +69,7 @@ namespace Backend.Services
         public async Task<int> GetNotificationCountAsync(int userId)
         {
             var notifications = await notiRepo.GetAsync(x => x.UserId == userId);
-            return notifications.Count();
+            return (notifications.Count() > 0) ? notifications.Count() : 0;
         }
 
         public async System.Threading.Tasks.Task DeleteNotificationAsync(int id)

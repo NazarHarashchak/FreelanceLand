@@ -78,16 +78,17 @@ namespace Backend
                             }
                         };
                     });
+
             services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins,
                     builder =>
                     {
-                        builder
-                        .AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials();
+                        builder.WithOrigins("http://localhost:3000",
+                                "https://localhost:44338",
+                                "https://freelanceland.azurewebsites.net",
+                                "https://freelancelandback.azurewebsites.net").AllowAnyHeader()
+                            .AllowAnyMethod().AllowCredentials();
                     });
             });
 

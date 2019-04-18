@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Backend.Interfaces.ServiceInterfaces;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
+using Backend.Hubs;
 
 namespace Backend.Controllers
 {
@@ -12,10 +14,12 @@ namespace Backend.Controllers
     public class NotificationController : ControllerBase
     {
         public INotificationService _notifService;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-        public NotificationController(INotificationService notifService)
+        public NotificationController(INotificationService notifService, IHubContext<NotificationHub> hubContext)
         {
             _notifService = notifService;
+            _hubContext = hubContext;
         }
 
         [HttpPost("getNotifications")]
@@ -42,6 +46,7 @@ namespace Backend.Controllers
         [HttpPost("deleteNotification")]
         public async Task DeleteNotification([FromBody] NotificationDTO notification)
         {
+            await _hubContext.Clients.All.SendAsync("deleteNotification", notification.UserId);
             await _notifService.DeleteNotificationAsync(notification.Id);
             var dto = await _notifService.GetNotificationsAsync(notification.UserId);
             await Response.WriteAsync(JsonConvert.SerializeObject(dto, new JsonSerializerSettings { Formatting = Formatting.Indented }));
