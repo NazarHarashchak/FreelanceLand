@@ -33,7 +33,7 @@ namespace Backend.Controllers
         public async Task<ActionResult<IEnumerable<TaskDTO>>> GetHistoryTasks([FromQuery] int id, int page, string search, int priceTo, int priceFrom, string[] categ)
         {
             var dtos = await tasksService.GetHistoryTaskByUser(id, page, search, priceTo, priceFrom, categ);
-            
+
             return Ok(dtos);
         }
 
