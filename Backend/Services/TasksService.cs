@@ -110,5 +110,13 @@ namespace Backend.Services
             return new PagedList<TaskDTO>(
                 query, page, pageSize);
         }
+
+        public async Task<IEnumerable<TaskDTO>> GetCreatedTaskByUser(int id)
+        {
+            var entities = (await taskRepo.GetWithIncludeAsync(p => p.TaskCategory, k => k.Comments))
+                .Where(o => o.CustomerId == id);
+            var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
+            return dtos;
+        }
     }
 }

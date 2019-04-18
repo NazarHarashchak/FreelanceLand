@@ -46,6 +46,15 @@ namespace Backend.Controllers
             return Ok(dtos);
         }
 
+        [Route("Created/{id}")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetCreatedTasks(int id)
+        {
+            var dtos = await tasksService.GetCreatedTaskByUser(id);
+
+            return Ok(dtos);
+        }
+
         [Authorize(Roles = "Moderator")]
         [HttpPost("DeleteTask")]
         public async Task DeleteTask([FromBody] TaskDTO task)

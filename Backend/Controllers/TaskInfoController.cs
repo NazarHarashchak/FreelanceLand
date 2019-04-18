@@ -52,9 +52,18 @@ namespace Backend.Controllers
             return Ok(result);
         }
 
-        [Route("closetask")]
+        [Route("edittask")]
         [HttpPost]
-        public async Task<ActionResult<TaskPageDTO>> CloseTask([FromBody] int id)
+        public async Task<ActionResult<TaskPageDTO>> EditTask([FromBody] TaskPageDTO task)
+        {
+            var result = await tasksService.EditTask(task);
+
+            return Ok(result);
+        }
+
+        [Route("closetask/{id}")]
+        [HttpPost]
+        public async Task<ActionResult<TaskPageDTO>> CloseTask(int id)
         {
             var result = await tasksService.CloseTask(id);
 
