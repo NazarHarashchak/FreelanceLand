@@ -34,6 +34,7 @@ namespace Backend
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddCors();
             services.AddTransient<IImageService, ImageService>();
+            services.AddTransient<INotificationService, NotificationService>();
             services.AddTransient<IMessageService, MessageService>();
             services.AddTransient<IChatRoomService, ChatRoomService>();
             services.AddTransient<IEmailService, EmailService>();
@@ -68,7 +69,7 @@ namespace Backend
                                 
                                 var path = context.HttpContext.Request.Path;
                                 if (!string.IsNullOrEmpty(accessToken) &&
-                                    (path.StartsWithSegments("/chat")))
+                                    ((path.StartsWithSegments("/chat")) || (path.StartsWithSegments("/notification"))))
                                 {
                                     context.Token = accessToken;
                                 }
@@ -76,20 +77,25 @@ namespace Backend
                             }
                         };
                     });
+
             services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins,
                     builder =>
                     {
-                        builder
-                        .AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials();
+                        builder.WithOrigins("http://localhost:3000",
+                                "https://localhost:44338",
+                                "https://freelanceland.azurewebsites.net",
+                                "https://freelancelandback.azurewebsites.net").AllowAnyHeader()
+                            .AllowAnyMethod().AllowCredentials();
                     });
             });
 
-            services.AddSignalR();
+            services.AddSignalR(o =>
+                {
+                o.EnableDetailedErrors = true;
+                }
+            );
             services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_0);
             services.AddMvc()
@@ -99,7 +105,6 @@ namespace Backend
                             new CamelCasePropertyNamesContractResolver();
                     });
 
-           
 
             InitializeAutomapper(services);
         }
@@ -123,6 +128,7 @@ namespace Backend
             app.UseSignalR(routes =>
             {
                 routes.MapHub<ChatHub>("/chat");
+                routes.MapHub<NotificationHub>("/notification");
             });
 
             app.UseMvcWithDefaultRoute();
@@ -138,6 +144,7 @@ namespace Backend
                 cfg.AddProfile<TaskProfile>();
                 cfg.AddProfile<UserInformationProfile>();
                 cfg.AddProfile<TaskDescriptionProfile>();
+                cfg.AddProfile<NotificationProfile>();
             });
 
             return services;

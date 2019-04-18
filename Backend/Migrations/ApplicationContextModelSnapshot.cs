@@ -19,6 +19,25 @@ namespace Backend.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Backend.Models.Notification", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                b.Property<string>("Message");
+
+                b.Property<DateTime>("DateAndTime");
+
+                b.Property<int?>("UserId");
+
+                b.HasKey("Id");
+
+                b.HasIndex("UserId");
+
+                b.ToTable("Notifications");
+            });
+
             modelBuilder.Entity("Backend.Models.ChatRoom", b =>
                 {
                     b.Property<int>("Id")
@@ -273,6 +292,13 @@ namespace Backend.Migrations
 
                     b.ToTable("UserRoles");
                 });
+
+            modelBuilder.Entity("FreelanceLand.Models.Notification", b =>
+            {
+                b.HasOne("FreelanceLand.Models.User", "Receiver")
+                    .WithMany("UserNotifications")
+                    .HasForeignKey("UserId");
+            });
 
             modelBuilder.Entity("Backend.Models.ChatRoom", b =>
                 {
