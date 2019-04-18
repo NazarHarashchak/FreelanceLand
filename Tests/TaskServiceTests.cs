@@ -23,26 +23,7 @@ namespace Tests
         Mock<ITasksService> mockTaskRepository;
         IEnumerable<TaskDTO> dto = new List<TaskDTO> { new TaskDTO { Id = 2, Description = "Test one" } };
 
-        
-
-        [Fact]
-        public void GetHistoryTaskByUser_ValidCall( )
-        {
-
-            var appCont = new Mock<ApplicationContext>();
-            var container = new MockingContainer<TasksService>();
-            var map = new Mock<IMapper>();
-            var mock = new Mock<ITasksService>();
-            var actual = new TasksService(map.Object, appCont.Object);
-
-            mock.Setup(repo => repo.GetHistoryTaskByUser(2)).
-                ReturnsAsync(dto);
-
-            var act= actual.a
-            var result = actual.GetHistoryTaskByUser(2);
-            Assert.Equal(result, result);
-            mock.Verify();
-        }
+    
         
         
     }

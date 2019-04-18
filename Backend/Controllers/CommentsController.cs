@@ -1,13 +1,13 @@
-﻿using System;
-using Backend.DTOs;
+﻿using Backend.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Backend.Interfaces.ServiceInterfaces;
 using Microsoft.AspNetCore.Http;
-using FreelanceLand.Models;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using Backend.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Backend.Controllers
 {
@@ -15,11 +15,18 @@ namespace Backend.Controllers
     [ApiController]
     public class CommentsController : ControllerBase
     {
+        private readonly IHubContext<NotificationHub> _hubContext;
         private ICommentsService commentsService;
+        private INotificationService notificationService;
+        private IUsersService usersService;
 
-        public CommentsController(ICommentsService commentsService)
+        public CommentsController(ICommentsService commentsService, INotificationService notificationService,
+            IHubContext<NotificationHub> hubContext, IUsersService usersService)
         {
             this.commentsService = commentsService;
+            this.notificationService = notificationService;
+            this.usersService = usersService;
+            _hubContext = hubContext;
         }
 
         [HttpGet("{id}")]
@@ -40,6 +47,10 @@ namespace Backend.Controllers
         [HttpPost("DeleteComment")]
         public async System.Threading.Tasks.Task DeleteComment([FromBody] CommentDTO comment)
         {
+            string msg = "Your comment was deleted by moderator";
+            var com = await commentsService.GetComment(comment.Id);
+            await notificationService.AddNotification(msg, com.UserId);
+            await _hubContext.Clients.All.SendAsync("sendMessage", com.UserId, msg);
             await commentsService.DeleteComment(comment.Id);
             await Response.WriteAsync(JsonConvert.SerializeObject(comment, new JsonSerializerSettings { Formatting = Formatting.Indented }));
         }

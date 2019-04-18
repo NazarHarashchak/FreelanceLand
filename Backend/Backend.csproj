@@ -8,7 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\ServiceInterfaces\" />
+    <Compile Remove="Migrations\20190414153516_AddNotificationMigration.cs" />
+    <Compile Remove="Migrations\20190414153516_AddNotificationMigration.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>

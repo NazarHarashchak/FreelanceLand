@@ -28,6 +28,11 @@ namespace Backend
             return await _dbSet.AsNoTracking().Where(predicate).ToListAsync();
         }
 
+        public IEnumerable<TEntity> Get()
+        {
+            return _dbSet.AsNoTracking().ToList();
+        }
+
         public async Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> predicate, int take, int skip = 0)
         {
             return await _dbSet.AsNoTracking().Where(predicate).Skip(skip).Take(take).ToListAsync();
