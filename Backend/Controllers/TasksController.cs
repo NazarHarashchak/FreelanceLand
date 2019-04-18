@@ -46,11 +46,11 @@ namespace Backend.Controllers
             return Ok(dtos);
         }
 
-        [Route("Created/{id}")]
+        [Route("Created")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetCreatedTasks(int id)
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetCreatedTasks([FromQuery] int id, int page, string search, int priceTo, int priceFrom, string[] categ)
         {
-            var dtos = await tasksService.GetCreatedTaskByUser(id);
+            var dtos = await tasksService.GetCreatedTaskByUser(id, page, search, priceTo, priceFrom, categ);
 
             return Ok(dtos);
         }

@@ -3,10 +3,12 @@ using Backend.DTOs;
 using Backend.Interfaces.ServiceInterfaces;
 using FreelanceLand.Models;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using System.Linq;
 using System;
-using Backend.Enums;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace Backend.Services
 {
@@ -17,13 +19,14 @@ namespace Backend.Services
         private EFGenericRepository<TaskHistory> historyRepo;
         private EFGenericRepository<TaskCategory> categoryRepo;
         private EFGenericRepository<FreelanceLand.Models.TaskStatus> statusRepo;
-
+        private IImageService imageService; 
         public TaskInfoService(IMapper mapper, ApplicationContext context)
         {
             taskRepo = new EFGenericRepository<FreelanceLand.Models.Task>(context);
             historyRepo = new EFGenericRepository<TaskHistory>(context);
             categoryRepo = new EFGenericRepository<TaskCategory>(context);
             statusRepo = new EFGenericRepository<FreelanceLand.Models.TaskStatus>(context);
+            imageService = new ImageService(mapper, context);
             this.mapper = mapper;
         }
 
@@ -37,6 +40,9 @@ namespace Backend.Services
                                      excecutor => excecutor.Executor)).Where(o => o.Id==id).FirstOrDefault();
 
             var dtos = mapper.Map<FreelanceLand.Models.Task, TaskPageDTO>(myTask);
+
+            dtos.CustomerPhoto = await imageService.GetImageAsync(dtos.CustomerId);
+            dtos.ExcecutorPhoto = await imageService.GetImageAsync(dtos.ExcecutorId);
 
             return dtos;
         }

@@ -18,5 +18,7 @@ namespace Backend.DTOs
         public int TaskId { get; set; }
 
         public string UserName { get; set; }
+
+        public string Photo { get; set; }
     }
 }

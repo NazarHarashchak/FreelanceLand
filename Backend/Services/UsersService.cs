@@ -21,6 +21,7 @@ namespace Backend.Services
         private EFGenericRepository<UserRoles> rolesRepo;
         private EFGenericRepository<Image> imageRepo;
         private readonly ApplicationContext db;
+        private IImageService imageService;
 
         public UsersService(IMapper mapper, ApplicationContext context, IEmailService emailService)
         {
@@ -29,6 +30,7 @@ namespace Backend.Services
             rolesRepo = new EFGenericRepository<UserRoles>(context);
             userRepo  = new EFGenericRepository<User>(context);
             imageRepo = new EFGenericRepository<Image>(context);
+            imageService = new ImageService(mapper, context);
             _emailService = emailService;
         }
 
