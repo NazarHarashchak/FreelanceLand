@@ -14,7 +14,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
-using ServiceBrokerListener.Domain;
 
 namespace Backend
 {
@@ -105,15 +104,6 @@ namespace Backend
                         options.SerializerSettings.ContractResolver =
                             new CamelCasePropertyNamesContractResolver();
                     });
-
-            services.AddSingleton(sp =>
-            {
-                var sd = new SqlDependencyEx("Server=(localdb)\\mssqllocaldb; Database=freelanceland3.0db; Trusted_Connection=True;",
-                    "freelanceland3.0db",
-                    "Notifications");
-                sd.Start();
-                return sd;
-            });
 
 
             InitializeAutomapper(services);
