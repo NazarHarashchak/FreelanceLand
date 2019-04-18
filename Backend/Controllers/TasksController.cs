@@ -27,37 +27,37 @@ namespace Backend.Controllers
             _hubContext = hubContext;
         }
 
-        [HttpGet("PageNumber/{pageNumber}")]
-        public async Task<IActionResult> GetPageNumber(int pageNumber)
+        [HttpGet("all")]
+        public async Task<IActionResult> GetTasks([FromQuery] int page, string search, int priceTo, int priceFrom, string[] categ)
         {
-            var dtos = await tasksService.GetTasks(pageNumber);
+            var dtos = await tasksService.GetTasks(page, search, priceTo, priceFrom, categ);
 
             return Ok(dtos);
         }
 
-        [Route("history/{id}")]
+        [Route("History")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetHistoryTasks(int id)
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetHistoryTasks([FromQuery] int id, int page, string search, int priceTo, int priceFrom, string[] categ)
         {
-            var dtos = await tasksService.GetHistoryTaskByUser(id);
+            var dtos = await tasksService.GetHistoryTaskByUser(id, page, search, priceTo, priceFrom, categ);
 
             return Ok(dtos);
         }
 
-        [Route("Active/{id}")]
+        [Route("Active")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetActiveTasks(int id)
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetActiveTasks([FromQuery] int id, int page, string search, int priceTo, int priceFrom, string[] categ)
         {
-            var dtos = await tasksService.GetActiveTaskByUser(id);
+            var dtos = await tasksService.GetActiveTaskByUser(id,page,search,priceTo,priceFrom,categ);
 
             return Ok(dtos);
         }
 
-        [Route("Created/{id}")]
+        [Route("Created")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetCreatedTasks(int id)
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetCreatedTasks([FromQuery] int id, int page, string search, int priceTo, int priceFrom, string[] categ)
         {
-            var dtos = await tasksService.GetCreatedTaskByUser(id);
+            var dtos = await tasksService.GetCreatedTaskByUser(id, page, search, priceTo, priceFrom, categ);
 
             return Ok(dtos);
         }

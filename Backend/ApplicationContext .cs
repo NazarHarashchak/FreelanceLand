@@ -16,6 +16,7 @@ namespace FreelanceLand.Models
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Image> Images { get; set; }
         
+        public ApplicationContext() { }
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
