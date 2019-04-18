@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
+using ServiceBrokerListener.Domain;
 
 namespace Backend
 {
@@ -34,6 +35,7 @@ namespace Backend
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddCors();
             services.AddTransient<IImageService, ImageService>();
+            services.AddTransient<INotificationService, NotificationService>();
             services.AddTransient<IMessageService, MessageService>();
             services.AddTransient<IChatRoomService, ChatRoomService>();
             services.AddTransient<IEmailService, EmailService>();
@@ -68,7 +70,7 @@ namespace Backend
                                 
                                 var path = context.HttpContext.Request.Path;
                                 if (!string.IsNullOrEmpty(accessToken) &&
-                                    (path.StartsWithSegments("/chat")))
+                                    ((path.StartsWithSegments("/chat")) || (path.StartsWithSegments("/notification"))))
                                 {
                                     context.Token = accessToken;
                                 }
@@ -87,7 +89,11 @@ namespace Backend
                     });
             });
 
-            services.AddSignalR();
+            services.AddSignalR(o =>
+                {
+                o.EnableDetailedErrors = true;
+                }
+            );
             services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_0);
             services.AddMvc()
@@ -97,7 +103,15 @@ namespace Backend
                             new CamelCasePropertyNamesContractResolver();
                     });
 
-           
+            services.AddSingleton(sp =>
+            {
+                var sd = new SqlDependencyEx("Server=(localdb)\\mssqllocaldb; Database=freelanceland3.0db; Trusted_Connection=True;",
+                    "freelanceland3.0db",
+                    "Notifications");
+                sd.Start();
+                return sd;
+            });
+
 
             InitializeAutomapper(services);
         }
@@ -121,6 +135,7 @@ namespace Backend
             app.UseSignalR(routes =>
             {
                 routes.MapHub<ChatHub>("/chat");
+                routes.MapHub<NotificationHub>("/notification");
             });
 
             app.UseMvcWithDefaultRoute();
@@ -136,6 +151,7 @@ namespace Backend
                 cfg.AddProfile<TaskProfile>();
                 cfg.AddProfile<UserInformationProfile>();
                 cfg.AddProfile<TaskDescriptionProfile>();
+                cfg.AddProfile<NotificationProfile>();
             });
 
             return services;

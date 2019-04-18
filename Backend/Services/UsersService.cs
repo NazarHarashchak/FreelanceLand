@@ -32,6 +32,8 @@ namespace Backend.Services
             _emailService = emailService;
         }
 
+        public UsersService() { }
+
         const int pageSize = 10;
         public async Task<PagedList<UserDTO>> GetUsers(int pageNumber)
         {
@@ -41,6 +43,16 @@ namespace Backend.Services
 
             return new PagedList<UserDTO>(
                 query, pageNumber, pageSize);
+        }
+
+        public async Task<User> GetUserById(int id)
+        {
+            var user = (await userRepo.GetAsync(u => u.Id == id)).FirstOrDefault();
+
+            if (user == null)
+                return null;
+
+            return user;
         }
 
 

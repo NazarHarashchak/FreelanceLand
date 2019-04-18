@@ -368,6 +368,13 @@ namespace Backend
                 Task = task6
             };
 
+            Notification noti = new Notification
+            {
+                Message = "Your comment was deleted by moderator",
+                DateAndTime = DateTime.Now,
+                User = user2
+            };
+
             TaskHistory taskHistory1 = new TaskHistory
             {
                 DateUpdated = new DateTime(2018, 9, 4),
@@ -490,6 +497,13 @@ namespace Backend
                         comment3,
                         comment4,
                         comment5
+                    );
+                context.SaveChanges();
+            }
+            if (!context.Notifications.Any())
+            {
+                context.Notifications.AddRange(
+                    noti
                     );
                 context.SaveChanges();
             }

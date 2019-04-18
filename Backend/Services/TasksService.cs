@@ -47,13 +47,6 @@ namespace Backend.Services
                 query, pageNumber, pageSize);
         }
 
-        //public async Task<IEnumerable<TaskDTO>> GetToDoEntities()
-        //{
-        //    var entities = await taskRepo.GetWithIncludeAsync(o => o.TaskStatusId == (int)StatusEnum.ToDo, p => p.TaskCategory, k => k.Comments);
-        //    var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
-        //    return dtos;
-        //}
-
         public async System.Threading.Tasks.Task DeleteTask(int id)
         {
             var task = await taskRepo.FindByIdAsync(id);
@@ -76,6 +69,12 @@ namespace Backend.Services
                 .Where(o => o.ExecutorId==id);
             var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
             return dtos;
+        }
+
+        public async Task<int?> GetCustomerAsync(int id)
+        {
+            var executor = (await taskRepo.GetAsync(x => x.Id == id)).FirstOrDefault().CustomerId;
+            return executor;
         }
     }
 }

@@ -13,6 +13,7 @@ namespace FreelanceLand.Models
         public DbSet<TaskStatus> TaskStatuses { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
         public DbSet<Image> Images { get; set; }
         
         public ApplicationContext(DbContextOptions<ApplicationContext> options)

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20190326104152_AddedChat")]
-    partial class AddedChat
+    [Migration("20190414153701_AddNotificationMigration")]
+    partial class AddNotificationMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,25 @@ namespace Backend.Migrations
                 .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Backend.Models.Notification", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                b.Property<string>("Message");
+
+                b.Property<DateTime>("DateAndTime");
+
+                b.Property<int?>("UserId");
+
+                b.HasKey("Id");
+
+                b.HasIndex("UserId");
+
+                b.ToTable("Notifications");
+            });
 
             modelBuilder.Entity("Backend.Models.ChatRoom", b =>
                 {
@@ -275,6 +294,13 @@ namespace Backend.Migrations
 
                     b.ToTable("UserRoles");
                 });
+
+            modelBuilder.Entity("FreelanceLand.Models.Notification", b =>
+            {
+                b.HasOne("FreelanceLand.Models.User", "Receiver")
+                    .WithMany("UserNotifications")
+                    .HasForeignKey("UserId");
+            });
 
             modelBuilder.Entity("Backend.Models.ChatRoom", b =>
                 {
