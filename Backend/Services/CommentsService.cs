@@ -14,11 +14,13 @@ namespace Backend.Services
         private readonly IMapper mapper;
         private EFGenericRepository<Comment> commentRepo;
         private EFGenericRepository<User> userRepo;
+        private IImageService imageService;
 
         public CommentsService(IMapper mapper, ApplicationContext context)
         {
             commentRepo = new EFGenericRepository<Comment>(context);
             userRepo = new EFGenericRepository<User>(context);
+            imageService = new ImageService(mapper, context);
             this.mapper = mapper;
         }
 
@@ -30,9 +32,14 @@ namespace Backend.Services
 
         public async Task<IEnumerable<CommentDTO>> GetComments(int taskId)
         {
-            IEnumerable<Comment> myComments = await commentRepo.GetWithIncludeAsync(task => task.TaskId == taskId,
-                                                                            user => user.User);
-            IEnumerable<CommentDTO> result = mapper.Map< IEnumerable<Comment>, IEnumerable<CommentDTO>> (myComments);
+            List<Comment> myComments = (await commentRepo.GetWithIncludeAsync(task => task.TaskId == taskId,
+                                                                            user => user.User)).ToList();
+            List<CommentDTO> result = mapper.Map< List<Comment>, List<CommentDTO>> (myComments);
+
+            for (int i = 0; i < result.Count(); i++) 
+            {
+                result[i].Photo = await imageService.GetImageAsync(result[i].UserId);
+            }
 
             return result;
         }

@@ -21,6 +21,7 @@ namespace Backend.Services
         private EFGenericRepository<UserRoles> rolesRepo;
         private EFGenericRepository<Image> imageRepo;
         private readonly ApplicationContext db;
+        private IImageService imageService;
 
         public UsersService(IMapper mapper, ApplicationContext context, IEmailService emailService)
         {
@@ -29,6 +30,7 @@ namespace Backend.Services
             rolesRepo = new EFGenericRepository<UserRoles>(context);
             userRepo  = new EFGenericRepository<User>(context);
             imageRepo = new EFGenericRepository<Image>(context);
+            imageService = new ImageService(mapper, context);
             _emailService = emailService;
         }
 
@@ -37,9 +39,14 @@ namespace Backend.Services
         const int pageSize = 10;
         public async Task<PagedList<UserDTO>> GetUsers(int pageNumber)
         {
-            var entities = await userRepo.GetAsync();
-            var dtos = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(entities);
+            var entities = (await userRepo.GetAsync()).ToList();
+            var dtos = _mapper.Map<List<User>, List<UserDTO>>(entities);
             var query = dtos.AsQueryable();
+
+            for (int i = 0; i < dtos.Count(); i++)
+            {
+                dtos[i].UserPhoto = await imageService.GetImageAsync(dtos[i].Id);
+            }
 
             return new PagedList<UserDTO>(
                 query, pageNumber, pageSize);
@@ -98,7 +105,7 @@ namespace Backend.Services
             return _mapper.Map<User, UserAccountDTO>(user);
         }
 
-        public async Task<UserAccountDTO> CreateUser(string email, string login, string password)
+        public async Task<UserAccountDTO> CreateUser(string email, string login, string password, string requestURL)
         {
             
             if (await GetUserByLogin(login) == null)
@@ -117,7 +124,7 @@ namespace Backend.Services
                 user.UserRoleId = (await rolesRepo.GetAsync(r => r.Type == "User")).FirstOrDefault().Id;
                 await userRepo.CreateAsync(user);
 
-                string MessagesRegistr = $"<h2>Dear user</h2><h3>Your registration request was successful approve</h3><a href='https://localhost:44332/Account/confirmEmail?confirmCode={user.ConfirmCode}'>Confirm registration </a>";
+                string MessagesRegistr = $"<h2>Dear user</h2><h3>Your registration request was successful approve</h3><a href='{requestURL}/Account/confirmEmail?confirmCode={user.ConfirmCode}'>Confirm registration </a>";
                 _emailService.SendEmailAsync(user.Email, "Administration", MessagesRegistr);
 
                 var dto = _mapper.Map<User, UserAccountDTO>(user);

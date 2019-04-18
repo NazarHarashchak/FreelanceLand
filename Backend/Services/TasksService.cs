@@ -76,5 +76,13 @@ namespace Backend.Services
             var executor = (await taskRepo.GetAsync(x => x.Id == id)).FirstOrDefault().CustomerId;
             return executor;
         }
+
+        public async Task<IEnumerable<TaskDTO>> GetCreatedTaskByUser(int id)
+        {
+            var entities = (await taskRepo.GetWithIncludeAsync(p => p.TaskCategory, k => k.Comments))
+                .Where(o => o.CustomerId == id);
+            var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
+            return dtos;
+        }
     }
 }

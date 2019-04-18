@@ -8,11 +8,11 @@ namespace Backend.Interfaces.ServiceInterfaces
 {
     public interface ITasksService
     {
-       // Task<IEnumerable<TaskDTO>> GetToDoEntities();
         Task<IEnumerable<TaskDTO>> GetHistoryTaskByUser(int id);
         Task<int?> GetCustomerAsync(int id);
         System.Threading.Tasks.Task DeleteTask(int id);
         Task<IEnumerable<TaskDTO>> GetActiveTaskByUser(int id);
+        Task<IEnumerable<TaskDTO>> GetCreatedTaskByUser(int id);
         Task<PagedList<TaskDTO>> GetTasks(int pageNumber);
     }
 }

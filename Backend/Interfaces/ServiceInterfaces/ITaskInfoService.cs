@@ -11,5 +11,6 @@ namespace Backend.Interfaces.ServiceInterfaces
         Task<ExcecutorDTO> AddExcecutor(ExcecutorDTO user);
         Task<IEnumerable<TaskCategoryDTO>> GetCategories();
         Task<TaskPageDTO> CloseTask(int taskId);
+        Task<TaskPageDTO> EditTask(TaskPageDTO task);
     }
 }
