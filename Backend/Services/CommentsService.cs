@@ -46,9 +46,8 @@ namespace Backend.Services
             var myComment = mapper.Map<CommentDTO, Comment>(comment);
             await commentRepo.CreateAsync(myComment);
 
-            IEnumerable<CommentDTO> result = mapper.Map<IEnumerable<Comment>, IEnumerable<CommentDTO>>(await 
-                                    commentRepo.GetWithIncludeAsync(task => task.TaskId == comment.TaskId,
-                                                                            user => user.User));
+            var result = await GetComments(comment.TaskId);
+
             return result;
         }
 
