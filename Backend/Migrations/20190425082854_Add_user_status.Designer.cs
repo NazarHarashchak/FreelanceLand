@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20190414153701_AddNotificationMigration")]
-    partial class AddNotificationMigration
+    [Migration("20190425082854_Add_user_status")]
+    partial class Add_user_status
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,25 +20,6 @@ namespace Backend.Migrations
                 .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("Backend.Models.Notification", b =>
-            {
-                b.Property<int>("Id")
-                    .ValueGeneratedOnAdd()
-                    .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                b.Property<string>("Message");
-
-                b.Property<DateTime>("DateAndTime");
-
-                b.Property<int?>("UserId");
-
-                b.HasKey("Id");
-
-                b.HasIndex("UserId");
-
-                b.ToTable("Notifications");
-            });
 
             modelBuilder.Entity("Backend.Models.ChatRoom", b =>
                 {
@@ -59,6 +40,40 @@ namespace Backend.Migrations
                     b.HasIndex("SecondUserId");
 
                     b.ToTable("ChatRoom");
+                });
+
+            modelBuilder.Entity("Backend.Models.Ratings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("Mark");
+
+                    b.Property<int>("RateByUser");
+
+                    b.Property<int>("UserId");
+
+                    b.Property<int>("UserStatusId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserStatusId");
+
+                    b.ToTable("Ratings");
+                });
+
+            modelBuilder.Entity("Backend.Models.UserStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Type");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserStatuses");
                 });
 
             modelBuilder.Entity("FreelanceLand.Models.Comment", b =>
@@ -124,6 +139,25 @@ namespace Backend.Migrations
                     b.HasIndex("SenderUserId");
 
                     b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("FreelanceLand.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateAndTime");
+
+                    b.Property<string>("Message");
+
+                    b.Property<int?>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("FreelanceLand.Models.Review", b =>
@@ -271,6 +305,8 @@ namespace Backend.Migrations
 
                     b.Property<string>("Phone_Number");
 
+                    b.Property<int>("Rating");
+
                     b.Property<string>("Sur_Name");
 
                     b.Property<int?>("UserRoleId");
@@ -295,13 +331,6 @@ namespace Backend.Migrations
                     b.ToTable("UserRoles");
                 });
 
-            modelBuilder.Entity("FreelanceLand.Models.Notification", b =>
-            {
-                b.HasOne("FreelanceLand.Models.User", "Receiver")
-                    .WithMany("UserNotifications")
-                    .HasForeignKey("UserId");
-            });
-
             modelBuilder.Entity("Backend.Models.ChatRoom", b =>
                 {
                     b.HasOne("FreelanceLand.Models.User", "Creator")
@@ -311,6 +340,14 @@ namespace Backend.Migrations
                     b.HasOne("FreelanceLand.Models.User", "SecondUser")
                         .WithMany()
                         .HasForeignKey("SecondUserId");
+                });
+
+            modelBuilder.Entity("Backend.Models.Ratings", b =>
+                {
+                    b.HasOne("Backend.Models.UserStatus", "UserStatuses")
+                        .WithMany("Ratings")
+                        .HasForeignKey("UserStatusId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("FreelanceLand.Models.Comment", b =>
@@ -340,6 +377,13 @@ namespace Backend.Migrations
                     b.HasOne("FreelanceLand.Models.User", "SenderUser")
                         .WithMany("UserMessages")
                         .HasForeignKey("SenderUserId");
+                });
+
+            modelBuilder.Entity("FreelanceLand.Models.Notification", b =>
+                {
+                    b.HasOne("FreelanceLand.Models.User", "User")
+                        .WithMany("UserNotifications")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("FreelanceLand.Models.Review", b =>
