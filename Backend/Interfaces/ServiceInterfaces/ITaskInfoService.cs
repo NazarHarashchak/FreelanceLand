@@ -1,4 +1,5 @@
 ﻿using Backend.DTOs;
+using Backend.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,6 +12,7 @@ namespace Backend.Interfaces.ServiceInterfaces
         Task<ExcecutorDTO> AddExcecutor(ExcecutorDTO user);
         Task<IEnumerable<TaskCategoryDTO>> GetCategories();
         Task<TaskPageDTO> CloseTask(int taskId);
+        Task<Ratings> RateUser(int UserId, int RateByUser, int Mark, int UserStatusId);
         Task<TaskPageDTO> EditTask(TaskPageDTO task);
     }
 }

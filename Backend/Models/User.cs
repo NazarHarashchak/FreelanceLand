@@ -51,5 +51,9 @@ namespace FreelanceLand.Models
 
         [InverseProperty("UsersRate")]
         public virtual List<Ratings> UserRatings { get; set; }
+
+        [InverseProperty("UsersRateBy")]
+        public virtual List<Ratings> ByUserRatings { get; set; }
+
     }
 }

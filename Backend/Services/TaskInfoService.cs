@@ -9,6 +9,7 @@ using System.Linq;
 using System;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Backend.Models;
 
 namespace Backend.Services
 {
@@ -17,6 +18,8 @@ namespace Backend.Services
         private readonly IMapper mapper;
         private EFGenericRepository<FreelanceLand.Models.Task> taskRepo;
         private EFGenericRepository<TaskHistory> historyRepo;
+        private EFGenericRepository<Ratings> ratingRepo;
+        private EFGenericRepository<User> userRepo;
         private EFGenericRepository<TaskCategory> categoryRepo;
         private EFGenericRepository<FreelanceLand.Models.TaskStatus> statusRepo;
         private IImageService imageService; 
@@ -24,7 +27,9 @@ namespace Backend.Services
         {
             taskRepo = new EFGenericRepository<FreelanceLand.Models.Task>(context);
             historyRepo = new EFGenericRepository<TaskHistory>(context);
+            ratingRepo = new EFGenericRepository<Ratings>(context);
             categoryRepo = new EFGenericRepository<TaskCategory>(context);
+            userRepo = new EFGenericRepository<User>(context);
             statusRepo = new EFGenericRepository<FreelanceLand.Models.TaskStatus>(context);
             imageService = new ImageService(mapper, context);
             this.mapper = mapper;
@@ -88,6 +93,7 @@ namespace Backend.Services
         public async Task<TaskPageDTO> CloseTask(int taskId)
         {
             var task = await taskRepo.FindByIdAsync(taskId);
+         
             TaskHistory history = new TaskHistory();
 
             task.UpdatedById = task.CustomerId;
@@ -130,5 +136,23 @@ namespace Backend.Services
                                         (await categoryRepo.GetAsync());
             return result;
         }
+        public async Task<Ratings> RateUser(int UserId, int RateByUser, int Mark, int UserStatusId)
+        {
+            var rating = new Ratings();
+            rating.UserId = UserId;
+            rating.RateByUser = RateByUser;
+            rating.Mark = Mark;
+            rating.UserStatusId = UserStatusId;
+            await ratingRepo.CreateAsync(rating);
+            var countUsers = (await ratingRepo.GetWithIncludeAsync(x => x.UserId == UserId)).Count();
+            var rat = (await ratingRepo.GetWithIncludeAsync(x => x.UserId == UserId)).Sum(y=>y.Mark)/countUsers;
+            User user = await userRepo.FindByIdAsync(UserId);
+            user.Rating = (int)rat;
+            await userRepo.UpdateAsync(user);
+
+            return rating;
+
+        }
+
     }
 }

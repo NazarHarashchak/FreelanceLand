@@ -12,11 +12,15 @@ namespace Backend.Models
         public int Id { get; set; }
         [ForeignKey("UsersRate")]
         public int UserId { get; set; }
+        [ForeignKey("UsersRateBy")]
         public int RateByUser { get; set; }
         [ForeignKey("UserStatuses")]
         public int UserStatusId { get; set; }
         public int? Mark { get; set; }
         public UserStatus UserStatuses { get; set; }
         public User UsersRate { get; set; }
+        public User UsersRateBy { get; set; }
+
+
     }
 }
