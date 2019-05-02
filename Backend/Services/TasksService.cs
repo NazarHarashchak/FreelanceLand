@@ -19,6 +19,8 @@ namespace Backend.Services
         private readonly EFGenericRepository<FreelanceLand.Models.Task> taskRepo;
         private readonly EFGenericRepository<TaskHistory> historyRepo;
         private readonly ApplicationContext db;
+        private readonly EFGenericRepository<FreelanceLand.Models.TaskStatus> statusRepo;
+        private readonly EFGenericRepository<User> userRepo; 
 
         public TasksService(IMapper mapper, ApplicationContext context)
         {
@@ -27,6 +29,8 @@ namespace Backend.Services
             taskRepo = new EFGenericRepository<FreelanceLand.Models.Task>(context);
             historyRepo = new EFGenericRepository<TaskHistory>(context);
             commentRepo = new EFGenericRepository<Comment>(context);
+            statusRepo = new EFGenericRepository<FreelanceLand.Models.TaskStatus>(context);
+            userRepo = new EFGenericRepository<User>(context);
         }
         public TasksService() { }
 
@@ -128,7 +132,7 @@ namespace Backend.Services
                     o.CustomerId == id &&
                     categ.Any(s => o.TaskCategory.Type.Contains(s)),
 
-                    p => p.TaskCategory, k => k.Comments
+                    p => p.TaskCategory, k => k.Comments, status => status.TaskStatus
             );
             var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
             var query = dtos.AsQueryable();
@@ -139,9 +143,35 @@ namespace Backend.Services
 
         public async Task<IEnumerable<TaskDTO>> GetCreatedTaskByUser(int id)
         {
-            var entities = (await taskRepo.GetWithIncludeAsync(p => p.TaskCategory, k => k.Comments))
+            var entities = (await taskRepo.GetWithIncludeAsync(p => p.TaskCategory, k => k.Comments, s => s.TaskStatus))
                 .Where(o => o.CustomerId == id);
             var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
+            return dtos;
+        }
+
+        public async Task<IEnumerable<TaskDTO>> DragAndDropTaskByCustomer(int taskId, int customerId, string secondStatus)
+        {
+            //зміна статусу таску
+            var result = (await taskRepo.FindByIdAsync(taskId));
+
+            //запис зміни у історію
+           // var history = (await historyRepo.GetWithIncludeAsync(s => s.Task.Id == taskId)).FirstOrDefault();
+           // history.DateUpdated = DateTime.Now;
+           // history.StartTaskStatus = result.TaskStatus;
+
+
+            var newStatus = (await statusRepo.GetWithIncludeAsync(s => s.Type == secondStatus)).FirstOrDefault();
+            result.TaskStatusId = newStatus.Id;
+            //history.FinalTaskStatus = newStatus;history.UpdatedByUser = (await userRepo.FindByIdAsync(customerId));
+
+            await taskRepo.UpdateAsync(result);
+
+            //historyRepo.UpdateAsync(history);
+
+            //повернення зміненого масиву створених тасків замовником
+
+            var dtos = await GetCreatedTaskByUser(customerId);
+
             return dtos;
         }
     }

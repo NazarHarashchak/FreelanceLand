@@ -12,5 +12,6 @@ namespace Backend.Interfaces.ServiceInterfaces
         Task<IEnumerable<TaskCategoryDTO>> GetCategories();
         Task<TaskPageDTO> CloseTask(int taskId);
         Task<TaskPageDTO> EditTask(TaskPageDTO task);
+        Task<TaskPageDTO> FinishTask(int taskId);
     }
 }
