@@ -24,6 +24,12 @@ namespace Backend.Services
             this.mapper = mapper;
         }
 
+        public async Task<Comment> GetComment(int id)
+        {
+            var comment = (await commentRepo.GetAsync(c => c.Id == id)).FirstOrDefault();
+            return comment;
+        }
+
         public async Task<IEnumerable<CommentDTO>> GetComments(int taskId)
         {
             List<Comment> myComments = (await commentRepo.GetWithIncludeAsync(task => task.TaskId == taskId,
@@ -47,7 +53,6 @@ namespace Backend.Services
             await commentRepo.CreateAsync(myComment);
 
             var result = await GetComments(comment.TaskId);
-
             return result;
         }
 

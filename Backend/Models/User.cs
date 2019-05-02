@@ -32,6 +32,7 @@ namespace FreelanceLand.Models
         public List<Message> UserMessages { get; set; }
         public List<Comment> UserComments { get; set; }
         public List<Image> Images { get; set; }
+        public List<Notification> UserNotifications { get; set; }
 
         [InverseProperty("Customer")]
         public  virtual List<Task> CustomerTasks { get; set; }

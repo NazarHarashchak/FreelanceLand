@@ -34,20 +34,36 @@ namespace Backend.Services
             _emailService = emailService;
         }
 
+        public UsersService() { }
+
         const int pageSize = 10;
-        public async Task<PagedList<UserDTO>> GetUsers(int pageNumber)
+        public async Task<PagedList<UserDTO>> GetUsers(TextDTO text)
         {
-            var entities = (await userRepo.GetAsync()).ToList();
-            var dtos = _mapper.Map<List<User>, List<UserDTO>>(entities);
-            var query = dtos.AsQueryable();
+            if (text.Search == "undefined" || text.Search == null) text.Search = "";
+            if (text.Role == null) text.Role = new List<string>();
 
-            for (int i = 0; i < dtos.Count(); i++)
-            {
-                dtos[i].UserPhoto = await imageService.GetImageAsync(dtos[i].Id);
-            }
+           var roles = await rolesRepo.GetWithIncludeAsync();
 
-            return new PagedList<UserDTO>(
-                query, pageNumber, pageSize);
+           var entities = await userRepo.GetWithIncludeAsync(x => x.Name.Contains(text.Search) &&
+           ((text.Role.Count == 0) ? roles.Any(s => x.UserRole.Type.Contains(s.Type)) : text.Role.Any(s => x.UserRole.Type.Contains(s))));
+
+
+           var dtos = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(entities);
+           var query = dtos.AsQueryable();
+
+           return new PagedList<UserDTO>(
+               query, text.PageNumber, pageSize);
+            
+        }
+
+        public async Task<User> GetUserById(int id)
+        {
+            var user = (await userRepo.GetAsync(u => u.Id == id)).FirstOrDefault();
+
+            if (user == null)
+                return null;
+
+            return user;
         }
 
 
@@ -130,7 +146,7 @@ namespace Backend.Services
 
         
        
-        public async Task<User> UpdateUser(int id, [FromBody] UserInformation value)
+        public async Task<User> UpdateUser(int id, UserInformation value)
         {
                 var result = db.Users.SingleOrDefault(b => b.Id == id);
                 if (result != null)

@@ -4,10 +4,15 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <RuntimeFrameworkVersion>2.2.0</RuntimeFrameworkVersion>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <UserSecretsId>1ca394bc-468f-4001-8a76-13c2ef4b4c53</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\ServiceInterfaces\" />
+    <Compile Remove="Migrations\20190414153516_AddNotificationMigration.cs" />
+    <Compile Remove="Migrations\20190414153516_AddNotificationMigration.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>

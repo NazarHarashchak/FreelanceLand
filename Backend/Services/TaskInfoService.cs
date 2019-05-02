@@ -20,7 +20,6 @@ namespace Backend.Services
         private EFGenericRepository<TaskCategory> categoryRepo;
         private EFGenericRepository<FreelanceLand.Models.TaskStatus> statusRepo;
         private IImageService imageService; 
-
         public TaskInfoService(IMapper mapper, ApplicationContext context)
         {
             taskRepo = new EFGenericRepository<FreelanceLand.Models.Task>(context);
