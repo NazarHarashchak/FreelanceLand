@@ -28,7 +28,7 @@ namespace Backend.Services
             _mapper = mapper;
             db = context;
             rolesRepo = new EFGenericRepository<UserRoles>(context);
-            userRepo  = new EFGenericRepository<User>(context);
+            userRepo = new EFGenericRepository<User>(context);
             imageRepo = new EFGenericRepository<Image>(context);
             imageService = new ImageService(mapper, context);
             _emailService = emailService;
@@ -41,6 +41,7 @@ namespace Backend.Services
         {
             if (text.Search == "undefined" || text.Search == null) text.Search = "";
             if (text.Role == null) text.Role = new List<string>();
+<<<<<<< HEAD
 
            var roles = await rolesRepo.GetWithIncludeAsync();
 
@@ -54,6 +55,25 @@ namespace Backend.Services
            return new PagedList<UserDTO>(
                query, text.PageNumber, pageSize);
             
+=======
+
+            var roles = await rolesRepo.GetWithIncludeAsync();
+
+            var entities = await userRepo.GetWithIncludeAsync(x => x.Name.Contains(text.Search) &&
+            ((text.Role.Count == 0) ? roles.Any(s => x.UserRole.Type.Contains(s.Type)) : text.Role.Any(s => x.UserRole.Type.Contains(s))));
+
+
+            var dtos = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(entities).ToList();
+            for (int i = 0; i < dtos.Count(); i++)
+            {
+                dtos[i].UserPhoto = await imageService.GetImageAsync(dtos[i].Id);
+            }
+            var query = dtos.AsQueryable();
+
+            return new PagedList<UserDTO>(
+                query, text.PageNumber, pageSize);
+
+>>>>>>> d1328d81d495adeb35ce2ffdd37e1b25b4339e7a
         }
 
         public async Task<User> GetUserById(int id)
@@ -111,7 +131,7 @@ namespace Backend.Services
 
         public async Task<UserAccountDTO> CreateUser(string email, string login, string password, string requestURL)
         {
-            
+
             if (await GetUserByLogin(login) == null)
             {
                 string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
@@ -144,26 +164,31 @@ namespace Backend.Services
             return dtos;
         }
 
+<<<<<<< HEAD
         
        
+=======
+
+
+>>>>>>> d1328d81d495adeb35ce2ffdd37e1b25b4339e7a
         public async Task<User> UpdateUser(int id, UserInformation value)
         {
-                var result = db.Users.SingleOrDefault(b => b.Id == id);
-                if (result != null)
-                {
-                    result.Name = value.Name;
-                    result.Birth_Date = value.Birth_Date;
-                    result.Email = value.Email;
-                    result.Sur_Name = value.Sur_Name;
-                    result.Phone_Number = value.Phone_Number;
-                    result.Login = value.Login;
-                    if (value.UserRoleName!=null)
-                        result.UserRoleId = (await rolesRepo.GetAsync(r => r.Type == value.UserRoleName)).FirstOrDefault().Id;
+            var result = db.Users.SingleOrDefault(b => b.Id == id);
+            if (result != null)
+            {
+                result.Name = value.Name;
+                result.Birth_Date = value.Birth_Date;
+                result.Email = value.Email;
+                result.Sur_Name = value.Sur_Name;
+                result.Phone_Number = value.Phone_Number;
+                result.Login = value.Login;
+                if (value.UserRoleName != null)
+                    result.UserRoleId = (await rolesRepo.GetAsync(r => r.Type == value.UserRoleName)).FirstOrDefault().Id;
                 db.SaveChanges();
 
-                }
+            }
 
-                return await userRepo.FindByIdAsync(id);
+            return await userRepo.FindByIdAsync(id);
         }
 
         public async Task<string> CreateUserImage(ImageDTO Image)

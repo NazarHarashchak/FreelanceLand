@@ -62,6 +62,17 @@ namespace Backend.Controllers
             return Ok(dtos);
         }
 
+        [Route("DragAndDropCustomer")]
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> DragAndDropTaskByCustomer 
+                    ([FromBody] CustomerDragDropDTO dropDTO)
+        {
+            var dtos = await tasksService.DragAndDropTaskByCustomer(dropDTO.TaskId, dropDTO.CustomerId,
+                                        dropDTO.FinalStatus);
+
+            return Ok(dtos);
+        }
+
         [Authorize(Roles = "Moderator")]
         [HttpPost("DeleteTask")]
         public async Task DeleteTask([FromBody] TaskDTO task)

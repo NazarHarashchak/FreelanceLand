@@ -70,6 +70,7 @@ namespace Backend.Controllers
             return Ok(result);
         }
 
+<<<<<<< HEAD
         [Route("RateUser")]
         [HttpPost]
         public async Task<ActionResult<TaskPageDTO>> RateUser([FromBody] RatingDTO ratingDTO)
@@ -78,6 +79,16 @@ namespace Backend.Controllers
             return Ok(result);
         }
 
+=======
+        [Route("finishtask/{id}")]
+        [HttpPost]
+        public async Task<ActionResult<TaskPageDTO>> FinishTask(int id)
+        {
+            var result = await tasksService.FinishTask(id);
+
+            return Ok(result);
+        }
+>>>>>>> d1328d81d495adeb35ce2ffdd37e1b25b4339e7a
     }
 
 }

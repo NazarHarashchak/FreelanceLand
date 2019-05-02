@@ -14,5 +14,6 @@ namespace Backend.Interfaces.ServiceInterfaces
         Task<TaskPageDTO> CloseTask(int taskId);
         Task<Ratings> RateUser(int UserId, int RateByUser, int Mark, int UserStatusId);
         Task<TaskPageDTO> EditTask(TaskPageDTO task);
+        Task<TaskPageDTO> FinishTask(int taskId);
     }
 }

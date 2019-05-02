@@ -16,5 +16,11 @@ namespace Backend.Interfaces.ServiceInterfaces
         Task<PagedList<TaskDTO>> GetTasks(int page, string searchText, int priceTo, int priceFrom, string[] categ);
 
         Task<PagedList<TaskDTO>> GetCreatedTaskByUser(int id, int page, string search, int priceTo, int priceFrom, string[] categ);
+<<<<<<< HEAD
+=======
+        Task<IEnumerable<TaskDTO>> GetCreatedTaskByUser(int id);
+        Task<IEnumerable<TaskDTO>> DragAndDropTaskByCustomer(int taskId, int customerId,
+                              string secondStatus);
+>>>>>>> d1328d81d495adeb35ce2ffdd37e1b25b4339e7a
     }
 }
