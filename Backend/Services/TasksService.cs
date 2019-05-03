@@ -20,7 +20,7 @@ namespace Backend.Services
         private readonly EFGenericRepository<TaskHistory> historyRepo;
         private readonly ApplicationContext db;
         private readonly EFGenericRepository<FreelanceLand.Models.TaskStatus> statusRepo;
-        private readonly EFGenericRepository<User> userRepo; 
+        private readonly EFGenericRepository<User> userRepo;
 
         public TasksService(IMapper mapper, ApplicationContext context)
         {
@@ -40,7 +40,7 @@ namespace Backend.Services
             if (priceTo == 0) priceTo = 999999;
             if (categ.Length == 0) categ = new string[] { "" };
             var entities = await taskRepo.GetWithIncludeAsync(
-                    o => o.TaskStatusId == (int)StatusEnum.Done  &&
+                    o => o.TaskStatusId == (int)StatusEnum.Done &&
                     o.Title.Contains(search) &&
                     o.Price <= priceTo &&
                     o.Price >= priceFrom &&
@@ -62,12 +62,12 @@ namespace Backend.Services
             if (priceTo == 0) priceTo = 999999;
             if (categ.Length == 0) categ = new string[] { "" };
             var entities = await taskRepo.GetWithIncludeAsync(
-                    o => o.TaskStatusId == (int)StatusEnum.ToDo && 
+                    o => o.TaskStatusId == (int)StatusEnum.ToDo &&
                     o.Title.Contains(search) &&
-                    o.Price <= priceTo && 
-                    o.Price >= priceFrom&&
-                    categ.Any(s=> o.TaskCategory.Type.Contains(s)),
-                    
+                    o.Price <= priceTo &&
+                    o.Price >= priceFrom &&
+                    categ.Any(s => o.TaskCategory.Type.Contains(s)),
+
                     p => p.TaskCategory, k => k.Comments
             );
             var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
@@ -93,7 +93,7 @@ namespace Backend.Services
             await taskRepo.RemoveAsync(task);
         }
 
-        public async Task<PagedList<TaskDTO>> GetActiveTaskByUser( int id, int page, string search, int priceTo, int priceFrom, string[] categ)
+        public async Task<PagedList<TaskDTO>> GetActiveTaskByUser(int id, int page, string search, int priceTo, int priceFrom, string[] categ)
         {
             search = search ?? "";
             if (priceTo == 0) priceTo = 999999;
@@ -155,22 +155,17 @@ namespace Backend.Services
             //зміна статусу таску
             var result = (await taskRepo.FindByIdAsync(taskId));
 
-            //запис зміни у історію
-           // var history = (await historyRepo.GetWithIncludeAsync(s => s.Task.Id == taskId)).FirstOrDefault();
-           // history.DateUpdated = DateTime.Now;
-           // history.StartTaskStatus = result.TaskStatus;
-
-
+            if ((await statusRepo.FindByIdAsync((int)result.TaskStatusId)).Type == "In progress")
+            {
+                result.ExecutorId = null;
+            }
+            
             var newStatus = (await statusRepo.GetWithIncludeAsync(s => s.Type == secondStatus)).FirstOrDefault();
             result.TaskStatusId = newStatus.Id;
-            //history.FinalTaskStatus = newStatus;history.UpdatedByUser = (await userRepo.FindByIdAsync(customerId));
 
             await taskRepo.UpdateAsync(result);
 
-            //historyRepo.UpdateAsync(history);
-
             //повернення зміненого масиву створених тасків замовником
-
             var dtos = await GetCreatedTaskByUser(customerId);
 
             return dtos;
