@@ -94,23 +94,21 @@ namespace Backend.Services
         public async Task<TaskPageDTO> FinishTask(int taskId)
         {
             var task = await taskRepo.FindByIdAsync(taskId);
-            TaskHistory history = new TaskHistory();
 
             task.UpdatedById = task.ExecutorId;
 
             task.DateUpdated = DateTime.Now;
-            history.DateUpdated = DateTime.Now;
+            //history.DateUpdated = DateTime.Now;
 
-            history.UpdatedByUser = task.Executor;
-            history.StartTaskStatus = await statusRepo.FindByIdAsync((int)task.TaskStatusId);
+            //history.UpdatedByUser = task.Executor;
+            //history.StartTaskStatus = await statusRepo.FindByIdAsync((int)task.TaskStatusId);
 
             var status = (await statusRepo.GetWithIncludeAsync(s => s.Type == "Ready for verification"))
                                                             .FirstOrDefault();
             task.TaskStatusId = status.Id;
-            history.FinalTaskStatus = status;
+            //history.FinalTaskStatus = status;
 
             await taskRepo.UpdateAsync(task);
-            await historyRepo.CreateAsync(history);
 
             return (mapper.Map<FreelanceLand.Models.Task, TaskPageDTO>(task));
         }
@@ -119,22 +117,22 @@ namespace Backend.Services
         {
             var task = await taskRepo.FindByIdAsync(taskId);
          
-            TaskHistory history = new TaskHistory();
+            //TaskHistory history = new TaskHistory();
 
             task.UpdatedById = task.CustomerId;
 
             task.DateUpdated = DateTime.Now;
-            history.DateUpdated = DateTime.Now;
+            //history.DateUpdated = DateTime.Now;
 
-            history.UpdatedByUser = task.Customer;
-            history.StartTaskStatus = await statusRepo.FindByIdAsync((int)task.TaskStatusId);
+           // history.UpdatedByUser = task.Customer;
+           // history.StartTaskStatus = await statusRepo.FindByIdAsync((int)task.TaskStatusId);
 
             var status = (await statusRepo.GetWithIncludeAsync(s => s.Type == "Done")).FirstOrDefault();
             task.TaskStatusId = status.Id;
-            history.FinalTaskStatus = await statusRepo.FindByIdAsync(status.Id);
+          //  history.FinalTaskStatus = await statusRepo.FindByIdAsync(status.Id);
 
             await taskRepo.UpdateAsync(task);
-            await historyRepo.CreateAsync(history);
+           // await historyRepo.CreateAsync(history);
       
             return (mapper.Map<FreelanceLand.Models.Task,TaskPageDTO>(task));
         }
