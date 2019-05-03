@@ -13,7 +13,9 @@ namespace Backend.MappingProfiles
             CreateMap<Task, TaskDTO>()
                 .ForMember("TaskCategoryName", o => o.MapFrom(c => c.TaskCategory.Type))
                 .ForMember("DateAdded", o => o.MapFrom(c => c.DateCreate.ToString("d")))
-                .ForMember("CommentsCount", o => o.MapFrom(c => c.Comments.Count));
+                .ForMember("CommentsCount", o => o.MapFrom(c => c.Comments.Count))
+                .ForMember("TaskStatus", o => o.MapFrom(c => c.TaskStatus.Type));
+                
 
             CreateMap<TaskDTO, Task>();
         }

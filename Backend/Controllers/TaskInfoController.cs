@@ -69,6 +69,15 @@ namespace Backend.Controllers
 
             return Ok(result);
         }
+
+        [Route("finishtask/{id}")]
+        [HttpPost]
+        public async Task<ActionResult<TaskPageDTO>> FinishTask(int id)
+        {
+            var result = await tasksService.FinishTask(id);
+
+            return Ok(result);
+        }
     }
 
 }

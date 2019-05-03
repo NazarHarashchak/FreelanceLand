@@ -44,20 +44,42 @@ namespace Backend.Controllers
             return Ok(dtos);
         }
 
-        [Route("Active")]
+        [Route("Active/{id}")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetActiveTasks([FromQuery] int id, int page, string search, int priceTo, int priceFrom, string[] categ)
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetActiveTasks(int id)
         {
-            var dtos = await tasksService.GetActiveTaskByUser(id,page,search,priceTo,priceFrom,categ);
+            var dtos = await tasksService.GetActiveTaskByUserAsync(id);
 
             return Ok(dtos);
         }
 
-        [Route("Created")]
+        [Route("Created/{id}")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetCreatedTasks([FromQuery] int id, int page, string search, int priceTo, int priceFrom, string[] categ)
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetCreatedTasks(int id)
         {
-            var dtos = await tasksService.GetCreatedTaskByUser(id, page, search, priceTo, priceFrom, categ);
+            var dtos = await tasksService.GetCreatedTaskByUser(id);
+
+            return Ok(dtos);
+        }
+
+        [Route("DragAndDropCustomer")]
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> DragAndDropTaskByCustomer 
+                    ([FromBody] CustomerDragDropDTO dropDTO)
+        {
+            var dtos = await tasksService.DragAndDropTaskByCustomer(dropDTO.TaskId, dropDTO.CustomerId,
+                                        dropDTO.FinalStatus);
+
+            return Ok(dtos);
+        }
+
+        [Route("DragAndDropExecutor")]
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> DragAndDropTaskByExecutor
+                    ([FromBody] CustomerDragDropDTO dropDTO)
+        {
+            var dtos = await tasksService.DragAndDropTaskByExecutorAsync(dropDTO.TaskId, dropDTO.CustomerId,
+                                        dropDTO.FinalStatus);
 
             return Ok(dtos);
         }

@@ -20,6 +20,7 @@ namespace Backend.Services
         private EFGenericRepository<TaskCategory> categoryRepo;
         private EFGenericRepository<FreelanceLand.Models.TaskStatus> statusRepo;
         private IImageService imageService; 
+
         public TaskInfoService(IMapper mapper, ApplicationContext context)
         {
             taskRepo = new EFGenericRepository<FreelanceLand.Models.Task>(context);
@@ -85,6 +86,30 @@ namespace Backend.Services
             return mapper.Map<FreelanceLand.Models.Task, TaskPageDTO>(myTask);
         }
 
+        public async Task<TaskPageDTO> FinishTask(int taskId)
+        {
+            var task = await taskRepo.FindByIdAsync(taskId);
+            TaskHistory history = new TaskHistory();
+
+            task.UpdatedById = task.ExecutorId;
+
+            task.DateUpdated = DateTime.Now;
+            history.DateUpdated = DateTime.Now;
+
+            history.UpdatedByUser = task.Executor;
+            history.StartTaskStatus = await statusRepo.FindByIdAsync((int)task.TaskStatusId);
+
+            var status = (await statusRepo.GetWithIncludeAsync(s => s.Type == "Ready for verification"))
+                                                            .FirstOrDefault();
+            task.TaskStatusId = status.Id;
+            history.FinalTaskStatus = status;
+
+            await taskRepo.UpdateAsync(task);
+            await historyRepo.CreateAsync(history);
+
+            return (mapper.Map<FreelanceLand.Models.Task, TaskPageDTO>(task));
+        }
+
         public async Task<TaskPageDTO> CloseTask(int taskId)
         {
             var task = await taskRepo.FindByIdAsync(taskId);
@@ -114,6 +139,8 @@ namespace Backend.Services
 
             result.TaskCategoryId = (await categoryRepo.GetWithIncludeAsync(c => c.Type == task.TaskCategory))
                 .FirstOrDefault().Id;
+            result.DateCreate = DateTime.Now;
+            result.DateUpdated = DateTime.Now;
             var status = (await statusRepo.GetWithIncludeAsync(s => s.Type == "To do")).FirstOrDefault();
             result.TaskStatusId = status.Id;
             result.UpdatedById = task.CustomerId;

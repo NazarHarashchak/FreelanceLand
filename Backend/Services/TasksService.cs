@@ -19,6 +19,8 @@ namespace Backend.Services
         private readonly EFGenericRepository<FreelanceLand.Models.Task> taskRepo;
         private readonly EFGenericRepository<TaskHistory> historyRepo;
         private readonly ApplicationContext db;
+        private readonly EFGenericRepository<FreelanceLand.Models.TaskStatus> statusRepo;
+        private readonly EFGenericRepository<User> userRepo;
 
         public TasksService(IMapper mapper, ApplicationContext context)
         {
@@ -27,6 +29,8 @@ namespace Backend.Services
             taskRepo = new EFGenericRepository<FreelanceLand.Models.Task>(context);
             historyRepo = new EFGenericRepository<TaskHistory>(context);
             commentRepo = new EFGenericRepository<Comment>(context);
+            statusRepo = new EFGenericRepository<FreelanceLand.Models.TaskStatus>(context);
+            userRepo = new EFGenericRepository<User>(context);
         }
         public TasksService() { }
 
@@ -36,7 +40,7 @@ namespace Backend.Services
             if (priceTo == 0) priceTo = 999999;
             if (categ.Length == 0) categ = new string[] { "" };
             var entities = await taskRepo.GetWithIncludeAsync(
-                    o => o.TaskStatusId == (int)StatusEnum.Done  &&
+                    o => o.TaskStatusId == (int)StatusEnum.Done &&
                     o.Title.Contains(search) &&
                     o.Price <= priceTo &&
                     o.Price >= priceFrom &&
@@ -58,12 +62,12 @@ namespace Backend.Services
             if (priceTo == 0) priceTo = 999999;
             if (categ.Length == 0) categ = new string[] { "" };
             var entities = await taskRepo.GetWithIncludeAsync(
-                    o => o.TaskStatusId == (int)StatusEnum.ToDo && 
+                    o => o.TaskStatusId == (int)StatusEnum.ToDo &&
                     o.Title.Contains(search) &&
-                    o.Price <= priceTo && 
-                    o.Price >= priceFrom&&
-                    categ.Any(s=> o.TaskCategory.Type.Contains(s)),
-                    
+                    o.Price <= priceTo &&
+                    o.Price >= priceFrom &&
+                    categ.Any(s => o.TaskCategory.Type.Contains(s)),
+
                     p => p.TaskCategory, k => k.Comments
             );
             var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
@@ -89,7 +93,7 @@ namespace Backend.Services
             await taskRepo.RemoveAsync(task);
         }
 
-        public async Task<PagedList<TaskDTO>> GetActiveTaskByUser( int id, int page, string search, int priceTo, int priceFrom, string[] categ)
+        public async Task<PagedList<TaskDTO>> GetActiveTaskByUser(int id, int page, string search, int priceTo, int priceFrom, string[] categ)
         {
             search = search ?? "";
             if (priceTo == 0) priceTo = 999999;
@@ -128,13 +132,64 @@ namespace Backend.Services
                     o.CustomerId == id &&
                     categ.Any(s => o.TaskCategory.Type.Contains(s)),
 
-                    p => p.TaskCategory, k => k.Comments
+                    p => p.TaskCategory, k => k.Comments, status => status.TaskStatus
             );
             var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
             var query = dtos.AsQueryable();
 
             return new PagedList<TaskDTO>(
                 query, page, pageSize);
+        }
+
+        public async Task<IEnumerable<TaskDTO>> GetCreatedTaskByUser(int id)
+        {
+            var entities = (await taskRepo.GetWithIncludeAsync(p => p.TaskCategory, k => k.Comments, s => s.TaskStatus))
+                .Where(o => o.CustomerId == id);
+            var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
+            return dtos;
+        }
+
+        public async Task<IEnumerable<TaskDTO>> DragAndDropTaskByCustomer(int taskId, int customerId, string secondStatus)
+        {
+            //зміна статусу таску
+            var result = (await taskRepo.FindByIdAsync(taskId));
+
+            if ((await statusRepo.FindByIdAsync((int)result.TaskStatusId)).Type == "In progress")
+            {
+                result.ExecutorId = null;
+            }
+            
+            var newStatus = (await statusRepo.GetWithIncludeAsync(s => s.Type == secondStatus)).FirstOrDefault();
+            result.TaskStatusId = newStatus.Id;
+
+            await taskRepo.UpdateAsync(result);
+
+            //повернення зміненого масиву створених тасків замовником
+            var dtos = await GetCreatedTaskByUser(customerId);
+
+            return dtos;
+        }
+
+        public async Task<IEnumerable<TaskDTO>> GetActiveTaskByUserAsync(int id)
+        {
+            var entities = (await taskRepo.GetWithIncludeAsync(p => p.TaskCategory, k => k.Comments, s => s.TaskStatus))
+                .Where(o => o.ExecutorId == id);
+            var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
+            return dtos;
+        }
+
+        public async Task<IEnumerable<TaskDTO>> DragAndDropTaskByExecutorAsync(int taskId, int executorId, string secondStatus)
+        {
+            var result = (await taskRepo.FindByIdAsync(taskId));
+
+            var newStatus = (await statusRepo.GetWithIncludeAsync(s => s.Type == secondStatus)).FirstOrDefault();
+            result.TaskStatusId = newStatus.Id;
+
+            await taskRepo.UpdateAsync(result);
+            
+            var dtos = await GetActiveTaskByUserAsync(executorId);
+
+            return dtos;
         }
     }
 }
