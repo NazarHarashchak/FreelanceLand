@@ -16,12 +16,10 @@ namespace FreelanceLand.Models
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Image> Images { get; set; }
-<<<<<<< HEAD
+
         public DbSet<Ratings> Ratings { get; set; }
         public DbSet<UserStatus> UserStatuses { get; set; }
-=======
-        
->>>>>>> d1328d81d495adeb35ce2ffdd37e1b25b4339e7a
+
         public ApplicationContext() { }
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)

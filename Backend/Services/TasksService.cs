@@ -121,21 +121,6 @@ namespace Backend.Services
             return executor;
         }
         public async Task<PagedList<TaskDTO>> GetCreatedTaskByUser(int id, int page, string search, int priceTo, int priceFrom, string[] categ)
-<<<<<<< HEAD
-        {
-            search = search ?? "";
-            if (priceTo == 0) priceTo = 999999;
-            if (categ.Length == 0) categ = new string[] { "" };
-            var entities = await taskRepo.GetWithIncludeAsync(
-                    o => o.Title.Contains(search) &&
-                    o.Price <= priceTo &&
-                    o.Price >= priceFrom &&
-                    o.CustomerId == id &&
-                    categ.Any(s => o.TaskCategory.Type.Contains(s)),
-
-                    p => p.TaskCategory, k => k.Comments
-            );
-=======
         {
             search = search ?? "";
             if (priceTo == 0) priceTo = 999999;
@@ -160,13 +145,10 @@ namespace Backend.Services
         {
             var entities = (await taskRepo.GetWithIncludeAsync(p => p.TaskCategory, k => k.Comments, s => s.TaskStatus))
                 .Where(o => o.CustomerId == id);
->>>>>>> d1328d81d495adeb35ce2ffdd37e1b25b4339e7a
             var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
-            var query = dtos.AsQueryable();
-
-            return new PagedList<TaskDTO>(
-                query, page, pageSize);
+            return dtos;
         }
+
 
         public async Task<IEnumerable<TaskDTO>> DragAndDropTaskByCustomer(int taskId, int customerId, string secondStatus)
         {

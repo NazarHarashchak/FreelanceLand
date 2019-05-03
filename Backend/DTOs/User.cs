@@ -32,11 +32,6 @@ namespace Backend.DTOs
         public int PageNumber { get; set; }
         public List<string> Role { get; set; }
     }
-    public class TextDTO
-    {
-        public string Search { get; set; }
-        public int PageNumber { get; set; }
-        public List<string> Role { get; set; }
-    }
+    
 }
 

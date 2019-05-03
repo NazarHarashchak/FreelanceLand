@@ -41,21 +41,6 @@ namespace Backend.Services
         {
             if (text.Search == "undefined" || text.Search == null) text.Search = "";
             if (text.Role == null) text.Role = new List<string>();
-<<<<<<< HEAD
-
-           var roles = await rolesRepo.GetWithIncludeAsync();
-
-           var entities = await userRepo.GetWithIncludeAsync(x => x.Name.Contains(text.Search) &&
-           ((text.Role.Count == 0) ? roles.Any(s => x.UserRole.Type.Contains(s.Type)) : text.Role.Any(s => x.UserRole.Type.Contains(s))));
-
-
-           var dtos = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(entities);
-           var query = dtos.AsQueryable();
-
-           return new PagedList<UserDTO>(
-               query, text.PageNumber, pageSize);
-            
-=======
 
             var roles = await rolesRepo.GetWithIncludeAsync();
 
@@ -73,7 +58,6 @@ namespace Backend.Services
             return new PagedList<UserDTO>(
                 query, text.PageNumber, pageSize);
 
->>>>>>> d1328d81d495adeb35ce2ffdd37e1b25b4339e7a
         }
 
         public async Task<User> GetUserById(int id)
@@ -164,13 +148,6 @@ namespace Backend.Services
             return dtos;
         }
 
-<<<<<<< HEAD
-        
-       
-=======
-
-
->>>>>>> d1328d81d495adeb35ce2ffdd37e1b25b4339e7a
         public async Task<User> UpdateUser(int id, UserInformation value)
         {
             var result = db.Users.SingleOrDefault(b => b.Id == id);
