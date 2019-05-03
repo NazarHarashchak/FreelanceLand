@@ -17,5 +17,7 @@
         public int CommentsCount  { get; set; }
 
         public string TaskStatus { get; set; }
+
+        public int ExcecutorId { get; set; }
     }
 }

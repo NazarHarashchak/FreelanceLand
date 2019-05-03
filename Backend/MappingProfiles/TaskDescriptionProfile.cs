@@ -23,7 +23,6 @@ namespace Backend.MappingProfiles
                     .ForMember("ExcecutorSecondName", o => o.MapFrom(c => c.Executor.Sur_Name));
 
             CreateMap<TaskPageDTO, Task>()
-                    .ForMember("DateCreate", o => o.MapFrom(c => Convert.ToDateTime(c.Date)))
                     .ForMember("CustomerId", o => o.MapFrom(c => c.CustomerId))
                     .ForMember("Title", o => o.MapFrom(c => c.Title))
                     .ForMember("Description", o => o.MapFrom(c => c.Description))
