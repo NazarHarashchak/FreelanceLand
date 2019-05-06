@@ -1,10 +1,8 @@
 ﻿ using Backend.DTOs;
-using Backend.Hubs;
 using Backend.Interfaces.ServiceInterfaces;
 using Backend.Models;
 using FreelanceLand.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,21 +16,14 @@ namespace Backend.Controllers
         EFGenericRepository<User> userRepo;
         private IChatRoomService _chatRoomService;
         private IMessageService _messageService;
-        private INotificationService notificationService;
-        private IUsersService usersService;
-        private readonly IHubContext<NotificationHub> _hubContext;
 
         public ChatRoomController(ApplicationContext context, IChatRoomService chatRoomService, 
-            IMessageService messageService, INotificationService notificationService,
-            IHubContext<NotificationHub> hubContext, IUsersService usersService)
+            IMessageService messageService)
         {
             _chatRoomService = chatRoomService;
             _messageService = messageService;
             userRepo = new EFGenericRepository<User>(context);
             chatRoomRepo = new EFGenericRepository<ChatRoom>(context);
-            this.notificationService = notificationService;
-            this.usersService = usersService;
-            _hubContext = hubContext;
         }
 
         [HttpGet("GetChatRooms/{id}")]
@@ -51,12 +42,20 @@ namespace Backend.Controllers
         public async System.Threading.Tasks.Task CreateChatRoomAfterFirstMessageAsync([FromBody] CreateChatRoomAndSendFirstMessageDTO cht)
         {
            
-            ChatRoom chatRoom = (await chatRoomRepo.GetAsync(ch => ch.CreatorId == cht.creatorId && ch.SecondUserId == cht.secondUserId)).FirstOrDefault();
+            ChatRoom chatRoom = (await chatRoomRepo.GetAsync(ch => 
+            (ch.CreatorId == cht.creatorId && ch.SecondUserId == cht.secondUserId) ||
+            (ch.CreatorId == cht.secondUserId && ch.SecondUserId == cht.creatorId)
+            )).FirstOrDefault();
             if(chatRoom != null)
             {
                 Message msg = new Message();
                 msg.Content = cht.message;
-                await _messageService.AddMessageToRoomAsync(chatRoom.Id, msg, cht.creatorId);
+                foreach(var ch in msg.Content)
+                {
+                    if (char.IsWhiteSpace(ch))
+                        continue;
+                    await _messageService.AddMessageToRoomAsync(chatRoom.Id, msg, cht.creatorId);
+                }
             }
             else
             {
@@ -69,13 +68,13 @@ namespace Backend.Controllers
 
                 Message msg = new Message();
                 msg.Content = cht.message;
-                await _messageService.AddMessageToRoomAsync(chId, msg, cht.creatorId);
+                foreach (var ch in msg.Content)
+                {
+                    if (char.IsWhiteSpace(ch))
+                        continue;
+                    await _messageService.AddMessageToRoomAsync(chId, msg, cht.creatorId);
+                }
             }
-            var userName = (await usersService.GetUserById(cht.creatorId)).Name;
-            string message = $"You have new message from {userName}";
-            var userId = cht.secondUserId;
-            await notificationService.AddNotification(message, userId);
-            await _hubContext.Clients.All.SendAsync("sendMessage", userId, message);
         }
 
         [HttpGet("GetChatRoomsList/{id}")]
