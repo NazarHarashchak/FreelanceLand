@@ -81,6 +81,14 @@ namespace Backend.Controllers
         public async Task<ActionResult<IEnumerable<TaskDTO>>> DragAndDropTaskByCustomer 
                     ([FromBody] CustomerDragDropDTO dropDTO)
         {
+            string msg;
+            if (dropDTO.FinalStatus == "In progress")
+                msg = $"Your task status was changed to To do";
+            else
+                msg = $"Your task status was changed to {dropDTO.FinalStatus}";
+            var userId = await tasksService.GetExecutorAsync(dropDTO.TaskId);
+            await notificationService.AddNotification(msg, userId);
+            await _hubContext.Clients.All.SendAsync("sendMessage", userId, msg);
             var dtos = await tasksService.DragAndDropTaskByCustomer(dropDTO.TaskId, dropDTO.CustomerId,
                                         dropDTO.FinalStatus);
 
@@ -92,6 +100,10 @@ namespace Backend.Controllers
         public async Task<ActionResult<IEnumerable<TaskDTO>>> DragAndDropTaskByExecutor
                     ([FromBody] CustomerDragDropDTO dropDTO)
         {
+            string msg = $"Your task status was changed to {dropDTO.FinalStatus}";
+            var userId = await tasksService.GetCustomerAsync(dropDTO.TaskId);
+            await notificationService.AddNotification(msg, userId);
+            await _hubContext.Clients.All.SendAsync("sendMessage", userId, msg);
             var dtos = await tasksService.DragAndDropTaskByExecutorAsync(dropDTO.TaskId, dropDTO.CustomerId,
                                         dropDTO.FinalStatus);
 
