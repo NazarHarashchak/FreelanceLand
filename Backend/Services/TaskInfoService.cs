@@ -139,6 +139,8 @@ namespace Backend.Services
 
             result.TaskCategoryId = (await categoryRepo.GetWithIncludeAsync(c => c.Type == task.TaskCategory))
                 .FirstOrDefault().Id;
+            result.DateCreate = DateTime.Now;
+            result.DateUpdated = DateTime.Now;
             var status = (await statusRepo.GetWithIncludeAsync(s => s.Type == "To do")).FirstOrDefault();
             result.TaskStatusId = status.Id;
             result.UpdatedById = task.CustomerId;
