@@ -24,7 +24,7 @@ namespace Backend.Services
         public async Task<IEnumerable<TopUserDTO>> GetTop5Users()
         {
             //TODO: change select query when rating field will be added to user table
-            var entities = await _users.GetAsync(t => t.Id != 0, 5);
+            var entities = await _users.GetAsync(t => t.Rating != 0, 5);
             var dtos = mapper.Map<IEnumerable<User>, IEnumerable<TopUserDTO>>(entities);
             return dtos;
         }

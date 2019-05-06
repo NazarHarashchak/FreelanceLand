@@ -47,5 +47,6 @@ namespace FreelanceLand.Models
         public  virtual List<TaskHistory> UpdatedTaskHistories { get; set; }
         public int? UserRoleId { get; set; }
         public UserRoles UserRole { get; set; }
+        public int Rating { get; internal set; }
     }
 }
