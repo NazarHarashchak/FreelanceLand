@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Backend.Controllers
@@ -19,6 +20,7 @@ namespace Backend.Controllers
     public class UsersController : ControllerBase
     {
         EFGenericRepository<User> userRepo;
+        EFGenericRepository<UserRoles> roleRepo;
         EFGenericRepository<Image> imageRepo;
 
         private IUsersService _usersService;
@@ -32,6 +34,7 @@ namespace Backend.Controllers
             INotificationService notificationService, IHubContext<NotificationHub> hubContext)
         {
             userRepo = new EFGenericRepository<User>(context);
+            roleRepo = new EFGenericRepository<UserRoles>(context);
             imageRepo = new EFGenericRepository<Image>(context);
             _usersService = usersService;
             _imageService = imageService;
@@ -42,9 +45,7 @@ namespace Backend.Controllers
         [HttpGet("Pagination/{text}")]
         
         public async Task<IActionResult> GetPageNumber([FromQuery] TextDTO text )
-        {
-            // var all = await _usersService.GetAllEntities();
-           
+        {           
             var dtos = await _usersService.GetUsers(text);
 
             return Ok(dtos);
@@ -90,7 +91,9 @@ namespace Backend.Controllers
         [HttpPut("{id}")]
         public async Task<User> UpdateUser(int id, [FromBody] UserInformation value)
         {
-            if (value.UserRoleName != null)
+            var user = await  _usersService.GetUserByLogin(value.Login);
+            var role = (await roleRepo.GetAsync(x => x.Id == user.UserRoleId)).FirstOrDefault();
+            if (value.UserRoleName != null && value.UserRoleName !=  role.Type)
             {
                 string msg = $"Your role was changed to {value.UserRoleName}";
                 await _notificationService.AddNotification(msg, id);
