@@ -61,13 +61,14 @@ namespace Backend.Services
             await messageRepo.CreateAsync(message);
 
             var userName = (await usersService.GetUserById(SenderId)).Name;
+            string msg = $"You have new message from {userName}";
             var chatRoom = (await chatRoomRepo.GetAsync(x => x.Id == message.ChatRoomId)).FirstOrDefault();
             int? userId;
             if (chatRoom.CreatorId == message.SenderUserId)
                 userId = chatRoom.SecondUserId;
             else
                 userId = chatRoom.CreatorId;
-            await _hubContext.Clients.All.SendAsync("chatNotification", userId);
+            await _hubContext.Clients.All.SendAsync("chatNotification", userId, msg);
 
         }
     }
