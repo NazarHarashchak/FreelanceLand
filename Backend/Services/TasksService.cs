@@ -2,6 +2,7 @@
 using Backend.DTOs;
 using Backend.Enums;
 using Backend.Interfaces.ServiceInterfaces;
+using Backend.Models;
 using Backend.Pagination;
 using FreelanceLand.Models;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -22,11 +23,13 @@ namespace Backend.Services
         private readonly ApplicationContext db;
         private readonly EFGenericRepository<FreelanceLand.Models.TaskStatus> statusRepo;
         private readonly EFGenericRepository<User> userRepo;
+        private EFGenericRepository<Ratings> ratingRepo;
 
         public TasksService(IMapper mapper, ApplicationContext context)
         {
             db = context;
             this.mapper = mapper;
+            ratingRepo = new EFGenericRepository<Ratings>(context);
             taskRepo = new EFGenericRepository<FreelanceLand.Models.Task>(context);
             historyRepo = new EFGenericRepository<TaskHistory>(context);
             commentRepo = new EFGenericRepository<Comment>(context);
@@ -92,6 +95,23 @@ namespace Backend.Services
                 await historyRepo.RemoveAsync(h);
             }
             await taskRepo.RemoveAsync(task);
+        }
+        public async Task<Ratings> RateUser(int UserId, int RateByUser, int Mark, int UserStatusId)
+        {
+            var rating = new Ratings();
+            rating.UserId = UserId;
+            rating.RateByUser = RateByUser;
+            rating.Mark = Mark;
+            rating.UserStatusId = UserStatusId;
+            await ratingRepo.CreateAsync(rating);
+            var countUsers = (await ratingRepo.GetWithIncludeAsync(x => x.UserId == UserId)).Count();
+            var rat = (await ratingRepo.GetWithIncludeAsync(x => x.UserId == UserId)).Sum(y => y.Mark) / countUsers;
+            User user = await userRepo.FindByIdAsync(UserId);
+            user.Rating = (int)rat;
+            await userRepo.UpdateAsync(user);
+
+            return rating;
+
         }
 
         public async Task<PagedList<TaskDTO>> GetActiveTaskByUser(int id, int page, string search, int priceTo, int priceFrom, string[] categ)
