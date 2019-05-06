@@ -4,14 +4,16 @@ using FreelanceLand.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Backend.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20190425083300_Add_user_Ratings")]
+    partial class Add_user_Ratings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,8 +57,6 @@ namespace Backend.Migrations
                     b.Property<int>("UserStatusId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("RateByUser");
 
                     b.HasIndex("UserId");
 
@@ -346,11 +346,6 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.Ratings", b =>
                 {
-                    b.HasOne("FreelanceLand.Models.User", "UsersRateBy")
-                        .WithMany("ByUserRatings")
-                        .HasForeignKey("RateByUser")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("FreelanceLand.Models.User", "UsersRate")
                         .WithMany("UserRatings")
                         .HasForeignKey("UserId")

@@ -24,6 +24,7 @@ namespace Backend.DTOs
         public int? UserRoleId { get; set; }
 
         public string UserPhoto { get; set; }
+        public int Rating { get; set; }
     }
     public class TextDTO
     {
@@ -31,5 +32,6 @@ namespace Backend.DTOs
         public int PageNumber { get; set; }
         public List<string> Role { get; set; }
     }
+    
 }
 

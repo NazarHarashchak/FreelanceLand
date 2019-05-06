@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FreelanceLand.Models
 {
@@ -15,7 +16,10 @@ namespace FreelanceLand.Models
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Image> Images { get; set; }
-        
+
+        public DbSet<Ratings> Ratings { get; set; }
+        public DbSet<UserStatus> UserStatuses { get; set; }
+
         public ApplicationContext() { }
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Backend.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -26,7 +27,7 @@ namespace FreelanceLand.Models
 
         public bool EmailConfirmed { get; set; }
 
-
+        public int Rating { get; set; }
         public List<Review> UserReviews { get; set; }
         public List<TaskHistory> UserHistories { get; set; }
         public List<Message> UserMessages { get; set; }
@@ -47,5 +48,12 @@ namespace FreelanceLand.Models
         public  virtual List<TaskHistory> UpdatedTaskHistories { get; set; }
         public int? UserRoleId { get; set; }
         public UserRoles UserRole { get; set; }
+
+        [InverseProperty("UsersRate")]
+        public virtual List<Ratings> UserRatings { get; set; }
+
+        [InverseProperty("UsersRateBy")]
+        public virtual List<Ratings> ByUserRatings { get; set; }
+
     }
 }

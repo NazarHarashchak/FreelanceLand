@@ -4,14 +4,16 @@ using FreelanceLand.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Backend.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20190425081122_Add_rating")]
+    partial class Add_rating
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,44 +40,6 @@ namespace Backend.Migrations
                     b.HasIndex("SecondUserId");
 
                     b.ToTable("ChatRoom");
-                });
-
-            modelBuilder.Entity("Backend.Models.Ratings", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("Mark");
-
-                    b.Property<int>("RateByUser");
-
-                    b.Property<int>("UserId");
-
-                    b.Property<int>("UserStatusId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RateByUser");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("UserStatusId");
-
-                    b.ToTable("Ratings");
-                });
-
-            modelBuilder.Entity("Backend.Models.UserStatus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Type");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserStatuses");
                 });
 
             modelBuilder.Entity("FreelanceLand.Models.Comment", b =>
@@ -342,24 +306,6 @@ namespace Backend.Migrations
                     b.HasOne("FreelanceLand.Models.User", "SecondUser")
                         .WithMany()
                         .HasForeignKey("SecondUserId");
-                });
-
-            modelBuilder.Entity("Backend.Models.Ratings", b =>
-                {
-                    b.HasOne("FreelanceLand.Models.User", "UsersRateBy")
-                        .WithMany("ByUserRatings")
-                        .HasForeignKey("RateByUser")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("FreelanceLand.Models.User", "UsersRate")
-                        .WithMany("UserRatings")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Backend.Models.UserStatus", "UserStatuses")
-                        .WithMany("Ratings")
-                        .HasForeignKey("UserStatusId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("FreelanceLand.Models.Comment", b =>

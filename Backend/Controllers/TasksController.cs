@@ -44,6 +44,20 @@ namespace Backend.Controllers
             return Ok(dtos);
         }
 
+        [Route("topActive/{id}")]
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetTopActiveUserTask(int id)
+        {
+            var dtos = await tasksService.GetTopActiveTaskForUser(id);
+            return Ok(dtos);
+        }
+
+        [Route("topHistory/{id}")]
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetTopHistoryUserTask(int id)
+        {
+            var dtos = await tasksService.GetTopHistoryTaskForUser(id);
+            return Ok(dtos);
+        }
+
         [Route("Active/{id}")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskDTO>>> GetActiveTasks(int id)

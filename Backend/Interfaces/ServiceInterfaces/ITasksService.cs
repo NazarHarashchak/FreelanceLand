@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using FreelanceLand.Models;
 using System.Threading.Tasks;
 using Backend.Pagination;
+using Backend.Models;
 
 namespace Backend.Interfaces.ServiceInterfaces
 {
@@ -21,5 +22,8 @@ namespace Backend.Interfaces.ServiceInterfaces
                               string secondStatus);
         Task<IEnumerable<TaskDTO>> DragAndDropTaskByExecutorAsync(int taskId, int executorId,
                               string secondStatus);
+        Task<IEnumerable<TaskDTO>> GetTopHistoryTaskForUser(int id);
+        Task<IEnumerable<TaskDTO>> GetTopActiveTaskForUser(int id);
+        Task<Ratings> RateUser(int UserId, int RateByUser, int Mark, int UserStatusId);
     }
 }

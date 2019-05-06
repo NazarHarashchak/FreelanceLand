@@ -22,5 +22,7 @@ namespace Backend.DTOs
         public string Login { get; set; }
 
         public string UserRoleName { get; set; }
+        public int Rating { get; set; }
+
     }
 }

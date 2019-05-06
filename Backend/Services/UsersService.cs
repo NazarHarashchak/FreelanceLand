@@ -148,8 +148,6 @@ namespace Backend.Services
             return dtos;
         }
 
-
-
         public async Task<User> UpdateUser(int id, UserInformation value)
         {
             var result = db.Users.SingleOrDefault(b => b.Id == id);
