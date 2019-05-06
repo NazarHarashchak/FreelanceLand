@@ -44,11 +44,25 @@ namespace Backend.Controllers
             return Ok(dtos);
         }
 
-        [Route("Active")]
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetActiveTasks([FromQuery] int id, int page, string search, int priceTo, int priceFrom, string[] categ)
+        [Route("topActive/{id}")]
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetTopActiveUserTask(int id)
         {
-            var dtos = await tasksService.GetActiveTaskByUser(id,page,search,priceTo,priceFrom,categ);
+            var dtos = await tasksService.GetTopActiveTaskForUser(id);
+            return Ok(dtos);
+        }
+
+        [Route("topHistory/{id}")]
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetTopHistoryUserTask(int id)
+        {
+            var dtos = await tasksService.GetTopHistoryTaskForUser(id);
+            return Ok(dtos);
+        }
+
+        [Route("Active/{id}")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetActiveTasks(int id)
+        {
+            var dtos = await tasksService.GetActiveTaskByUserAsync(id);
 
             return Ok(dtos);
         }
@@ -68,6 +82,17 @@ namespace Backend.Controllers
                     ([FromBody] CustomerDragDropDTO dropDTO)
         {
             var dtos = await tasksService.DragAndDropTaskByCustomer(dropDTO.TaskId, dropDTO.CustomerId,
+                                        dropDTO.FinalStatus);
+
+            return Ok(dtos);
+        }
+
+        [Route("DragAndDropExecutor")]
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> DragAndDropTaskByExecutor
+                    ([FromBody] CustomerDragDropDTO dropDTO)
+        {
+            var dtos = await tasksService.DragAndDropTaskByExecutorAsync(dropDTO.TaskId, dropDTO.CustomerId,
                                         dropDTO.FinalStatus);
 
             return Ok(dtos);

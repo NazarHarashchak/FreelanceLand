@@ -4,6 +4,7 @@ using Backend.Enums;
 using Backend.Interfaces.ServiceInterfaces;
 using Backend.Pagination;
 using FreelanceLand.Models;
+using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -149,7 +150,6 @@ namespace Backend.Services
             return dtos;
         }
 
-
         public async Task<IEnumerable<TaskDTO>> DragAndDropTaskByCustomer(int taskId, int customerId, string secondStatus)
         {
             //зміна статусу таску
@@ -167,6 +167,43 @@ namespace Backend.Services
 
             //повернення зміненого масиву створених тасків замовником
             var dtos = await GetCreatedTaskByUser(customerId);
+
+            return dtos;
+        }
+
+        public async Task<IEnumerable<TaskDTO>> GetActiveTaskByUserAsync(int id)
+        {
+            var entities = (await taskRepo.GetWithIncludeAsync(p => p.TaskCategory, k => k.Comments, s => s.TaskStatus))
+                .Where(o => o.ExecutorId == id);
+            var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
+            return dtos;
+        }
+        public async Task<IEnumerable<TaskDTO>> GetTopActiveTaskForUser(int id)
+        {
+            var entities = (await taskRepo.GetWithIncludeAsync(p => p.TaskCategory, k => k.Comments, s => s.TaskStatus))
+                .Where(o => o.ExecutorId == id && o.TaskStatusId == (int)StatusEnum.InProgress).Take(5);
+            var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
+            return dtos;
+        }
+
+        public async Task<IEnumerable<TaskDTO>> GetTopHistoryTaskForUser(int id)
+        {
+            var entities = (await taskRepo.GetWithIncludeAsync(p => p.TaskCategory, k => k.Comments, s => s.TaskStatus))
+                .Where(o => o.ExecutorId == id && o.TaskStatusId==(int)StatusEnum.Done).Take(5);
+            var dtos = mapper.Map<IEnumerable<FreelanceLand.Models.Task>, IEnumerable<TaskDTO>>(entities);
+            return dtos;
+        }
+
+        public async Task<IEnumerable<TaskDTO>> DragAndDropTaskByExecutorAsync(int taskId, int executorId, string secondStatus)
+        {
+            var result = (await taskRepo.FindByIdAsync(taskId));
+
+            var newStatus = (await statusRepo.GetWithIncludeAsync(s => s.Type == secondStatus)).FirstOrDefault();
+            result.TaskStatusId = newStatus.Id;
+
+            await taskRepo.UpdateAsync(result);
+            
+            var dtos = await GetActiveTaskByUserAsync(executorId);
 
             return dtos;
         }
