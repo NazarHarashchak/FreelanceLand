@@ -117,9 +117,16 @@ namespace Backend.Services
 
         public async Task<int?> GetCustomerAsync(int id)
         {
-            var executor = (await taskRepo.GetAsync(x => x.Id == id)).FirstOrDefault().CustomerId;
+            var customer = (await taskRepo.GetAsync(x => x.Id == id)).FirstOrDefault().CustomerId;
+            return customer;
+        }
+
+        public async Task<int?> GetExecutorAsync(int id)
+        {
+            var executor = (await taskRepo.GetAsync(x => x.Id == id)).FirstOrDefault().ExecutorId;
             return executor;
         }
+
         public async Task<PagedList<TaskDTO>> GetCreatedTaskByUser(int id, int page, string search, int priceTo, int priceFrom, string[] categ)
         {
             search = search ?? "";
